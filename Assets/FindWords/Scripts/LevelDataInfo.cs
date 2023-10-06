@@ -12,6 +12,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             public Vector2Int gridSize;
             public TextAsset levelCsv;
+            public int quesLetterSize;
             public List<WordInfo> words;
         }
 

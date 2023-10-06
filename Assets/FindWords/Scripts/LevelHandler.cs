@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -33,15 +34,14 @@ namespace YugantLoyaLibrary.FindWords
         public EnglishDictWords englishDictWords;
         private Renderer _touchEffectRenderer;
         [SerializeField] Level currLevel;
-
         public int showGridTillLevel = 4, coinPerLevel = 100;
-
         [Header("Level Info")] public char[][] gridData;
         public float timeToShowHint = 0.5f, timeToRotateGrid = 0.5f;
         public List<Color> levelLineColorList = new List<Color>();
-        public List<GridTile> totalGridsList, inputGridsList;
+        public List<GridTile> totalGridsList, inputGridsList,wordCompletedGridList;
         public List<LevelWords> wordList;
         public List<QuesTile> quesTileList;
+        char[] _vowelCharArr = new[] { 'a', 'e', 'i', 'o', 'u' };
         bool _isLevelRunning = true;
         private int _colorIndex;
         private QuesTile _lastQuesTile;
@@ -71,6 +71,7 @@ namespace YugantLoyaLibrary.FindWords
             cam = Camera.main;
             totalGridsList = new List<GridTile>();
             inputGridsList = new List<GridTile>();
+            wordCompletedGridList = new List<GridTile>();
             wordList = new List<LevelWords>();
             _touchEffectRenderer = touchEffectRef.GetComponent<Renderer>();
         }
@@ -88,16 +89,26 @@ namespace YugantLoyaLibrary.FindWords
 
         public void GetGridData()
         {
-            TextAsset levelTextFile = GameController.instance.GetGridDataOfLevel();
-            //string levelData = levelTextFile.text.Trim();
-            string levelData = levelTextFile.text;
-            //Debug.Log("Level Data String : " + levelData);
+            // TextAsset levelTextFile = GameController.instance.GetGridDataOfLevel();
+            // //string levelData = levelTextFile.text.Trim();
+            // string levelData = levelTextFile.text;
+            // //Debug.Log("Level Data String : " + levelData);
+             
+            // string[] lines = levelData.Split('\n');
+            // //Debug.Log("Lines : " + lines.Length);
+
             int row = currLevel.gridSize.x;
             int col = currLevel.gridSize.y;
             gridData = new char[row][];
-            string[] lines = levelData.Split('\n');
-            //Debug.Log("Lines : " + lines.Length);
+            
+            
+            int fillVowel = (row * col)/3;
+            int[][] tempArr = new int[row][];
 
+            for (int i = 0; i < fillVowel; i++)
+            {
+                
+            }
             for (int i = 0; i < row; i++)
             {
                 gridData[i] = new char[col];
@@ -108,17 +119,19 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-            List<LevelDataInfo.WordInfo> list = GameController.instance.GetLevelDataInfo().words;
+            
 
-            foreach (var word in list)
-            {
-                LevelWords levelWords = new LevelWords
-                {
-                    wordInfo = word
-                };
-
-                wordList.Add(levelWords);
-            }
+            // List<LevelDataInfo.WordInfo> list = GameController.instance.GetLevelDataInfo().words;
+            //
+            // foreach (var word in list)
+            // {
+            //     LevelWords levelWords = new LevelWords
+            //     {
+            //         wordInfo = word
+            //     };
+            //
+            //     wordList.Add(levelWords);
+            // }
         }
 
         public string GenerateRandom_ASCII_Code()
@@ -220,18 +233,23 @@ namespace YugantLoyaLibrary.FindWords
         {
             foreach (GridTile gridTile in inputGridsList)
             {
+                wordCompletedGridList.Add(gridTile);
                 gridTile.Blast();
+                gridTile.SetQuesTileStatus(gridTile.placedOnQuesTile, false, gridTile.blastTime / 2);
             }
+
             RevertQuesData();
         }
 
-        void GridsBackToPos()
+        public void GridsBackToPos()
         {
-            foreach (GridTile gridTile in inputGridsList)
+            for (var index = 0; index < inputGridsList.Count; index++)
             {
+                var gridTile = inputGridsList[index];
                 gridTile.Move(gridTile.defaultGridPos, false, gridTile.placedOnQuesTile);
+                gridTile.SetQuesTileStatus(gridTile.placedOnQuesTile, false, gridTile.blastTime / 2);
             }
-            
+
             _lastQuesTile = null;
             RevertQuesData();
         }
@@ -264,6 +282,19 @@ namespace YugantLoyaLibrary.FindWords
             GameController.instance.uiManager.CoinCollectionAnimation(coinPerLevel);
 
             //GameController.instance.NextLevel();
+        }
+
+        public IEnumerator ReturnToDeck(List<GridTile> gridLists,float time, float timeToPlaceGrids)
+        {
+            Vector2 pos = currLevel.BottomOfScreenPoint();
+
+            foreach (GridTile gridTile in gridLists)
+            {
+                yield return new WaitForSeconds(time);
+                gridTile.DeckAnimation(timeToPlaceGrids, pos);
+            }
+
+            yield return null;
         }
 
         public void ShowHint()

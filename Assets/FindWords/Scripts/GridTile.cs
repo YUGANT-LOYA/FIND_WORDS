@@ -8,7 +8,7 @@ namespace YugantLoyaLibrary.FindWords
     public class GridTile : MonoBehaviour
     {
         private Level _level;
-        public Ease movingEase = Ease.Linear, blastEase = Ease.InCirc;
+        public Ease movingEase = Ease.Linear, blastEase = Ease.InCirc, blastReturnEase = Ease.OutCirc;
         public float reachTime = 1f, blastTime = 1f;
         public int moveRotationTimes = 1, blasRotationTime = 1;
         [SerializeField] private TextMeshPro gridText;
@@ -34,7 +34,7 @@ namespace YugantLoyaLibrary.FindWords
         }
 
 
-        public void DefaultGridSize(Vector3 pos)
+        public void DefaultGridData(Vector3 pos)
         {
             defaultGridSize = transform.localScale;
             defaultGridPos = pos;
@@ -107,7 +107,7 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        private void SetQuesTileStatus(QuesTile quesTile, bool isMovingToQues, float time)
+        public void SetQuesTileStatus(QuesTile quesTile, bool isMovingToQues, float time)
         {
             StartCoroutine(DisableQuesTile(quesTile, isMovingToQues, time));
         }
@@ -120,28 +120,62 @@ namespace YugantLoyaLibrary.FindWords
 
         public void Blast()
         {
-            isMoving = true;
             blastPos = _level.GetRandomPointOutOfScreen();
-            SetQuesTileStatus(placedOnQuesTile, false, blastTime / 2);
             transform.DOMove(blastPos, blastTime / 2).SetEase(blastEase);
             transform.DOScale(defaultGridSize, blastTime / 2).SetEase(movingEase);
             transform.DORotate(new Vector3(blasRotationTime * -360f, 0f, -360f * blasRotationTime), blastTime / 2,
                 RotateMode.FastBeyond360).SetEase(blastEase).OnComplete(() =>
             {
-                Vector2 randomPoint = _level.GetRandomPointOutOfScreen();
-                transform.position = randomPoint;
+                _levelHandler.SetLevelRunningBool(true);
+                transform.rotation = Quaternion.Euler(Vector3.zero);
+                GridTextData = _levelHandler.GenerateRandom_ASCII_Code();
+            });
+        }
+
+        public void MoveTowardsGrid()
+        {
+            transform.position = _level.BottomOfScreenPoint();
+            transform.DORotate(new Vector3(360f * blasRotationTime, 0f, 360f * blasRotationTime), blastTime / 2,
+                RotateMode.FastBeyond360).SetEase(blastReturnEase);
+
+            transform.DOMove(defaultGridPos, blastTime / 2).SetEase(blastReturnEase).OnComplete(() =>
+            {
+                Debug.Log("Cube Returning From Out of the Screen !");
+                ResetData();
+                if (_levelHandler.LastQuesTile == placedOnQuesTile)
+                {
+                    _levelHandler.LastQuesTile = null;
+                    _levelHandler.SetLevelRunningBool(true);
+                }
+            });
+        }
+
+
+        public void DeckAnimation(float timeToPlaceGrids, Vector2 pos)
+        {
+            blastPos = pos;
+            transform.DOMove(blastPos, timeToPlaceGrids / 2).SetEase(movingEase);
+            transform.DOScale(defaultGridSize, timeToPlaceGrids / 2).SetEase(movingEase);
+            transform.DORotate(new Vector3(moveRotationTimes * -360f, 0f, -360f * moveRotationTimes),
+                timeToPlaceGrids / 2,
+                RotateMode.FastBeyond360).SetEase(movingEase).OnComplete(() =>
+            {
+                //Vector2 randomPoint = _level.BottomOfScreenPoint();
+                //transform.position = randomPoint;
                 transform.rotation = Quaternion.Euler(Vector3.zero);
                 GridTextData = _levelHandler.GenerateRandom_ASCII_Code();
 
-                transform.DORotate(new Vector3(360f * blasRotationTime, 0f, 360f * blasRotationTime), blastTime / 2,
-                    RotateMode.FastBeyond360).SetEase(blastEase);
+                transform.DORotate(new Vector3(360f * moveRotationTimes, 0f, 360f * moveRotationTimes),
+                    timeToPlaceGrids / 2,
+                    RotateMode.FastBeyond360).SetEase(movingEase);
 
-                transform.DOMove(defaultGridPos, blastTime / 2).SetEase(blastEase).OnComplete(() =>
+                transform.DOMove(defaultGridPos, timeToPlaceGrids / 2).SetEase(movingEase).OnComplete(() =>
                 {
                     Debug.Log("Cube Returning From Out of the Screen !");
                     ResetData();
                     if (_levelHandler.LastQuesTile == placedOnQuesTile)
                     {
+                        _levelHandler.LastQuesTile = null;
                         _levelHandler.SetLevelRunningBool(true);
                     }
                 });
@@ -154,14 +188,6 @@ namespace YugantLoyaLibrary.FindWords
             isMoving = false;
 
             Debug.Log("Is Moving : " + isMoving);
-        }
-
-        public void SetGridBg(bool isActive)
-        {
-            Color gridColor = gridMaterial.color;
-            gridMaterial.color = isActive
-                ? new Color(gridColor.r, gridColor.g, gridColor.b, 255f)
-                : new Color(gridColor.r, gridColor.g, gridColor.b, 0f);
         }
 
         private void OnDestroy()

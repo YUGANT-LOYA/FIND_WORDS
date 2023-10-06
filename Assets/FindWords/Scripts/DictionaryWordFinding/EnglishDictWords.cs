@@ -1,5 +1,8 @@
 using UnityEngine;
+
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace YugantLoyaLibrary.FindWords
 {
@@ -9,7 +12,6 @@ namespace YugantLoyaLibrary.FindWords
         public string inputString;
         public DictScriptableInfo dictionaryData;
 
-#if UNITY_EDITOR
         public void UpdateEnglishDict()
         {
             if (wordTextFile != null && dictionaryData != null)
@@ -31,18 +33,15 @@ namespace YugantLoyaLibrary.FindWords
             {
                 Debug.LogError("Text file or DictionaryData not assigned.");
             }
-
+#if UNITY_EDITOR
             EditorUtility.SetDirty(dictionaryData);
             AssetDatabase.Refresh();
-        }
+            AssetDatabase.SaveAssets();
 #endif
+        }
 
         public bool Search(string word)
         {
-#if UNITY_EDITOR
-            UpdateEnglishDict();
-#endif
-            
             bool isAvailable = dictionaryData.dictionaryTrie.Search(word.ToLower());
 
             if (isAvailable)

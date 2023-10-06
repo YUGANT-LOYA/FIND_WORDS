@@ -23,8 +23,8 @@ namespace YugantLoyaLibrary.FindWords
         public void SetMeshRendererActiveStatus(bool setActive)
         {
             gameObject.SetActive(setActive);
-            _meshRenderer.enabled = setActive;
-            quesText.enabled = setActive;
+            //_meshRenderer.enabled = setActive;
+            //quesText.enabled = setActive;
         }
 
         public void AddData(string str)

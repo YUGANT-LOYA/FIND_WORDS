@@ -3,6 +3,7 @@ using System.Collections;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace YugantLoyaLibrary.FindWords
@@ -11,12 +12,19 @@ namespace YugantLoyaLibrary.FindWords
     {
         public float coinAnimTime = 1.5f, coinRotateAngle = 810f, maxCoinScale = 45f;
         public TextMeshProUGUI levelText, coinText;
+        public Button shuffleButton, dealButton;
         public GameObject winPanel;
         public GameObject menuGameObj, coinHolderGm;
         public Ease coinMovementEase;
         private float _coinTextUpdateTime;
-        
-        
+
+        private void Awake()
+        {
+            shuffleButton.onClick.AddListener(() => { GameController.instance.ShuffleGrid(); });
+            dealButton.onClick.AddListener(() => { GameController.instance.Deal(); });
+        }
+
+
         public void CoinCollectionAnimation(int coinToAdd)
         {
             StartCoroutine(nameof(PlayCoinAnim), coinToAdd);
@@ -44,10 +52,10 @@ namespace YugantLoyaLibrary.FindWords
                 coin.SetActive(true);
 
                 yield return new WaitForSeconds(coinMovementTime);
-                
+
                 coin.transform.DORotate(new Vector3(coinRotateAngle, coinRotateAngle,
                     coinRotateAngle), _coinTextUpdateTime, RotateMode.FastBeyond360).SetEase(coinMovementEase);
-                
+
                 coin.transform.DOMove(new Vector2(position.x - 0.65f, position.y), _coinTextUpdateTime)
                     .SetEase(coinMovementEase).OnComplete(
                         () =>
@@ -55,9 +63,9 @@ namespace YugantLoyaLibrary.FindWords
                             DataHandler.instance.ResetCoin(coin);
                             if (isCoinTextUpdating) return;
                             isCoinTextUpdating = true;
-                            StartCoroutine(UpdateCoinText(coinToBeAdded, (_coinTextUpdateTime/2)));
+                            StartCoroutine(UpdateCoinText(coinToBeAdded, (_coinTextUpdateTime / 2)));
                         });
-                
+
                 xVal = Random.Range(-0.5f, 0.5f);
                 yVal = Random.Range(-0.5f, 0.5f);
             }

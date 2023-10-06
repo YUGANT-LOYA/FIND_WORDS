@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +16,8 @@ namespace YugantLoyaLibrary.FindWords
         private Camera _cam;
         public Vector2Int gridSize;
         private float _camOrthographicSize;
-        public int totalWordToFind = 4, quesInOneRow = 5;
+        private int _totalWordToFind = 4;
+        [SerializeField] private int quesInOneRow = 5;
         public Material gridMaterial;
         private readonly int[] _randomScreenPointArr = { -1, 1 };
         public Ease gridPlacementEase;
@@ -22,16 +25,16 @@ namespace YugantLoyaLibrary.FindWords
         public float defaultStartYPos = 1.5f;
 
         [Tooltip("The Grid Should come inside camera's orthographic size, so there should be offset from one side")]
-        public float camGridOffset = 0.5f, screenOffset = 50f;
+        public float camGridOffset = 0.5f;
 
         [Tooltip("The Distance outside the screen from where the grid should come and place in the grid")]
         public float distanceFromScreen = 5f;
 
         [Tooltip("Time to place Grid in its original Position")]
-        public float timeToPlaceGrid = 0.4f;
+        public float timeToPlaceGrid = 0.4f, timeToWaitForEachGrid = 0.1f;
 
         [SerializeField] Button restartButton, hintButton;
-        public Transform quesGridTrans, rotationContainer, midPanelContainerTrans;
+        public Transform quesGridTrans, rotationContainer;
         [SerializeField] private Transform gridContainer;
         private float _currGridWidth, _currGridHeight, _lineRendererWidth = 0.4f, _currGridSize, _currQuesSize;
         [SerializeField] private float gridSpacing = 0.1f, quesSpacing = 0.2f;
@@ -52,8 +55,14 @@ namespace YugantLoyaLibrary.FindWords
             SetGridSize();
             CreateGrid();
             SetQuestionGrid();
+            SetCameraPos();
             _levelNumText = GameController.instance.uiManager.levelText;
             LevelNumData = $"Level {DataHandler.instance.CurrLevelNumber + 1}";
+        }
+
+        void SetCameraPos()
+        {
+            _cam.transform.position = new Vector3(0, -2.25f, -10f);
         }
 
         public void FillData(LevelHandler handler)
@@ -63,14 +72,15 @@ namespace YugantLoyaLibrary.FindWords
 
         void SetQuestionGrid()
         {
-            float row = (float)totalWordToFind / quesInOneRow;
+            _totalWordToFind = GameController.instance.GetLevelDataInfo().quesLetterSize;
+            float row = (float)_totalWordToFind / quesInOneRow;
             float quesTileSize = _camOrthographicSize / 2 + camGridOffset;
 
-            float spacingX = (totalWordToFind - 1) * quesSpacing;
+            float spacingX = (_totalWordToFind - 1) * quesSpacing;
             float spacingY = (int)row * quesSpacing;
 
-            float gridWidth = (quesTileSize - spacingX) / totalWordToFind;
-            float gridHeight = (quesTileSize - spacingY) / totalWordToFind;
+            float gridWidth = (quesTileSize - spacingX) / _totalWordToFind;
+            float gridHeight = (quesTileSize - spacingY) / _totalWordToFind;
 
             if (gridWidth > gridHeight)
             {
@@ -85,7 +95,7 @@ namespace YugantLoyaLibrary.FindWords
             Vector2 startPos;
             if (row > 1)
             {
-                for (int i = 0; i < totalWordToFind; i++)
+                for (int i = 0; i < _totalWordToFind; i++)
                 {
                 }
             }
@@ -95,38 +105,17 @@ namespace YugantLoyaLibrary.FindWords
                     quesGridTrans.position.y);
                 GameObject quesPrefab = DataHandler.instance.quesPrefab;
 
-                for (int i = 0; i < totalWordToFind; i++)
+                for (int i = 0; i < _totalWordToFind; i++)
                 {
                     GameObject gmObj = Instantiate(quesPrefab, quesGridTrans);
                     QuesTile quesTileScript = gmObj.GetComponent<QuesTile>();
-                    gmObj.transform.localScale = Vector3.one * _currQuesSize;
+                    gmObj.transform.localScale = new Vector3(_currQuesSize, _currQuesSize, _currQuesSize / 2);
                     gmObj.transform.position = startPos;
                     gmObj.name = $"Ques_{i}";
                     _levelHandler.UpdateQuesList(quesTileScript);
                     startPos.x += quesSpacing + _currQuesSize;
                 }
             }
-            
-            
-        }
-
-        public float GetLineRendererWidth()
-        {
-            return _lineRendererWidth;
-        }
-
-        private void SetLineRendererWidth()
-        {
-            var size = _currGridWidth > _currGridHeight ? _currGridHeight : _currGridWidth;
-            _lineRendererWidth = size / 250f;
-        }
-
-        public void SetLineRendererPoint(int index, Vector2 mousePos)
-        {
-            RectTransform gridRect = gridContainer.GetComponent<RectTransform>();
-
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(gridRect, mousePos, _levelHandler.cam,
-                out var canvasMousePos);
         }
 
         private void AssignLevelHandler(LevelHandler handler)
@@ -162,6 +151,12 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
+        public Vector2 BottomOfScreenPoint()
+        {
+            var position = _cam.transform.position;
+            return new Vector2(position.x, position.y - _camOrthographicSize);
+        }
+
         public Vector2 GetRandomPointOutOfScreen()
         {
             float orthographicSize = _camOrthographicSize + camGridOffset;
@@ -176,16 +171,16 @@ namespace YugantLoyaLibrary.FindWords
                 if (_randomScreenPointArr[xPoint] == -1)
                 {
                     //When the side is selected as Left Side.
-                    randomX = Random.Range(-orthographicSize / 2 - distanceFromScreen,
-                        -orthographicSize / 2 - (distanceFromScreen * 2));
-                    randomY = Random.Range(-orthographicSize / 2, orthographicSize);
+                    randomX = Random.Range(-orthographicSize - distanceFromScreen,
+                        -orthographicSize / 2 - distanceFromScreen);
+                    randomY = Random.Range(-orthographicSize, orthographicSize);
                 }
                 else if (_randomScreenPointArr[xPoint] == 1)
                 {
                     //When the side is selected as Right Side.
                     randomX = Random.Range(orthographicSize / 2 + distanceFromScreen,
-                        orthographicSize / 2 + (distanceFromScreen * 2));
-                    randomY = Random.Range(-orthographicSize / 2, orthographicSize);
+                        orthographicSize + distanceFromScreen);
+                    randomY = Random.Range(-orthographicSize, orthographicSize);
                 }
             }
             else
@@ -195,16 +190,16 @@ namespace YugantLoyaLibrary.FindWords
                 if (_randomScreenPointArr[yPoint] == -1)
                 {
                     //When the side is selected as Bottom Side.
-                    randomX = Random.Range(-orthographicSize / 2, -orthographicSize / 2 - distanceFromScreen);
-                    randomY = Random.Range(-orthographicSize / 2 - distanceFromScreen,
-                        -orthographicSize / 2 - (distanceFromScreen * 2));
+                    randomX = Random.Range(-orthographicSize / 2, orthographicSize / 2 + distanceFromScreen);
+                    randomY = Random.Range(-orthographicSize - distanceFromScreen,
+                        -(orthographicSize * 2) - distanceFromScreen);
                 }
                 else if (_randomScreenPointArr[yPoint] == 1)
                 {
                     //When the side is selected as Top Side.
-                    randomX = Random.Range(orthographicSize, orthographicSize + distanceFromScreen);
-                    randomY = Random.Range(orthographicSize / 2 + distanceFromScreen,
-                        orthographicSize / 2 + (distanceFromScreen * 2));
+                    randomX = Random.Range(-orthographicSize / 2, orthographicSize / 2 + distanceFromScreen);
+                    randomY = Random.Range(orthographicSize + distanceFromScreen,
+                        orthographicSize * 2 + distanceFromScreen);
                 }
             }
 
@@ -224,28 +219,39 @@ namespace YugantLoyaLibrary.FindWords
                 {
                     GameObject gmObj = Instantiate(gridPrefab, gridContainer);
                     GridTile gridTileScript = gmObj.GetComponent<GridTile>();
-
                     //Assigning New Material to each grid.
                     gmObj.GetComponent<Renderer>().material = new Material(gridMaterial);
                     gridTileScript.gridMaterial = gmObj.GetComponent<Renderer>().material;
-                    gmObj.transform.localScale = Vector3.one * _currGridSize;
-                    gridTileScript.DefaultGridSize(startPos);
-                    gmObj.transform.position = GetRandomPointOutOfScreen();
+                    gmObj.transform.localScale = new Vector3(_currGridSize, _currGridSize, _currGridSize / 2);
+                    gridTileScript.DefaultGridData(startPos);
+                    gmObj.transform.position = BottomOfScreenPoint();
+                    gmObj.SetActive(false);
                     gmObj.name = $"Grid_{i}_{j}";
                     gridTileScript.AssignInfo(this);
                     gridTileScript.GridID = new Vector2Int(i, j);
                     _levelHandler.totalGridsList.Add(gridTileScript);
                     AssignGridData(gridTileScript, i, j);
-                    gmObj.transform.DOLocalMove(startPos, timeToPlaceGrid).SetEase(gridPlacementEase);
-
-                    gridTileScript.SetGridBg(DataHandler.instance.CurrLevelNumber < _levelHandler.showGridTillLevel);
-
                     startPos.x += gridSpacing + _currGridSize;
                 }
 
                 startPos = new Vector3(_defaultStartPos.x,
                     _defaultStartPos.y - ((i + 1) * _currGridHeight) - (gridSpacing * (i + 1)),
                     _defaultStartPos.z);
+            }
+
+            StartCoroutine(PlaceGrids());
+        }
+
+        private IEnumerator PlaceGrids()
+        {
+            if (_levelHandler.totalGridsList.Count > 0)
+            {
+                foreach (GridTile gmObj in _levelHandler.totalGridsList)
+                {
+                    yield return new WaitForSeconds(timeToWaitForEachGrid / 2);
+                    gmObj.gameObject.SetActive(true);
+                    gmObj.transform.DOLocalMove(gmObj.defaultGridPos, timeToPlaceGrid).SetEase(gridPlacementEase);
+                }
             }
         }
 

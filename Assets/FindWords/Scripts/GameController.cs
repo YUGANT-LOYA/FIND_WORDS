@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
@@ -16,7 +18,6 @@ namespace YugantLoyaLibrary.FindWords
         public int coinPoolSize = 20;
         private Level _currLevel;
         private bool _isRestarting;
-
         [SerializeField] private float timeToSwitchToNextLevel = 1f;
 
         private void Awake()
@@ -75,6 +76,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             DataHandler.instance.CurrLevelNumber = 0;
             uiManager.coinText.text = DataHandler.instance.initialCoins.ToString();
+            levelHandler.englishDictWords.UpdateEnglishDict();
         }
 
         void ClearContainer(Transform container)
@@ -115,7 +117,7 @@ namespace YugantLoyaLibrary.FindWords
             else
             {
                 Level level = FindObjectOfType<Level>();
-                
+
                 if (level != null)
                 {
                     ClearContainer(level.GetGridContainerTrans());
@@ -140,8 +142,6 @@ namespace YugantLoyaLibrary.FindWords
             Transform trans = _currLevel.rotationContainer;
             levelHandler.SetLevelRunningBool(false);
             Transform gridContainer = _currLevel.GetGridContainerTrans();
-
-
             if (_currLevel.gridSize.y == _currLevel.gridSize.x)
             {
                 Debug.Log("Rotate If !");
@@ -205,6 +205,32 @@ namespace YugantLoyaLibrary.FindWords
             levelHandler.quesTileList.Clear();
         }
 
+        public void ShuffleGrid()
+        {
+            levelHandler.SetLevelRunningBool(false);
+            float time = _currLevel.timeToWaitForEachGrid;
+            float timeToPlaceGrids = _currLevel.timeToPlaceGrid;
+            List<GridTile> list = new List<GridTile>(levelHandler.totalGridsList);
+            StartCoroutine(levelHandler.ReturnToDeck(list, time, timeToPlaceGrids));
+        }
+
+        public void Deal()
+        {
+            List<GridTile> list = new List<GridTile>(levelHandler.wordCompletedGridList);
+            StartCoroutine(BackToDeckAnim(list));
+        }
+
+        IEnumerator BackToDeckAnim(List<GridTile> list)
+        {
+            foreach (GridTile gridTile in list)
+            {
+                yield return new WaitForSeconds(_currLevel.timeToWaitForEachGrid);
+                Debug.Log("Moving To Grid Place Again !");
+                gridTile.MoveTowardsGrid();
+                levelHandler.wordCompletedGridList.Remove(gridTile);
+            }
+        }
+        
         public void NextLevel()
         {
             if (DataHandler.instance.CurrLevelNumber < levelDataInfo.levelInfo.Count - 1)

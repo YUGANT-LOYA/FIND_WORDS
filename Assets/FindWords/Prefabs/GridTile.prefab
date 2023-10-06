@@ -29,8 +29,8 @@ Transform:
   m_GameObject: {fileID: 192851820563964911}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1, y: 1, z: 0.5}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 192851822426933521}
   m_Father: {fileID: 0}
@@ -111,8 +111,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba211cb9fbec69649b61ccead4a4f1fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movingEase: 1
-  blastEase: 20
+  movingEase: 4
+  blastEase: 4
+  blastReturnEase: 4
   reachTime: 0.5
   blastTime: 1.5
   moveRotationTimes: 1
@@ -126,6 +127,7 @@ MonoBehaviour:
   selectedColor: {r: 1, g: 1, b: 1, a: 1}
   isGridActive: 1
   isSelected: 0
+  isMoving: 0
   id: {x: 0, y: 0}
   placedOnQuesTile: {fileID: 0}
 --- !u!1 &192851822426933526
