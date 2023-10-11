@@ -14,7 +14,7 @@ namespace YugantLoyaLibrary.FindWords
         private LevelHandler _levelHandler;
 
         private Camera _cam;
-        public Vector2Int gridSize;
+        [HideInInspector] public Vector2Int gridSize;
         private float _camOrthographicSize;
         private int _totalWordToFind = 4;
         [SerializeField] private int quesInOneRow = 5;
@@ -33,10 +33,9 @@ namespace YugantLoyaLibrary.FindWords
         [Tooltip("Time to place Grid in its original Position")]
         public float timeToPlaceGrid = 0.4f, timeToWaitForEachGrid = 0.1f;
 
-        [SerializeField] Button restartButton, hintButton;
         public Transform quesGridTrans, rotationContainer;
         [SerializeField] private Transform gridContainer;
-        private float _currGridWidth, _currGridHeight, _lineRendererWidth = 0.4f, _currGridSize, _currQuesSize;
+        private float _currGridWidth, _currGridHeight, _currGridSize, _currQuesSize;
         [SerializeField] private float gridSpacing = 0.1f, quesSpacing = 0.2f;
 
         [Header("Input Data Info")] TextMeshProUGUI _levelNumText;
@@ -52,11 +51,14 @@ namespace YugantLoyaLibrary.FindWords
             _cam = Camera.main;
             if (_cam != null) _camOrthographicSize = _cam.orthographicSize;
             //Debug.Log("Level StartInit Called !");
+            Debug.Log($"Aspect Ratio : {_cam.aspect} , Width : {Screen.width} , Height  : {Screen.height}");
+            Debug.Log($"Factor  : {_cam.aspect * _camOrthographicSize}");
+
             SetGridSize();
             CreateGrid();
             SetQuestionGrid();
             SetCameraPos();
-            _levelNumText = GameController.instance.uiManager.levelText;
+            _levelNumText = UIManager.instance.levelText;
             LevelNumData = $"Level {DataHandler.instance.CurrLevelNumber + 1}";
         }
 
@@ -72,7 +74,9 @@ namespace YugantLoyaLibrary.FindWords
 
         void SetQuestionGrid()
         {
-            _totalWordToFind = GameController.instance.GetLevelDataInfo().quesLetterSize;
+            //_totalWordToFind = GameController.instance.GetLevelDataInfo().quesLetterSize;
+            _totalWordToFind = DataHandler.instance.CurrQuesSize;
+            _levelHandler.quesGridCount = _totalWordToFind;
             float row = (float)_totalWordToFind / quesInOneRow;
             float quesTileSize = _camOrthographicSize / 2 + camGridOffset;
 
@@ -220,8 +224,7 @@ namespace YugantLoyaLibrary.FindWords
                     GameObject gmObj = Instantiate(gridPrefab, gridContainer);
                     GridTile gridTileScript = gmObj.GetComponent<GridTile>();
                     //Assigning New Material to each grid.
-                    gmObj.GetComponent<Renderer>().material = new Material(gridMaterial);
-                    gridTileScript.gridMaterial = gmObj.GetComponent<Renderer>().material;
+
                     gmObj.transform.localScale = new Vector3(_currGridSize, _currGridSize, _currGridSize / 2);
                     gridTileScript.DefaultGridData(startPos);
                     gmObj.transform.position = BottomOfScreenPoint();
@@ -230,8 +233,26 @@ namespace YugantLoyaLibrary.FindWords
                     gridTileScript.AssignInfo(this);
                     gridTileScript.GridID = new Vector2Int(i, j);
                     _levelHandler.totalGridsList.Add(gridTileScript);
-                    AssignGridData(gridTileScript, i, j);
                     startPos.x += gridSpacing + _currGridSize;
+
+                    if (i == (gridSize.x - 1) || j == (gridSize.y - 1))
+                    {
+                        _levelHandler.buyGridList.Add(gridTileScript);
+                        gridTileScript.SetLockStatus(true);
+                        gridTileScript.SetLockTextAmount(100);
+                        gridTileScript.isLocked = true;
+                        gridTileScript.GetText().gameObject.SetActive(false);
+                        gridTileScript.isGridActive = false;
+                        gmObj.GetComponent<Renderer>().material = new Material(gridTileScript.lockMaterial);
+                    }
+                    else
+                    {
+                        _levelHandler.unlockedGridList.Add(gridTileScript);
+                        gmObj.GetComponent<Renderer>().material = new Material(gridMaterial);
+                        gridTileScript.gridMaterial = gmObj.GetComponent<Renderer>().material;
+                    }
+
+                    AssignGridData(gridTileScript, i, j);
                 }
 
                 startPos = new Vector3(_defaultStartPos.x,

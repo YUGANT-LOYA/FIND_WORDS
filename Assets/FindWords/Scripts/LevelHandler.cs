@@ -9,16 +9,6 @@ namespace YugantLoyaLibrary.FindWords
 {
     public class LevelHandler : MonoBehaviour
     {
-        [Serializable]
-        public class LevelWords
-        {
-            public LevelDataInfo.WordInfo wordInfo;
-            public bool isWordMarked;
-
-            //Assigns only after Hint is called.
-            public GameObject hintMarker;
-        }
-
         public delegate void NewLetterDelegate(GridTile gridTile);
 
         public NewLetterDelegate onNewLetterAddEvent, onRemoveLetterEvent;
@@ -34,18 +24,27 @@ namespace YugantLoyaLibrary.FindWords
         public EnglishDictWords englishDictWords;
         private Renderer _touchEffectRenderer;
         [SerializeField] Level currLevel;
-        public int showGridTillLevel = 4, coinPerLevel = 100;
+        [HideInInspector] public int quesGridCount;
+        public int showGridTillLevel = 4;
+        [FormerlySerializedAs("coinPerLevel")] public int coinPerLetter = 10;
         [Header("Level Info")] public char[][] gridData;
         public float timeToShowHint = 0.5f, timeToRotateGrid = 0.5f;
         public List<Color> levelLineColorList = new List<Color>();
-        public List<GridTile> totalGridsList, inputGridsList,wordCompletedGridList;
-        public List<LevelWords> wordList;
+
+        public List<GridTile> totalGridsList,
+            inputGridsList,
+            wordCompletedGridList,
+            unlockedGridList,
+            buyGridList,
+            buyQuesGridList;
+
         public List<QuesTile> quesTileList;
+        public List<string> selectedWords;
         char[] _vowelCharArr = new[] { 'a', 'e', 'i', 'o', 'u' };
         bool _isLevelRunning = true;
         private int _colorIndex;
         private QuesTile _lastQuesTile;
-
+        
         private void OnEnable()
         {
             onNewLetterAddEvent += AddNewLetter;
@@ -72,7 +71,6 @@ namespace YugantLoyaLibrary.FindWords
             totalGridsList = new List<GridTile>();
             inputGridsList = new List<GridTile>();
             wordCompletedGridList = new List<GridTile>();
-            wordList = new List<LevelWords>();
             _touchEffectRenderer = touchEffectRef.GetComponent<Renderer>();
         }
 
@@ -93,22 +91,22 @@ namespace YugantLoyaLibrary.FindWords
             // //string levelData = levelTextFile.text.Trim();
             // string levelData = levelTextFile.text;
             // //Debug.Log("Level Data String : " + levelData);
-             
+
             // string[] lines = levelData.Split('\n');
             // //Debug.Log("Lines : " + lines.Length);
 
             int row = currLevel.gridSize.x;
             int col = currLevel.gridSize.y;
             gridData = new char[row][];
-            
-            
-            int fillVowel = (row * col)/3;
+
+
+            int fillVowel = (row * col) / 3;
             int[][] tempArr = new int[row][];
 
             for (int i = 0; i < fillVowel; i++)
             {
-                
             }
+
             for (int i = 0; i < row; i++)
             {
                 gridData[i] = new char[col];
@@ -119,7 +117,6 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-            
 
             // List<LevelDataInfo.WordInfo> list = GameController.instance.GetLevelDataInfo().words;
             //
@@ -142,7 +139,7 @@ namespace YugantLoyaLibrary.FindWords
             return letter.ToString();
         }
 
-        public void SetLevelRunningBool(bool canTouch)
+        public void SetLevelRunningBool(bool canTouch = true)
         {
             _isLevelRunning = canTouch;
         }
@@ -165,14 +162,20 @@ namespace YugantLoyaLibrary.FindWords
 
                 if (index != -1)
                 {
+                    Vector3 pos = quesTileList[index].transform.position;
+
+                    // if (gridTileObj.defaultGridPos == gridTileObj.transform.position)
+                    //     return;
+
                     if (index == quesTileList.Count - 1)
                     {
                         _isLevelRunning = false;
-                        _lastQuesTile = quesTileList[index];
+                        LastQuesTile = quesTileList[index];
                     }
 
+                    quesTileList[index].isAssigned = true;
                     inputGridsList.Add(gridTileObj);
-                    Vector3 pos = quesTileList[index].transform.position;
+                    StartCoroutine(LevelRunningStatus(true, gridTileObj.reachTime + 0.1f));
                     gridTileObj.Move(pos, true, quesTileList[index]);
                 }
             }
@@ -184,10 +187,17 @@ namespace YugantLoyaLibrary.FindWords
             {
                 inputGridsList.Remove(gridTileObj);
                 gridTileObj.Move(gridTileObj.defaultGridPos, false, gridTileObj.placedOnQuesTile);
+                StartCoroutine(LevelRunningStatus(true, gridTileObj.reachTime + 0.1f));
             }
         }
 
-        public int FindEmptyQuesGrid()
+        IEnumerator LevelRunningStatus(bool isActive, float time)
+        {
+            yield return new WaitForSeconds(time);
+            _isLevelRunning = isActive;
+        }
+
+        private int FindEmptyQuesGrid()
         {
             for (int i = 0; i < quesTileList.Count; i++)
             {
@@ -205,6 +215,22 @@ namespace YugantLoyaLibrary.FindWords
         public void UpdateQuesList(QuesTile quesTileScript)
         {
             quesTileList.Add(quesTileScript);
+        }
+
+
+        public void CheckAllGridBuyed()
+        {
+            if (buyGridList.Count <= 0)
+            {
+                DataHandler.instance.CurrGridSize++;
+                _isLevelRunning = false;
+                float time = currLevel.timeToWaitForEachGrid;
+                float timeToPlaceGrids = currLevel.timeToPlaceGrid;
+                StartCoroutine(ReturnToDeck(totalGridsList, time, timeToPlaceGrids, false));
+                StartCoroutine(
+                    GameController.instance.StartGameAfterCertainTime(timeToPlaceGrids +
+                                                                      (time * (totalGridsList.Count + 1))));
+            }
         }
 
         public void CheckAnswer()
@@ -229,32 +255,45 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
+
+        private void AddCoin()
+        {
+            UIManager.instance.CoinCollectionAnimation(coinPerLetter * quesGridCount);
+            Debug.Log("Coin Per Word To Add: " + coinPerLetter * quesGridCount);
+        }
+
         void WordComplete()
         {
-            foreach (GridTile gridTile in inputGridsList)
+            for (int index = 0; index < inputGridsList.Count; index++)
             {
+                var gridTile = inputGridsList[index];
                 wordCompletedGridList.Add(gridTile);
                 gridTile.Blast();
                 gridTile.SetQuesTileStatus(gridTile.placedOnQuesTile, false, gridTile.blastTime / 2);
+
+                if (index == inputGridsList.Count - 1)
+                {
+                    AddCoin();
+                }
             }
 
             RevertQuesData();
         }
 
-        public void GridsBackToPos()
+        private void GridsBackToPos()
         {
-            for (var index = 0; index < inputGridsList.Count; index++)
+            foreach (var gridTile in inputGridsList)
             {
-                var gridTile = inputGridsList[index];
                 gridTile.Move(gridTile.defaultGridPos, false, gridTile.placedOnQuesTile);
                 gridTile.SetQuesTileStatus(gridTile.placedOnQuesTile, false, gridTile.blastTime / 2);
+                StartCoroutine(LevelRunningStatus(true, gridTile.reachTime + 0.1f));
             }
 
-            _lastQuesTile = null;
+            LastQuesTile = null;
             RevertQuesData();
         }
 
-        void RevertQuesData()
+        public void RevertQuesData()
         {
             foreach (QuesTile quesTile in quesTileList)
             {
@@ -279,19 +318,20 @@ namespace YugantLoyaLibrary.FindWords
         private void LevelComplete()
         {
             _isLevelRunning = false;
-            GameController.instance.uiManager.CoinCollectionAnimation(coinPerLevel);
+            UIManager.instance.CoinCollectionAnimation(coinPerLetter);
 
             //GameController.instance.NextLevel();
         }
 
-        public IEnumerator ReturnToDeck(List<GridTile> gridLists,float time, float timeToPlaceGrids)
+        public IEnumerator ReturnToDeck(List<GridTile> gridLists, float waitTime, float timeToPlaceGrids,
+            bool shouldReturnToGridPlace = true)
         {
             Vector2 pos = currLevel.BottomOfScreenPoint();
 
             foreach (GridTile gridTile in gridLists)
             {
-                yield return new WaitForSeconds(time);
-                gridTile.DeckAnimation(timeToPlaceGrids, pos);
+                yield return new WaitForSeconds(waitTime);
+                gridTile.DeckAnimation(timeToPlaceGrids, pos, shouldReturnToGridPlace);
             }
 
             yield return null;
@@ -305,12 +345,9 @@ namespace YugantLoyaLibrary.FindWords
         {
         }
 
-        void RemoveHint(LevelWords levelWords)
+        void RemoveHint()
         {
-            if (levelWords.isWordMarked)
-            {
-                Destroy(levelWords.hintMarker);
-            }
+            
         }
     }
 }

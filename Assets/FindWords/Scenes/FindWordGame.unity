@@ -748,7 +748,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &389480122
 GameObject:
@@ -918,14 +918,18 @@ MonoBehaviour:
   touchEffectRef: {fileID: 7651802822443955217}
   englishDictWords: {fileID: 372052519}
   currLevel: {fileID: 0}
+  quesGridCount: 0
   showGridTillLevel: 4
-  coinPerLevel: 100
+  coinPerLetter: 10
   timeToShowHint: 0.5
   timeToRotateGrid: 0.5
   levelLineColorList: []
   totalGridsList: []
   inputGridsList: []
   wordCompletedGridList: []
+  unlockedGridList: []
+  buyGridList: []
+  buyQuesGridList: []
   wordList: []
   quesTileList: []
 --- !u!4 &399063913
@@ -941,7 +945,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &499213998
 GameObject:
@@ -1523,7 +1527,7 @@ RectTransform:
   - {fileID: 63388931}
   - {fileID: 30295179}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1542,7 +1546,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d602c4178bc289340b1a6d1adb923d42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinAnimTime: 2.5
+  coinAnimTime: 1.5
   coinRotateAngle: 810
   maxCoinScale: 15
   levelText: {fileID: 1093761540}
@@ -1724,7 +1728,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &927706960
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2018,7 +2022,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isTesting: 0
-  uiManager: {fileID: 805590174}
+  startingGridSize: 4
+  startingQuesSize: 3
   levelDataInfo: {fileID: 11400000, guid: e9cf69ab673995449932a6b2de7cb292, type: 2}
   levelHandler: {fileID: 399063912}
   levelContainer: {fileID: 399063913}
@@ -2342,7 +2347,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1391644540
 GameObject:
@@ -2737,7 +2742,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1432210749
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3016,7 +3021,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1718639825
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3098,7 +3103,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &1718639829
 Canvas:
   m_ObjectHideFlags: 0
@@ -3149,7 +3154,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1796515643
 PrefabInstance:
@@ -3963,7 +3968,7 @@ MonoBehaviour:
     type: 3}
   lineRendererPrefab: {fileID: 6319055306387946753, guid: 507e894a8eb354b4dbe9977498d285fd,
     type: 3}
-  initialCoins: 300
+  initialCoins: 2000
   totalColors:
   - {r: 0.38364774, g: 1, b: 0.4247762, a: 0.92156863}
   - {r: 1, g: 0.37070796, b: 0.30817604, a: 0.92156863}

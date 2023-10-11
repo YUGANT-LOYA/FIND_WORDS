@@ -7,7 +7,7 @@ namespace YugantLoyaLibrary.FindWords
     {
         [SerializeField] TextMeshPro quesText;
         public bool isAssigned;
-        private MeshRenderer _meshRenderer;
+        private LevelHandler _levelHandler;
 
         public string QuesTextData
         {
@@ -15,21 +15,18 @@ namespace YugantLoyaLibrary.FindWords
             private set => quesText.text = value;
         }
 
-        private void Awake()
+        public void SetLevelHandler(LevelHandler handler)
         {
-            _meshRenderer = GetComponent<MeshRenderer>();
+            _levelHandler = handler;
         }
 
-        public void SetMeshRendererActiveStatus(bool setActive)
+        public LevelHandler GetLevelHandler()
         {
-            gameObject.SetActive(setActive);
-            //_meshRenderer.enabled = setActive;
-            //quesText.enabled = setActive;
+            return _levelHandler;
         }
 
         public void AddData(string str)
         {
-            isAssigned = true;
             QuesTextData = str;
         }
 
@@ -37,6 +34,12 @@ namespace YugantLoyaLibrary.FindWords
         {
             isAssigned = false;
             QuesTextData = "";
+            Invoke(nameof(DeActivateObject), 0.2f);
+        }
+
+        void DeActivateObject()
+        {
+            gameObject.SetActive(true);
         }
     }
 }

@@ -4,22 +4,15 @@ using UnityEngine;
 
 namespace YugantLoyaLibrary.FindWords
 {
-    [CreateAssetMenu(fileName = "LevelDataInfo", menuName = "LevelData")]
+    [CreateAssetMenu(fileName = "DifficultyInfo", menuName = "DifficultyData")]
     public class LevelDataInfo : ScriptableObject
     {
         [System.Serializable]
         public struct LevelInfo
         {
-            public Vector2Int gridSize;
-            public TextAsset levelCsv;
-            public int quesLetterSize;
-            public List<WordInfo> words;
-        }
-
-        [System.Serializable]
-        public struct WordInfo
-        {
-            public string word;
+            public GameController.CurrDifficulty difficulty;
+            public TextAsset wordTextFile;
+            public int minQuesLetter;
         }
         
         public List<LevelInfo> levelInfo;
