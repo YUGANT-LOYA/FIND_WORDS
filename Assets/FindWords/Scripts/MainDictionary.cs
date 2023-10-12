@@ -11,6 +11,13 @@ public class MainDictionary : ScriptableObject
     public struct MainDictionaryInfo
     {
         public int wordLength;
+        public List<WordLengthDetailedInfo> wordsInfo;
+    }
+
+    [Serializable]
+    public struct WordLengthDetailedInfo
+    {
+        public char wordStartChar;
         public TextAsset wordText;
     }
 
