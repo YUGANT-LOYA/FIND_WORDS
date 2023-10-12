@@ -146,6 +146,7 @@ namespace YugantLoyaLibrary.FindWords
                     isLocked = false;
                     SetLockStatus(false);
                     _levelHandler.unlockedGridList.Add(this);
+                    _levelHandler.gridAvailableOnScreenList.Add(this);
                     cube.GetComponent<Renderer>().material = new Material(gridMaterial);
                     gridText.gameObject.SetActive(true);
                     isMoving = false;
@@ -257,6 +258,12 @@ namespace YugantLoyaLibrary.FindWords
                     return;
 
                 transform.rotation = Quaternion.Euler(Vector3.zero);
+                
+                if (!_levelHandler.gridAvailableOnScreenList.Contains(this))
+                {
+                    _levelHandler.gridAvailableOnScreenList.Add(this);
+                }
+
                 _levelHandler.UpdateTextDataForGrid(this);
                 ObjectStatus(true);
                 isBlastAfterWordComplete = false;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Serialization;
@@ -11,11 +12,13 @@ namespace YugantLoyaLibrary.FindWords
     {
         public static GameController instance;
         public bool isTesting;
-        public int startingGridSize = 5, startingQuesSize = 3;
+        public int startingGridSize = 5;
+        [HideInInspector] public int startingQuesSize = 3;
 
         [Header("References")] [SerializeField]
         private DifficultyDataInfo difficultyDataInfo;
 
+        [SerializeField] private MainDictionary mainDictionary;
         [SerializeField] private LevelHandler levelHandler;
         [SerializeField] private Transform levelContainer;
         [SerializeField] private CanvasGroup fadeCanvasGroup;
@@ -95,7 +98,7 @@ namespace YugantLoyaLibrary.FindWords
             UIManager.instance.coinText.text = DataHandler.instance.initialCoins.ToString();
             DataHandler.instance.TotalCoin = DataHandler.instance.initialCoins;
             DataHandler.instance.CurrGridSize = startingGridSize;
-            levelHandler.englishDictWords.UpdateEnglishDict();
+            //levelHandler.englishDictWords.UpdateEnglishDict();
         }
 
         void ClearContainer(Transform container)
@@ -318,6 +321,110 @@ namespace YugantLoyaLibrary.FindWords
                 StartGame();
                 fadeCanvasGroup.DOFade(0f, timeToSwitchToNextLevel / 2f).OnComplete(() => { });
             });
+        }
+
+
+        public List<MainDictionary.WordLengthDetailedInfo> GetWordListOfLength(int wordLength, string startingLetter)
+        {
+            List<MainDictionary.WordLengthDetailedInfo> wordList = new List<MainDictionary.WordLengthDetailedInfo>();
+
+            List<MainDictionary.MainDictionaryInfo> mainList = mainDictionary.dictInfoList;
+            for (int i = 0; i < mainList.Count; i++)
+            {
+                //Debug.Log("Word Length = " + mainList[i].wordLength + " " + wordLength);
+                if (mainList[i].wordLength == wordLength)
+                {
+                    List<MainDictionary.WordLengthDetailedInfo> wordInfoList = mainList[i].wordsInfo;
+
+                    for (int j = 0; j < wordInfoList.Count; j++)
+                    {
+                        if (startingLetter == wordInfoList[j].wordStartChar.ToString().ToLower())
+                        {
+                            wordList = new List<MainDictionary.WordLengthDetailedInfo>(wordInfoList);
+                            //Debug.Log("Word List Count : " + wordList.Count);
+                            return wordList;
+                        }
+                    }
+                }
+            }
+
+            return wordList;
+        }
+
+        public bool Search(string word)
+        {
+            List<MainDictionary.MainDictionaryInfo> dictInfoList = mainDictionary.dictInfoList;
+            Debug.Log("DictInfo List Count : " + dictInfoList.Count);
+            bool isWordThere = IsWordAvailable(word, dictInfoList);
+
+            if (isWordThere)
+                return true;
+
+            return false;
+        }
+
+        public bool IsWordAvailable(string word, List<MainDictionary.MainDictionaryInfo> dictInfoList)
+        {
+            for (int i = 0; i < dictInfoList.Count; i++)
+            {
+                if (dictInfoList[i].wordLength != word.Length)
+                    continue;
+
+                List<MainDictionary.WordLengthDetailedInfo> wordInfoList = dictInfoList[i].wordsInfo;
+
+                for (int j = 0; j < wordInfoList.Count; j++)
+                {
+                    int index = 0;
+
+                    if (wordInfoList[j].wordStartChar == word[index])
+                    {
+                        Debug.Log("First Char of Word : " + word[index]);
+                        index++;
+                        TextAsset file = wordInfoList[j].wordText;
+                        string[] lines = file.text.Split('\n');
+
+                        foreach (string str in lines)
+                        {
+                            Debug.Log("Search Word : " + str);
+
+                            bool isWordFound = IsWordSame(index, word, str);
+
+                            if (isWordFound)
+                            {
+                                Debug.Log(word + " Word Found !!");
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public bool IsWordSame(int index, string word, string textWord)
+        {
+            if (word.Length < index || textWord.Length < index)
+            {
+                return false;
+            }
+
+            if (word[index] == textWord[index])
+            {
+                Debug.Log($"{word} Word Same !! ");
+
+                if (word.Length - 1 == index)
+                {
+                    Debug.Log($"{word} Word Detected !! ");
+                    return true;
+                }
+
+                index++;
+                return IsWordSame(index, word, textWord);
+            }
+
+            Debug.Log($"Letter Not Same {word} , {textWord} , {index} ");
+            return false;
         }
     }
 }

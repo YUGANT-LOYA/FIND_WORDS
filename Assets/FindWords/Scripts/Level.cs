@@ -253,6 +253,7 @@ namespace YugantLoyaLibrary.FindWords
                     else
                     {
                         _levelHandler.unlockedGridList.Add(gridTileScript);
+                        _levelHandler.gridAvailableOnScreenList.Add(gridTileScript);
                         gmRenderer.material = new Material(gridMaterial);
                         gridTileScript.gridMaterial = gmRenderer.material;
                     }

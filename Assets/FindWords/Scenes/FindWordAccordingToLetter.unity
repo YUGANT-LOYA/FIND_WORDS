@@ -353,10 +353,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wordLength: 3
   letter: 0
-  oxfordDictTextFile: {fileID: 0}
+  oxfordDictTextFile: {fileID: 4900000, guid: 07767cbdc7b041f42ade6c6b6b817951, type: 3}
   wordLengthTextFile: {fileID: 0}
-  mainDict: {fileID: 0}
-  minMaxScriptableWordLength: {x: 0, y: 0}
+  mainDict: {fileID: 11400000, guid: 851a5cb24c798f44dba4329d5b47384a, type: 2}
+  minMaxScriptableWordLength: {x: 3, y: 7}
 --- !u!4 &1398960110
 Transform:
   m_ObjectHideFlags: 0

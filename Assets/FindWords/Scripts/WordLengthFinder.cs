@@ -77,7 +77,7 @@ public class WordLengthFinder : MonoBehaviour
 
         //char currLetter = letter;
 
-        for (int i = 65; i < 91; i++)
+        for (int i = 97; i < 123; i++)
         {
             char currletter = (char)i;
             StringBuilder csvContent = new StringBuilder();
@@ -94,7 +94,7 @@ public class WordLengthFinder : MonoBehaviour
 
             // Specify the relative path within the "Assets" folder where you want to save the CSV file
             string relativeFilePath =
-                $"FindWords/Resources/WordDictData/{wordLength}_WordLengthFolder/{currletter.ToString().ToUpper()}_Words.csv";
+                $"FindWords/Resources/WordDictData/{wordLength}_WordLengthFolder/{currletter.ToString()}_Words.csv";
 
             // Combine the paths to get the full path of the CSV file
             string filePath = Path.Combine(assetsFolderPath, relativeFilePath);
@@ -132,45 +132,45 @@ public class WordLengthFinder : MonoBehaviour
 
         List<MainDictionary.MainDictionaryInfo> dictInfoList = new List<MainDictionary.MainDictionaryInfo>();
 
-        for (int i = 0; i <= minMaxScriptableWordLength.y - minMaxScriptableWordLength.x; i++)
+        for (int i = minMaxScriptableWordLength.x;
+             i <= minMaxScriptableWordLength.y;
+             i++)
         {
             MainDictionary.MainDictionaryInfo mainDictionaryInfo = new MainDictionary.MainDictionaryInfo();
-            //mainDictionaryInfo = dict.dictInfoList[i];
 
+            List<MainDictionary.WordLengthDetailedInfo> dictWordInfoList =
+                new List<MainDictionary.WordLengthDetailedInfo>();
 
-            for (int j = minMaxScriptableWordLength.x; j <= minMaxScriptableWordLength.y; j++)
+            for (int k = 97; k < 123; k++)
             {
-                List<MainDictionary.WordLengthDetailedInfo> dictWordInfoList =
-                    new List<MainDictionary.WordLengthDetailedInfo>();
+                MainDictionary.WordLengthDetailedInfo wordInfo = new MainDictionary.WordLengthDetailedInfo();
 
-                for (int k = 65; k < 91; k++)
-                {
-                    MainDictionary.WordLengthDetailedInfo wordInfo = new MainDictionary.WordLengthDetailedInfo();
+                char tempChar = (char)k;
+                //Debug.Log("File Creating !!");
 
-                    char tempChar = (char)k;
-                    Debug.Log("File Creating !!");
+                TextAsset textFile =
+                    Resources.Load<TextAsset>($"WordDictData/{i}_WordLengthFolder/{tempChar}_Words");
 
-                    TextAsset textFile =
-                        Resources.Load<TextAsset>($"WordDictData/{j}_WordLengthFolder/{tempChar}_Words");
+                wordInfo.wordText = textFile;
+                wordInfo.wordStartChar = tempChar;
 
-                    wordInfo.wordText = textFile;
-                    wordInfo.wordStartChar = tempChar;
-
-                    dictWordInfoList.Add(wordInfo);
-                }
-
-                mainDictionaryInfo.wordLength = minMaxScriptableWordLength.x + i;
-                mainDictionaryInfo.wordsInfo = dictWordInfoList;
+                dictWordInfoList.Add(wordInfo);
             }
 
+            mainDictionaryInfo.wordLength = i;
+            mainDictionaryInfo.wordsInfo = dictWordInfoList;
+
+            //Debug.Log("mainDictionaryInfo.wordLength : " + mainDictionaryInfo.wordLength);
             dictInfoList.Add(mainDictionaryInfo);
-            dict.dictInfoList = dictInfoList;
-            mainDict = dict;
+        }
+
+
+        dict.dictInfoList = dictInfoList;
+        mainDict = dict;
 
 #if UNITY_EDITOR
-            EditorUtility.SetDirty(mainDict);
-            AssetDatabase.Refresh();
+        EditorUtility.SetDirty(mainDict);
+        AssetDatabase.Refresh();
 #endif
-        }
     }
 }
