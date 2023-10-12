@@ -8,15 +8,12 @@ namespace YugantLoyaLibrary.FindWords
         public static DataHandler instance;
 
         LevelHandler _levelHandler;
+        private DifficultyDataInfo _diffDataInfo;
         [Header("Prefab Holders")] public GameObject coinPrefab;
-        public GameObject levelPrefab, hintCirclePrefab, gridPrefab, quesPrefab;
-        public LineRenderer lineRendererPrefab;
+        public GameObject levelPrefab, gridPrefab, quesPrefab;
 
         [Header("Data Info")] [Tooltip("When player first time start playing, Initial coins player have")]
         public int initialCoins = 300;
-
-        [SerializeField] List<Color> totalColors = new List<Color>();
-        private int _colorIndex = 0;
 
         private void Awake()
         {
@@ -48,48 +45,9 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             _levelHandler = GameController.instance.GetLevelHandler();
+            _diffDataInfo = GameController.instance.GetDifficultyDataInfo();
         }
-
-        public Color UpdateColor()
-        {
-            Color color = totalColors[_colorIndex];
-            _colorIndex++;
-
-            if (_colorIndex >= totalColors.Count)
-            {
-                _colorIndex = 0;
-            }
-
-            return color;
-        }
-
-        public Color GetCurrentColor()
-        {
-            Color color = totalColors[_colorIndex];
-            return color;
-        }
-
-        public List<Color> PickColors(int numOfColor)
-        {
-            List<Color> colorList = new List<Color>();
-            List<Color> tempColor = new List<Color>(totalColors);
-
-            for (int i = 0; i < numOfColor; i++)
-            {
-                if (tempColor.Count <= 0)
-                {
-                    tempColor = totalColors;
-                }
-
-                int index = Random.Range(0, tempColor.Count);
-
-                colorList.Add(tempColor[index]);
-                tempColor.Remove(tempColor[index]);
-            }
-
-            return colorList;
-        }
-
+        
         public GameObject GetCoin()
         {
             Transform tran = GameController.instance.coinContainerTran;
@@ -112,10 +70,20 @@ namespace YugantLoyaLibrary.FindWords
             coin.transform.localScale = Vector3.one * (UIManager.instance.maxCoinScale / 2f);
         }
 
-        public int CurrLevelNumber
+        public int CurrDifficultyNumber
         {
-            get => PlayerPrefs.GetInt(StringHelper.LEVEL_NUM, 0);
-            set => PlayerPrefs.SetInt(StringHelper.LEVEL_NUM, value);
+            get
+            {
+                if (PlayerPrefs.GetInt(StringHelper.DIFF_NUM) >=
+                    _diffDataInfo.difficultyInfos.Count)
+                {
+                    PlayerPrefs.SetInt(StringHelper.DIFF_NUM,
+                        _diffDataInfo.difficultyInfos.Count - 1);
+                }
+
+                return PlayerPrefs.GetInt(StringHelper.DIFF_NUM, 0);
+            }
+            set => PlayerPrefs.SetInt(StringHelper.DIFF_NUM, value);
         }
 
         public int CurrGridSize

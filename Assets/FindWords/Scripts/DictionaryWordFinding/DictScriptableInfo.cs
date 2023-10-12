@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace YugantLoyaLibrary.FindWords
 {
-    [CreateAssetMenu(fileName = "EnglishDictInfo", menuName = "English Dictionary")]
+    [CreateAssetMenu(fileName = "OxfordDictInfo", menuName = "Oxford Dictionary")]
     public class DictScriptableInfo : ScriptableObject
     {
         public Trie dictionaryTrie = new Trie();

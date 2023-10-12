@@ -117,8 +117,6 @@ MonoBehaviour:
   distanceFromScreen: 1.5
   timeToPlaceGrid: 1
   timeToWaitForEachGrid: 0.1
-  restartButton: {fileID: 0}
-  hintButton: {fileID: 0}
   quesGridTrans: {fileID: 379044332734406932}
   rotationContainer: {fileID: 0}
   gridContainer: {fileID: 2675200230521095590}

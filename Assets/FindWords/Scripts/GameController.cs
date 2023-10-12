@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Serialization;
 
 namespace YugantLoyaLibrary.FindWords
 {
@@ -12,7 +14,7 @@ namespace YugantLoyaLibrary.FindWords
         public int startingGridSize = 5, startingQuesSize = 3;
 
         [Header("References")] [SerializeField]
-        private LevelDataInfo levelDataInfo;
+        private DifficultyDataInfo difficultyDataInfo;
 
         [SerializeField] private LevelHandler levelHandler;
         [SerializeField] private Transform levelContainer;
@@ -76,15 +78,20 @@ namespace YugantLoyaLibrary.FindWords
             _currLevel.StartInit();
         }
 
-        public LevelDataInfo.LevelInfo GetLevelDataInfo()
+        public DifficultyDataInfo.DifficultyInfo GetDifficultyInfo()
         {
-            Debug.Log("Curr Level Num : " + DataHandler.instance.CurrLevelNumber);
-            return levelDataInfo.levelInfo[DataHandler.instance.CurrLevelNumber];
+            //Debug.Log("Curr Level Num : " + DataHandler.instance.CurrLevelNumber);
+            return difficultyDataInfo.difficultyInfos[DataHandler.instance.CurrDifficultyNumber];
+        }
+
+        public DifficultyDataInfo GetDifficultyDataInfo()
+        {
+            return difficultyDataInfo;
         }
 
         void GameStartInfo()
         {
-            DataHandler.instance.CurrLevelNumber = 0;
+            DataHandler.instance.CurrDifficultyNumber = 0;
             UIManager.instance.coinText.text = DataHandler.instance.initialCoins.ToString();
             DataHandler.instance.TotalCoin = DataHandler.instance.initialCoins;
             DataHandler.instance.CurrGridSize = startingGridSize;
@@ -222,9 +229,16 @@ namespace YugantLoyaLibrary.FindWords
             levelHandler.wordCompletedGridList.Clear();
         }
 
+        void ResetInGameData()
+        {
+            levelHandler.inputGridsList.Clear();
+            levelHandler.wordCompletedGridList.Clear();
+        }
+
         public void ShuffleGrid()
         {
             levelHandler.SetLevelRunningBool(false);
+            ResetInGameData();
             float time = _currLevel.timeToWaitForEachGrid;
             float timeToPlaceGrids = _currLevel.timeToPlaceGrid;
             List<GridTile> list = new List<GridTile>(levelHandler.unlockedGridList);
@@ -241,26 +255,42 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
+        public void Hint()
+        {
+            levelHandler.ShowHint();
+        }
+
         IEnumerator BackToDeckAnim(List<GridTile> list)
         {
             foreach (GridTile gridTile in list)
             {
                 yield return new WaitForSeconds(_currLevel.timeToWaitForEachGrid);
                 Debug.Log("Moving To Grid Place Again !");
+                gridTile.isBlastAfterWordComplete = false;
+                levelHandler.UpdateTextDataForGrid(gridTile);
                 gridTile.MoveTowardsGrid();
                 levelHandler.wordCompletedGridList.Remove(gridTile);
             }
+
+            StartCoroutine(ResetLevelHandlerData(_currLevel.timeToWaitForEachGrid * list.Count));
+        }
+
+        IEnumerator ResetLevelHandlerData(float time)
+        {
+            yield return new WaitForSeconds(time);
+            levelHandler.LastQuesTile = null;
+            levelHandler.SetLevelRunningBool(true);
         }
 
         public void NextLevel()
         {
-            if (DataHandler.instance.CurrLevelNumber < levelDataInfo.levelInfo.Count - 1)
+            if (DataHandler.instance.CurrDifficultyNumber < difficultyDataInfo.difficultyInfos.Count - 1)
             {
-                DataHandler.instance.CurrLevelNumber++;
+                DataHandler.instance.CurrDifficultyNumber++;
             }
             else
             {
-                DataHandler.instance.CurrLevelNumber = 0;
+                DataHandler.instance.CurrDifficultyNumber = 0;
             }
 
             StartCoroutine(nameof(FadeScreen));
@@ -269,13 +299,13 @@ namespace YugantLoyaLibrary.FindWords
 
         public void PreviousLevel()
         {
-            if (DataHandler.instance.CurrLevelNumber > 0)
+            if (DataHandler.instance.CurrDifficultyNumber > 0)
             {
-                DataHandler.instance.CurrLevelNumber--;
+                DataHandler.instance.CurrDifficultyNumber--;
             }
             else
             {
-                DataHandler.instance.CurrLevelNumber = levelDataInfo.levelInfo.Count - 1;
+                DataHandler.instance.CurrDifficultyNumber = difficultyDataInfo.difficultyInfos.Count - 1;
             }
 
             StartCoroutine(nameof(FadeScreen));

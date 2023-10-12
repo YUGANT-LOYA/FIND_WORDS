@@ -8,6 +8,7 @@ namespace YugantLoyaLibrary.FindWords
     public class GridTile : MonoBehaviour
     {
         private Level _level;
+        public GameObject cube;
         public Material lockMaterial;
         [SerializeField] private GameObject lockGm;
         [SerializeField] private TextMeshPro gridText;
@@ -15,7 +16,7 @@ namespace YugantLoyaLibrary.FindWords
         [HideInInspector] public Vector3 defaultGridSize, defaultGridPos;
         public Vector3 blastPos;
         public Color defaultColor = Color.white, selectedColor = Color.cyan;
-        public bool isGridActive = true, isSelected;
+        public bool isGridActive = true, isSelected, isBlastAfterWordComplete;
         [SerializeField] private Vector2Int id;
         private LevelHandler _levelHandler;
         public QuesTile placedOnQuesTile;
@@ -71,6 +72,13 @@ namespace YugantLoyaLibrary.FindWords
         {
             defaultGridSize = transform.localScale;
             defaultGridPos = pos;
+        }
+
+        public void ObjectStatus(bool isActive)
+        {
+            cube.GetComponent<MeshRenderer>().enabled = isActive;
+            GetComponent<BoxCollider>().enabled = isActive;
+            gridText.gameObject.SetActive(isActive);
         }
 
         public void AssignInfo(Level currLevel)
@@ -138,7 +146,7 @@ namespace YugantLoyaLibrary.FindWords
                     isLocked = false;
                     SetLockStatus(false);
                     _levelHandler.unlockedGridList.Add(this);
-                    GetComponent<Renderer>().material = new Material(gridMaterial);
+                    cube.GetComponent<Renderer>().material = new Material(gridMaterial);
                     gridText.gameObject.SetActive(true);
                     isMoving = false;
                     _levelHandler.CheckAllGridBuyed();
@@ -201,9 +209,10 @@ namespace YugantLoyaLibrary.FindWords
             transform.DORotate(new Vector3(blasRotationTime * -360f, 0f, -360f * blasRotationTime), blastTime / 2,
                 RotateMode.FastBeyond360).SetEase(blastEase).OnComplete(() =>
             {
+                isBlastAfterWordComplete = true;
                 _levelHandler.SetLevelRunningBool(true);
                 transform.rotation = Quaternion.Euler(Vector3.zero);
-                GridTextData = _levelHandler.GenerateRandom_ASCII_Code();
+                _levelHandler.UpdateTextDataForGrid(this);
 
                 CheckGridLeft();
             });
@@ -229,16 +238,7 @@ namespace YugantLoyaLibrary.FindWords
             transform.DORotate(new Vector3(360f * blasRotationTime, 0f, 360f * blasRotationTime), blastTime / 2,
                 RotateMode.FastBeyond360).SetEase(blastReturnEase);
 
-            transform.DOMove(defaultGridPos, blastTime / 2).SetEase(blastReturnEase).OnComplete(() =>
-            {
-                //Debug.Log("Cube Returning From Out of the Screen !");
-                // ResetData();
-                // if (_levelHandler.LastQuesTile == placedOnQuesTile)
-                // {
-                //     _levelHandler.LastQuesTile = null;
-                //     _levelHandler.SetLevelRunningBool(true);
-                // }
-            });
+            transform.DOMove(defaultGridPos, blastTime / 2).SetEase(blastReturnEase).OnComplete(() => { });
 
             StartCoroutine(ResetData(blastTime / 2));
         }
@@ -257,8 +257,9 @@ namespace YugantLoyaLibrary.FindWords
                     return;
 
                 transform.rotation = Quaternion.Euler(Vector3.zero);
-                GridTextData = _levelHandler.GenerateRandom_ASCII_Code();
-
+                _levelHandler.UpdateTextDataForGrid(this);
+                ObjectStatus(true);
+                isBlastAfterWordComplete = false;
                 transform.DORotate(new Vector3(360f * moveRotationTimes, 0f, 360f * moveRotationTimes),
                     timeToPlaceGrids / 2,
                     RotateMode.FastBeyond360).SetEase(movingEase);
@@ -275,9 +276,6 @@ namespace YugantLoyaLibrary.FindWords
             yield return new WaitForSeconds(time);
             isSelected = false;
             isMoving = false;
-            _levelHandler.LastQuesTile = null;
-            _levelHandler.SetLevelRunningBool(true);
-            //Debug.Log("Is Moving : " + isMoving);
         }
 
         private void OnDestroy()
