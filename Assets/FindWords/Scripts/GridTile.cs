@@ -92,7 +92,7 @@ namespace YugantLoyaLibrary.FindWords
             if (!_levelHandler.GetLevelRunningBool() || isMoving)
                 return;
 
-            if (DataHandler.instance.TotalCoin >= 100 && isLocked)
+            if (DataHandler.TotalCoin >= 100 && isLocked)
             {
                 NewGridUnlockAnimation(100);
                 return;
@@ -105,6 +105,7 @@ namespace YugantLoyaLibrary.FindWords
             if (!isGridActive)
                 return;
 
+            SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
             Debug.Log($"Grid {gameObject.name} Clicked !");
             isSelected = !isSelected;
             Debug.Log("Is Selected : " + isSelected);
@@ -151,17 +152,16 @@ namespace YugantLoyaLibrary.FindWords
                     gridText.gameObject.SetActive(true);
                     isMoving = false;
                     _levelHandler.CheckAllGridBuyed();
+                    _levelHandler.SetHintButtonActivationStatus();
                 });
         }
 
         public void Move(Vector3 pos, bool isMovingToQues, QuesTile quesTile)
         {
             isMoving = true;
-
             if (isMovingToQues)
             {
                 placedOnQuesTile = quesTile;
-                placedOnQuesTile.AddData(GridTextData);
                 transform.DOScale(quesTile.transform.localScale, reachTime);
             }
             else
@@ -193,13 +193,19 @@ namespace YugantLoyaLibrary.FindWords
 
         public void SetQuesTileStatus(QuesTile quesTile, bool isMovingToQues, float time)
         {
-            StartCoroutine(DisableQuesTile(quesTile, isMovingToQues, time));
+            StartCoroutine(QuesStatus(quesTile, isMovingToQues, time));
         }
 
-        IEnumerator DisableQuesTile(QuesTile quesTile, bool isMovingToQues, float time)
+        IEnumerator QuesStatus(QuesTile quesTile, bool isMovingToQues, float time)
         {
             yield return new WaitForSeconds(time);
+
             quesTile.gameObject.SetActive(!isMovingToQues);
+
+            if (isMovingToQues)
+            {
+                placedOnQuesTile.AddData(GridTextData);
+            }
         }
 
         public void Blast()
@@ -235,6 +241,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public void MoveTowardsGrid()
         {
+            _levelHandler.gridAvailableOnScreenList.Add(this);
             transform.position = _level.BottomOfScreenPoint();
             transform.DORotate(new Vector3(360f * blasRotationTime, 0f, 360f * blasRotationTime), blastTime / 2,
                 RotateMode.FastBeyond360).SetEase(blastReturnEase);
@@ -245,8 +252,13 @@ namespace YugantLoyaLibrary.FindWords
         }
 
 
-        public void DeckAnimation(float timeToPlaceGrids, Vector2 pos, bool shouldReturn = true)
+        public void DeckAnimation(int totalVowels, float timeToPlaceGrids, Vector2 pos, bool shouldReturn = true)
         {
+            if (!_levelHandler.gridAvailableOnScreenList.Contains(this))
+            {
+                _levelHandler.gridAvailableOnScreenList.Add(this);
+            }
+
             blastPos = pos;
             transform.DOMove(blastPos, timeToPlaceGrids / 2).SetEase(movingEase);
             transform.DOScale(defaultGridSize, timeToPlaceGrids / 2).SetEase(movingEase);
@@ -257,14 +269,12 @@ namespace YugantLoyaLibrary.FindWords
                 if (!shouldReturn)
                     return;
 
-                transform.rotation = Quaternion.Euler(Vector3.zero);
-                
-                if (!_levelHandler.gridAvailableOnScreenList.Contains(this))
-                {
-                    _levelHandler.gridAvailableOnScreenList.Add(this);
-                }
+                GridTextData = totalVowels > 0
+                    ? GameController.RandomVowel().ToString()
+                    : GameController.RandomConsonent().ToString();
 
-                _levelHandler.UpdateTextDataForGrid(this);
+                transform.rotation = Quaternion.Euler(Vector3.zero);
+                //GridTextData = totalVowel > 0 ? RandomVowel().ToString() : RandomConsonent().ToString();
                 ObjectStatus(true);
                 isBlastAfterWordComplete = false;
                 transform.DORotate(new Vector3(360f * moveRotationTimes, 0f, 360f * moveRotationTimes),

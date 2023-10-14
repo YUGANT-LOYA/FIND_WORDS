@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
@@ -59,17 +60,62 @@ namespace YugantLoyaLibrary.FindWords
             Debug.Log($"Aspect Ratio : {_cam.aspect} , Width : {Screen.width} , Height  : {Screen.height}");
             Debug.Log($"Factor  : {_cam.aspect * _camOrthographicSize}");
 
-            SetGridSize();
-            CreateGrid();
-            SetQuestionGrid();
             SetCameraPos();
+            //SetGridSize();
+            CreateGrid();
+            //SetQuestionGrid();
+
             _levelNumText = UIManager.instance.levelText;
             LevelNumData = $"Level {DataHandler.instance.CurrDifficultyNumber + 1}";
         }
 
         void SetCameraPos()
         {
-            _cam.transform.position = new Vector3(0, -2.25f, -10f);
+            GridCamScriptable gridCamScriptable = GameController.instance.GetGridCamScriptable();
+
+            bool isNotMatching = true;
+
+            foreach (GridCamScriptable.CamGridSizeStruct camInfo in gridCamScriptable.camGridInfoList)
+            {
+                if (Screen.width == camInfo.screenSize.x && Screen.height == camInfo.screenSize.y)
+                {
+                    foreach (GridCamScriptable.GridDataInfo gridInfo in camInfo.gridDataInfos)
+                    {
+                        if (gridInfo.gridSize.x == DataHandler.CurrGridSize)
+                        {
+                            _cam.orthographicSize = gridInfo.camOrthographicSize;
+                            _currGridSize = gridInfo.gridScale;
+                            _cam.transform.position = gridInfo.camPos;
+                            isNotMatching = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (isNotMatching)
+            {
+                //No Screen Size Matched !!!
+
+                foreach (GridCamScriptable.CamGridSizeStruct camInfo in gridCamScriptable.camGridInfoList)
+                {
+                    if (camInfo.screenSize.x == 0 && camInfo.screenSize.y == 0)
+                    {
+                        foreach (GridCamScriptable.GridDataInfo gridInfo in camInfo.gridDataInfos)
+                        {
+                            if (gridInfo.gridSize.x == DataHandler.CurrGridSize)
+                            {
+                                _cam.orthographicSize = gridInfo.camOrthographicSize;
+                                _currGridSize = gridInfo.gridScale;
+                                _cam.transform.position = gridInfo.camPos;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            SetQuestionGrid();
         }
 
         public void FillData(LevelHandler handler)
@@ -79,51 +125,75 @@ namespace YugantLoyaLibrary.FindWords
 
         void SetQuestionGrid()
         {
-            //_totalWordToFind = GameController.instance.GetLevelDataInfo().quesLetterSize;
-            //totalWordToFind = DataHandler.instance.CurrQuesSize;
-            _levelHandler.quesGridCount = totalWordToFind;
-            float row = (float)totalWordToFind / quesInOneRow;
-            float quesTileSize = _camOrthographicSize / 2 + camGridOffset;
+            int numOfQues = _levelHandler.totalQuesGridCount;
+            GridCamScriptable gridCamScriptable = GameController.instance.GetGridCamScriptable();
+            GameObject quesPrefab = DataHandler.instance.quesPrefab;
+            Vector3 startPos = quesGridTrans.transform.position;
+            GridCamScriptable.QuesDataInfo mainQuesInfo;
+            int totalChild = quesGridTrans.childCount;
+            bool isNewQuesBlockBuyThere = false;
+            bool isQuesNotMatching = true;
 
-            float spacingX = (totalWordToFind - 1) * quesSpacing;
-            float spacingY = (int)row * quesSpacing;
-
-            float gridWidth = (quesTileSize - spacingX) / totalWordToFind;
-            float gridHeight = (quesTileSize - spacingY) / totalWordToFind;
-
-            if (gridWidth > gridHeight)
+            if (DataHandler.CurrGridSize > GameController.instance.startingGridSize &&
+                DataHandler.CurrGridSize < GameController.instance.maxGridSize)
             {
-                _currQuesSize = gridWidth;
-            }
-            else
-            {
-                _currQuesSize = gridHeight;
+                isNewQuesBlockBuyThere = true;
+                numOfQues++;
             }
 
-            Debug.Log("ROW VAL : " + row);
-            Vector2 startPos;
-            if (row > 1)
+            _levelHandler.totalQuesGridCount = numOfQues;
+
+            foreach (GridCamScriptable.CamGridSizeStruct camInfo in gridCamScriptable.camGridInfoList)
             {
-                for (int i = 0; i < totalWordToFind; i++)
+                if (Screen.width == camInfo.screenSize.x && Screen.height == camInfo.screenSize.y)
                 {
+                    foreach (GridCamScriptable.GridDataInfo gridInfo in camInfo.gridDataInfos)
+                    {
+                        List<GridCamScriptable.QuesDataInfo> quesInfoList = gridInfo.queBlockInfoList;
+
+                        foreach (GridCamScriptable.QuesDataInfo quesInfo in quesInfoList)
+                        {
+                            if (quesInfo.numOfQues == numOfQues)
+                            {
+                                mainQuesInfo = quesInfo;
+                                quesGridTrans.transform.position = quesInfo.queContainerPos;
+                                _currQuesSize = quesInfo.quesBlockScale;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
-            else
-            {
-                startPos = new Vector2(-_camOrthographicSize / 2 + _currQuesSize + camGridOffset,
-                    quesGridTrans.position.y);
-                GameObject quesPrefab = DataHandler.instance.quesPrefab;
 
-                for (int i = 0; i < totalWordToFind; i++)
+            for (int i = 0; i < numOfQues; i++)
+            {
+                GameObject gmObj;
+
+                if (totalChild > 0)
                 {
-                    GameObject gmObj = Instantiate(quesPrefab, quesGridTrans);
-                    QuesTile quesTileScript = gmObj.GetComponent<QuesTile>();
-                    gmObj.transform.localScale = new Vector3(_currQuesSize, _currQuesSize, _currQuesSize / 2);
-                    gmObj.transform.position = startPos;
-                    gmObj.name = $"Ques_{i}";
-                    _levelHandler.UpdateQuesList(quesTileScript);
-                    startPos.x += quesSpacing + _currQuesSize;
+                    gmObj = quesGridTrans.GetChild(i).gameObject;
                 }
+                else
+                {
+                    gmObj = Instantiate(quesPrefab, quesGridTrans);
+                }
+
+                QuesTile quesTileScript = gmObj.GetComponent<QuesTile>();
+                quesTileScript.SetLevelHandler(_levelHandler);
+                gmObj.transform.localScale = new Vector3(_currQuesSize, _currQuesSize, _currQuesSize / 2);
+                gmObj.transform.localPosition = new Vector3(startPos.x, 0, 0);
+                gmObj.name = $"Ques_{i}";
+                _levelHandler.UpdateQuesList(quesTileScript);
+
+                if (i == numOfQues - 1 && isNewQuesBlockBuyThere)
+                {
+                    quesTileScript.SetUnlockCoinAmount(100);
+                    quesTileScript.isUnlocked = false;
+                    quesTileScript.IsLocked(true);
+                }
+
+                startPos.x += quesSpacing + _currQuesSize;
+                totalChild--;
             }
         }
 
@@ -221,6 +291,12 @@ namespace YugantLoyaLibrary.FindWords
             _defaultStartPos.y = defaultStartYPos;
             _defaultStartPos.x = -_camOrthographicSize / 2 + camGridOffset + _currGridWidth / 2;
             Vector3 startPos = new Vector3(_defaultStartPos.x, _defaultStartPos.y, _defaultStartPos.z);
+
+            if (GameController.instance.maxGridSize < DataHandler.CurrGridSize)
+            {
+                DataHandler.IsMaxGridOpened = 1;
+            }
+
             //Debug.Log("Start Pos : " + startPos);
             for (int i = 0; i < gridSize.x; i++)
             {
@@ -240,7 +316,7 @@ namespace YugantLoyaLibrary.FindWords
                     _levelHandler.totalGridsList.Add(gridTileScript);
                     startPos.x += /*gridSpacing +*/ _currGridSize;
 
-                    if (i == (gridSize.x - 1) || j == (gridSize.y - 1))
+                    if ((i == gridSize.x - 1 || j == gridSize.y - 1) && DataHandler.IsMaxGridOpened == 0)
                     {
                         _levelHandler.buyGridList.Add(gridTileScript);
                         gridTileScript.SetLockStatus(true);
@@ -262,7 +338,7 @@ namespace YugantLoyaLibrary.FindWords
                 }
 
                 startPos = new Vector3(_defaultStartPos.x,
-                    _defaultStartPos.y - ((i + 1) * _currGridHeight) - (gridSpacing * (i + 1)),
+                    _defaultStartPos.y - ((i + 1) * _currGridSize) - (gridSpacing * (i + 1)),
                     _defaultStartPos.z);
             }
 

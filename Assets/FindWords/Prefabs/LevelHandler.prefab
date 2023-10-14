@@ -45,17 +45,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
-  touchEffectRef: {fileID: 4275787257819619617, guid: 66a34472f5a8abc4a8fc28d61607a0bb,
-    type: 3}
   englishDictWords: {fileID: 2198299795560151833, guid: 00e43a16f0b515d4ea5db2cd4c9a3e03,
     type: 3}
   currLevel: {fileID: 0}
-  showGridTillLevel: 4
-  coinPerLevel: 100
+  quesGridCount: 0
+  coinPerLetter: 10
   timeToShowHint: 0.5
   timeToRotateGrid: 0.5
-  levelLineColorList: []
   totalGridsList: []
   inputGridsList: []
-  wordList: []
+  wordCompletedGridList: []
+  unlockedGridList: []
+  gridAvailableOnScreenList: []
+  buyGridList: []
+  buyQuesGridList: []
   quesTileList: []
+  selectedWords: []
+  wordsLeftList: []
+  fillGridStringLength: 10
+  gridFillString: 
+  hintAvailableString: 

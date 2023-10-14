@@ -13,17 +13,19 @@ namespace YugantLoyaLibrary.FindWords
         public static UIManager instance;
         public float coinAnimTime = 1.5f, coinRotateAngle = 810f, maxCoinScale = 45f;
         public TextMeshProUGUI levelText, coinText;
-        public Button shuffleButton, dealButton;
+        public Button shuffleButton, dealButton, hintButton;
         public GameObject winPanel;
         public GameObject menuGameObj, coinHolderGm;
         public Ease coinMovementEase;
         private float _coinTextUpdateTime;
+        public Color disableHintColor;
 
         private void Awake()
         {
             CreateSingleton();
             shuffleButton.onClick.AddListener(() => { GameController.instance.ShuffleGrid(); });
             dealButton.onClick.AddListener(() => { GameController.instance.Deal(); });
+            hintButton.onClick.AddListener(() => { GameController.instance.Hint(); });
         }
 
         private void CreateSingleton()
@@ -35,6 +37,20 @@ namespace YugantLoyaLibrary.FindWords
             else if (instance != this)
             {
                 Destroy(this.gameObject);
+            }
+        }
+
+        public void HintStatus(bool isActive)
+        {
+            if (!isActive)
+            {
+                hintButton.GetComponent<Image>().color = disableHintColor;
+                hintButton.enabled = false;
+            }
+            else
+            {
+                hintButton.enabled = true;
+                hintButton.GetComponent<Image>().color = Color.white;
             }
         }
 
@@ -53,7 +69,9 @@ namespace YugantLoyaLibrary.FindWords
             Transform trans = GameController.instance.coinContainerTran;
             float coinSpawningTime = coinAnimTime / 2;
             float coinMovementTime = (coinSpawningTime) / totalCoin;
-            
+
+            SetCoinData(coinToBeAdded);
+
             StartCoroutine(UpdateAddedCoinText((coinMovementTime + _coinTextUpdateTime), coinToBeAdded,
                 (_coinTextUpdateTime / 2)));
 
@@ -94,7 +112,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             yield return new WaitForSeconds(waitTime);
             Debug.Log("Coin Adding : " + coinToBeAdded);
-            SetCoinData(coinToBeAdded);
+
             int startVal = int.Parse(coinText.text);
             float time = coinMoveTime / (float)coinToBeAdded;
 
@@ -110,7 +128,6 @@ namespace YugantLoyaLibrary.FindWords
         {
             yield return new WaitForSeconds(waitTime);
 
-            SetCoinData(coinToSubtract, -1);
 
             int startVal = int.Parse(coinText.text);
             float time = coinMoveTime / (float)coinToSubtract;
@@ -122,21 +139,11 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        void SetCoinData(int coinToBeAdded, int sign = 1)
+        public static void SetCoinData(int coinToBeAdded, int sign = 1)
         {
-            int totalCoins = DataHandler.instance.TotalCoin + coinToBeAdded * sign;
-            DataHandler.instance.TotalCoin = totalCoins;
-            Debug.Log("Total Coin Left : " + DataHandler.instance.TotalCoin);
-        }
-
-        public void PrevLevel()
-        {
-            GameController.instance.PreviousLevel();
-        }
-
-        public void NextLevel()
-        {
-            GameController.instance.NextLevel();
+            int totalCoins = DataHandler.TotalCoin + coinToBeAdded * sign;
+            DataHandler.TotalCoin = totalCoins;
+            Debug.Log("Total Coin Left : " + DataHandler.TotalCoin);
         }
     }
 }

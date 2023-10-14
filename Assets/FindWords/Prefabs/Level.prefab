@@ -109,6 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridSize: {x: 0, y: 0}
+  totalWordToFind: 4
   quesInOneRow: 5
   gridMaterial: {fileID: 2100000, guid: 66e9ed285ea4b894d8e60f8479edcdec, type: 2}
   gridPlacementEase: 21
@@ -121,4 +122,4 @@ MonoBehaviour:
   rotationContainer: {fileID: 0}
   gridContainer: {fileID: 2675200230521095590}
   gridSpacing: 0.1
-  quesSpacing: 0.2
+  quesSpacing: 0.4
