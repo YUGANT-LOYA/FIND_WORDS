@@ -18,7 +18,7 @@ namespace YugantLoyaLibrary.FindWords
         private Camera _cam;
         [HideInInspector] public Vector2Int gridSize;
         private float _camOrthographicSize;
-        public int totalWordToFind = 4;
+        public int totalWordsToFind = 4;
         [SerializeField] private int quesInOneRow = 5;
         public Material gridMaterial;
         private readonly int[] _randomScreenPointArr = { -1, 1 };
@@ -61,12 +61,8 @@ namespace YugantLoyaLibrary.FindWords
             Debug.Log($"Factor  : {_cam.aspect * _camOrthographicSize}");
 
             SetCameraPos();
-            //SetGridSize();
             CreateGrid();
-            //SetQuestionGrid();
-
             _levelNumText = UIManager.instance.levelText;
-            LevelNumData = $"Level {DataHandler.instance.CurrDifficultyNumber + 1}";
         }
 
         void SetCameraPos()
@@ -125,7 +121,6 @@ namespace YugantLoyaLibrary.FindWords
 
         void SetQuestionGrid()
         {
-            int numOfQues = _levelHandler.totalQuesGridCount;
             GridCamScriptable gridCamScriptable = GameController.instance.GetGridCamScriptable();
             GameObject quesPrefab = DataHandler.instance.quesPrefab;
             Vector3 startPos = quesGridTrans.transform.position;
@@ -133,15 +128,13 @@ namespace YugantLoyaLibrary.FindWords
             int totalChild = quesGridTrans.childCount;
             bool isNewQuesBlockBuyThere = false;
             bool isQuesNotMatching = true;
+            int numOfQues = DataHandler.CurrTotalQuesSize;
 
             if (DataHandler.CurrGridSize > GameController.instance.startingGridSize &&
-                DataHandler.CurrGridSize < GameController.instance.maxGridSize)
+                DataHandler.IsMaxGridOpened == 0)
             {
                 isNewQuesBlockBuyThere = true;
-                numOfQues++;
             }
-
-            _levelHandler.totalQuesGridCount = numOfQues;
 
             foreach (GridCamScriptable.CamGridSizeStruct camInfo in gridCamScriptable.camGridInfoList)
             {
@@ -156,6 +149,7 @@ namespace YugantLoyaLibrary.FindWords
                             if (quesInfo.numOfQues == numOfQues)
                             {
                                 mainQuesInfo = quesInfo;
+                                quesSpacing = quesInfo.quesSpacing;
                                 quesGridTrans.transform.position = quesInfo.queContainerPos;
                                 _currQuesSize = quesInfo.quesBlockScale;
                                 break;
@@ -205,29 +199,6 @@ namespace YugantLoyaLibrary.FindWords
         public Transform GetGridContainerTrans()
         {
             return gridContainer;
-        }
-
-        void SetGridSize()
-        {
-            float totalGridPlacementSize = _camOrthographicSize - (camGridOffset * 2);
-            _gridContainerSize = new Vector3(totalGridPlacementSize, totalGridPlacementSize, totalGridPlacementSize);
-            float spacingX = (gridSize.y - 1) * gridSpacing;
-            float spacingY = (gridSize.x - 1) * gridSpacing;
-
-            float gridWidth = (_gridContainerSize.x - spacingX) / (gridSize.y);
-            float gridHeight = (_gridContainerSize.y - spacingY) / (gridSize.x);
-
-            _currGridWidth = gridWidth;
-            _currGridHeight = gridHeight;
-
-            if (_currGridHeight > _currGridWidth)
-            {
-                _currGridSize = _currGridWidth;
-            }
-            else
-            {
-                _currGridSize = _currGridHeight;
-            }
         }
 
         public Vector2 BottomOfScreenPoint()
@@ -289,7 +260,8 @@ namespace YugantLoyaLibrary.FindWords
         {
             GameObject gridPrefab = DataHandler.instance.gridPrefab;
             _defaultStartPos.y = defaultStartYPos;
-            _defaultStartPos.x = -_camOrthographicSize / 2 + camGridOffset + _currGridWidth / 2;
+            _defaultStartPos.x = -_camOrthographicSize / 2 + _currGridSize / 2;
+            Debug.Log("Default Pos : " + _defaultStartPos.x);
             Vector3 startPos = new Vector3(_defaultStartPos.x, _defaultStartPos.y, _defaultStartPos.z);
 
             if (GameController.instance.maxGridSize < DataHandler.CurrGridSize)
@@ -340,6 +312,11 @@ namespace YugantLoyaLibrary.FindWords
                 startPos = new Vector3(_defaultStartPos.x,
                     _defaultStartPos.y - ((i + 1) * _currGridSize) - (gridSpacing * (i + 1)),
                     _defaultStartPos.z);
+            }
+
+            if (DataHandler.CurrGridSize == GameController.instance.maxGridSize)
+            {
+                DataHandler.IsMaxGridOpened = 1;
             }
 
             StartCoroutine(PlaceGrids());

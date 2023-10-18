@@ -5,123 +5,21 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 using NaughtyAttributes;
+using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-public class WordLengthFinder : MonoBehaviour
+public class FillDataIntoScriptable : MonoBehaviour
 {
     public int wordLength = 3, minLength = 3, maxLength = 8;
-    public char letter;
     public TextAsset oxfordDictTextFile, wordLengthTextFile;
     public MainDictionary mainDict;
+    public PickWordDataInfo pickWordDataInfo;
 
     [Tooltip("Minimum and Maximum Folder or word Length of which you have to add all data !")]
     public Vector2Int minMaxScriptableWordLength;
-
-    [Button]
-    public void FindWordLength()
-    {
-        string data = oxfordDictTextFile.text.Trim();
-        string[] lines = data.Split('\n');
-
-        StringBuilder csvContent = new StringBuilder();
-        Debug.Log("Data Length : " + lines.Length);
-        
-        for (int i = 0; i < lines.Length; i++)
-        {
-            if (!string.IsNullOrWhiteSpace(lines[i]) && lines[i].Trim().Length == wordLength)
-            {
-                Debug.Log("Str : " + lines[i]);
-                csvContent.AppendLine(lines[i]);
-            }
-            
-        }
-
-        string assetsFolderPath = Application.dataPath;
-
-// Specify the relative path within the "Assets" folder where you want to save the CSV file
-        string relativeFilePath = "FindWords/Resources/WordDictData";
-        string fileName = $"WordLength_{wordLength}.csv";
-
-// Combine the paths to get the full path of the CSV file
-        string folderPath = Path.Combine(assetsFolderPath, relativeFilePath);
-        string filePath = Path.Combine(folderPath, fileName);
-
-// Check if the directory exists, and if not, create it
-        if (!Directory.Exists(folderPath))
-        {
-            Debug.Log("Folder Creating !");
-            Directory.CreateDirectory(folderPath);
-        }
-
-// Save the CSV file
-        if (!File.Exists(filePath))
-        {
-            Debug.Log("File Creating !!");
-            File.WriteAllText(filePath, csvContent.ToString());
-        }
-        else
-        {
-            Debug.LogError($"File Already Exists with name {fileName} !!");
-        }
-// Refresh the Unity Asset Database to make the file visible in the Editor
-
-#if UNITY_EDITOR
-        AssetDatabase.Refresh();
-#endif
-        Debug.Log("CSV file saved to: " + filePath);
-    }
-
-    [Button]
-    public void RemoveLetterOfLength()
-    {
-        string data = oxfordDictTextFile.text.Trim();
-        string[] lines = data.Split('\n');
-
-        StringBuilder csvContent = new StringBuilder();
-
-        for (int i = 0; i < lines.Length; i++)
-        {
-            if (!string.IsNullOrWhiteSpace(lines[i]) && lines[i].Length >= minLength && lines[i].Length <= maxLength)
-            {
-                csvContent.AppendLine(lines[i]);
-            }
-        }
-
-        //Asset Folder Path
-        string assetsFolderPath = Application.dataPath;
-
-        // Specify the relative path within the "Assets" folder where you want to save the CSV file
-        string relativeFilePath = $"FindWords/Resources/WordDictData/NewOxfordDict.csv";
-
-        // Combine the paths to get the full path of the CSV file
-        string filePath = Path.Combine(assetsFolderPath, relativeFilePath);
-
-        // Save the CSV file
-
-        if (!string.IsNullOrEmpty(filePath) && !File.Exists(filePath))
-        {
-            Debug.Log("File Creating !!");
-            File.WriteAllText(filePath, csvContent.ToString());
-        }
-        else
-        {
-            Debug.LogError($"File Already Exists with name WordLength_{wordLength} !!");
-        }
-
-        if (!Directory.Exists(filePath))
-        {
-            Debug.Log("Folder Creating !");
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-        }
-#if UNITY_EDITOR
-        // Refresh the Unity Asset Database to make the file visible in the Editor
-        AssetDatabase.Refresh();
-#endif
-        Debug.Log("CSV file saved to: " + filePath);
-    }
 
     [Button]
     void FindWordAccordingToLetter()
@@ -180,7 +78,7 @@ public class WordLengthFinder : MonoBehaviour
     }
 
     [Button]
-    void AddAllFilesToScriptable()
+    void FillMainDictionaryInfo()
     {
         MainDictionary dict = mainDict;
 
@@ -205,7 +103,16 @@ public class WordLengthFinder : MonoBehaviour
                 TextAsset textFile =
                     Resources.Load<TextAsset>($"WordDictData/{i}_WordLengthFolder/{tempChar}_Words");
 
-                wordInfo.wordText = textFile;
+                string[] lines = textFile.text.Trim().Split('\n');
+
+                List<string> fillStringList = new List<string>();
+
+                foreach (var str in lines)
+                {
+                    fillStringList.Add(str);
+                }
+
+                wordInfo.wordList = fillStringList;
                 wordInfo.wordStartChar = tempChar;
 
                 dictWordInfoList.Add(wordInfo);
@@ -224,6 +131,111 @@ public class WordLengthFinder : MonoBehaviour
 
 #if UNITY_EDITOR
         EditorUtility.SetDirty(mainDict);
+        AssetDatabase.Refresh();
+#endif
+    }
+
+    public static void ShuffleList<T>(List<T> list)
+    {
+        int n = list.Count;
+        for (int i = 0; i < n - 1; i++)
+        {
+            int j = UnityEngine.Random.Range(i, n);
+            (list[i], list[j]) = (list[j], list[i]);
+        }
+    }
+
+    [Button]
+    void ShuffleTextFile()
+    {
+        string[] lines = wordLengthTextFile.text.Trim().Split('\n');
+        StringBuilder csvContent = new StringBuilder();
+        List<string> wordList = new List<string>();
+
+
+        foreach (string str in lines)
+        {
+            wordList.Add(str.Trim());
+        }
+
+        ShuffleList(wordList);
+
+        foreach (var str in wordList)
+        {
+            if (!string.IsNullOrEmpty(str) && !string.IsNullOrWhiteSpace(str))
+            {
+                csvContent.AppendLine(str.Trim());
+            }
+        }
+
+        string assetsFolderPath = Application.dataPath;
+
+        // Specify the relative path within the "Assets" folder where you want to save the CSV file
+        string relativeFilePath =
+            $"FindWords/CSV/ShuffledWordFolder/{wordLength}_Shuffled_Words.csv";
+
+        // Combine the paths to get the full path of the CSV file
+        string filePath = Path.Combine(assetsFolderPath, relativeFilePath);
+
+        // Save the CSV file
+
+        if (!string.IsNullOrEmpty(filePath) && !File.Exists(filePath))
+        {
+            Debug.Log("File Creating !!");
+            File.WriteAllText(filePath, csvContent.ToString());
+        }
+        else
+        {
+            Debug.LogError($"File Already Exists with name {wordLength}_Shuffled_Words !!");
+        }
+
+        if (!Directory.Exists(filePath))
+        {
+            Debug.Log("Folder Creating !");
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+        }
+
+        // Refresh the Unity Asset Database to make the file visible in the Editor
+#if UNITY_EDITOR
+        AssetDatabase.Refresh();
+#endif
+        Debug.Log("CSV file saved to: " + filePath);
+    }
+
+    [Button]
+    void FillPickingDataInfo()
+    {
+        PickWordDataInfo wordDataInfo = pickWordDataInfo;
+
+        List<PickWordDataInfo.PickingDataInfo> pickDataList = new List<PickWordDataInfo.PickingDataInfo>();
+
+        for (int i = minMaxScriptableWordLength.x;
+             i <= minMaxScriptableWordLength.y;
+             i++)
+        {
+            List<string> wordList = new List<string>();
+            PickWordDataInfo.PickingDataInfo pickData = new PickWordDataInfo.PickingDataInfo();
+            TextAsset textFile =
+                Resources.Load<TextAsset>($"PredefinedWords/{i}_Letter");
+
+            string[] lines = textFile.text.Trim().Split('\n');
+
+            foreach (string s in lines)
+            {
+                wordList.Add(s);
+            }
+
+            pickData.wordList = wordList;
+            pickData.quesLetterCount = i;
+
+            pickDataList.Add(pickData);
+        }
+
+        wordDataInfo.pickDataInfoList = pickDataList;
+        pickWordDataInfo = wordDataInfo;
+
+#if UNITY_EDITOR
+        EditorUtility.SetDirty(pickWordDataInfo);
         AssetDatabase.Refresh();
 #endif
     }

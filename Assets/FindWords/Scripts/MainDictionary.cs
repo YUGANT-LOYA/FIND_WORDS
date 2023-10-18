@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 [CreateAssetMenu(fileName = "MainDictionary", menuName = "EnglishDictionary")]
@@ -18,7 +19,7 @@ public class MainDictionary : ScriptableObject
     public struct WordLengthDetailedInfo
     {
         public char wordStartChar;
-        public TextAsset wordText;
+        public List<string> wordList;
     }
 
     public List<MainDictionaryInfo> dictInfoList;

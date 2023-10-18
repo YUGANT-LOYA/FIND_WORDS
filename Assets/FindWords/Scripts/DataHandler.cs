@@ -6,17 +6,14 @@ namespace YugantLoyaLibrary.FindWords
     public class DataHandler : MonoBehaviour
     {
         public static DataHandler instance;
-
-        LevelHandler _levelHandler;
-        private DifficultyDataInfo _diffDataInfo;
-        private DefinedLevelScriptable.DefinedLevelInfo _definedLevelInfo;
         [Header("Prefab Holders")] public GameObject coinPrefab;
         public GameObject levelPrefab, gridPrefab, quesPrefab;
 
         [Header("Data Info")] [Tooltip("When player first time start playing, Initial coins player have")]
         public int initialCoins = 300;
+
         private static int _initCoins;
-        
+
         private void Awake()
         {
             CreateSingleton();
@@ -45,9 +42,6 @@ namespace YugantLoyaLibrary.FindWords
                 coin.transform.localScale = Vector3.zero;
                 coin.gameObject.SetActive(false);
             }
-
-            _levelHandler = GameController.instance.GetLevelHandler();
-            _diffDataInfo = GameController.instance.GetDifficultyDataInfo();
         }
 
         public GameObject GetCoin()
@@ -78,26 +72,30 @@ namespace YugantLoyaLibrary.FindWords
             set => PlayerPrefs.SetInt(StringHelper.CURR_DEFINED_LEVEL, value);
         }
 
+        public static int CurrQuesInfoIndex
+        {
+            get => PlayerPrefs.GetInt(StringHelper.QUES_INFO_INDEX, 0);
+            set => PlayerPrefs.SetInt(StringHelper.QUES_INFO_INDEX, value);
+        }
+
+        //This is for traversing the Pick Data Info Word List
+        public static int PickDataIndex
+        {
+            get => PlayerPrefs.GetInt(StringHelper.PICK_DATA_INDEX, 0);
+            set => PlayerPrefs.SetInt(StringHelper.PICK_DATA_INDEX, value);
+        }
+        
+        //This is for traversing the Pick Data Struct List.
+        public static int PickDataStructIndex
+        {
+            get => PlayerPrefs.GetInt(StringHelper.PICK_DATA_SRTUCT_INDEX, 0);
+            set => PlayerPrefs.SetInt(StringHelper.PICK_DATA_SRTUCT_INDEX, value);
+        }
+
         public static int HelperWordIndex
         {
             get => PlayerPrefs.GetInt(StringHelper.HELPER_WORD_INDEX, 0);
             set => PlayerPrefs.SetInt(StringHelper.HELPER_WORD_INDEX, value);
-        }
-        
-        public int CurrDifficultyNumber
-        {
-            get
-            {
-                if (PlayerPrefs.GetInt(StringHelper.DIFF_NUM) >=
-                    _diffDataInfo.difficultyInfos.Count)
-                {
-                    PlayerPrefs.SetInt(StringHelper.DIFF_NUM,
-                        _diffDataInfo.difficultyInfos.Count - 1);
-                }
-
-                return PlayerPrefs.GetInt(StringHelper.DIFF_NUM, 0);
-            }
-            set => PlayerPrefs.SetInt(StringHelper.DIFF_NUM, value);
         }
 
         public static int CurrGridSize
@@ -111,17 +109,24 @@ namespace YugantLoyaLibrary.FindWords
             get => PlayerPrefs.GetInt((StringHelper.MAX_GRID_OPENED), 0);
             set => PlayerPrefs.SetInt(StringHelper.MAX_GRID_OPENED, value);
         }
-        
-        public static int CurrQuesSize
+
+        public static int CurrTotalQuesSize
         {
-            get => PlayerPrefs.GetInt((StringHelper.CURR_QUESSIZE), GameController.instance.startingQuesSize);
-            set => PlayerPrefs.SetInt(StringHelper.CURR_QUESSIZE, value);
+            get => PlayerPrefs.GetInt((StringHelper.CURR_TOTAL_QUES_SIZE), GameController.instance.startingQuesSize);
+            set => PlayerPrefs.SetInt(StringHelper.CURR_TOTAL_QUES_SIZE, value);
         }
+
 
         public static int TotalCoin
         {
             get => PlayerPrefs.GetInt(StringHelper.COIN_AVAIL, _initCoins);
             set => PlayerPrefs.SetInt(StringHelper.COIN_AVAIL, value);
+        }
+
+        public static int UnlockedQuesLetter
+        {
+            get => PlayerPrefs.GetInt((StringHelper.UNLOCK_QUES_LETTER), GameController.instance.startingQuesSize);
+            set => PlayerPrefs.SetInt(StringHelper.UNLOCK_QUES_LETTER, value);
         }
     }
 }

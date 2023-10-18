@@ -84,8 +84,7 @@ namespace YugantLoyaLibrary.FindWords
                     unlockTime, RotateMode.FastBeyond360)
                 .SetEase(rotatingEase).OnComplete(() =>
                 {
-                    DataHandler.CurrQuesSize = _levelHandler.totalQuesGridCount;
-                    _levelHandler.currUnlockedQuesGridCount = DataHandler.CurrQuesSize;
+                    DataHandler.UnlockedQuesLetter = DataHandler.CurrTotalQuesSize;
                 });
         }
     }

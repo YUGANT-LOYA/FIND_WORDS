@@ -1029,9 +1029,7 @@ MonoBehaviour:
   quesTileList: []
   selectedWords: []
   wordsLeftList: []
-  fillGridStringLength: 10
-  gridFillString: 
-  hintAvailString: 
+  hintAvailList: []
 --- !u!4 &399063913
 Transform:
   m_ObjectHideFlags: 0
@@ -2148,9 +2146,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isTesting: 0
   startingGridSize: 4
+  maxHelperIndex: 4
   startingQuesSize: 3
   maxGridSize: 7
-  difficultyDataInfo: {fileID: 11400000, guid: 4d9a978d18db8294da4b969130e611a0, type: 2}
+  questionSizeInfo: {fileID: 11400000, guid: 3be168b582b176e46977e480621e386c, type: 2}
+  pickWordDataInfo: {fileID: 11400000, guid: 705e50367ef97c646ab4c1cd1b227194, type: 2}
   definedLevelInfo: {fileID: 11400000, guid: 4780e79b37aa4534c88ee4c735d1c69d, type: 2}
   gridCamScriptable: {fileID: 11400000, guid: 7bf22db1e57398e46a45160ed1db8855, type: 2}
   mainDictionary: {fileID: 11400000, guid: 851a5cb24c798f44dba4329d5b47384a, type: 2}

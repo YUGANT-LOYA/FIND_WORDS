@@ -29,7 +29,7 @@ public class GridCamScriptable : ScriptableObject
     public struct QuesDataInfo
     {
         public int numOfQues;
-        public float quesBlockScale;
+        public float quesBlockScale, quesSpacing;
         public Vector3 queContainerPos;
     }
 

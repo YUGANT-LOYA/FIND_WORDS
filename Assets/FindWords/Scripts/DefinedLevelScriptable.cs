@@ -10,7 +10,6 @@ public class DefinedLevelScriptable : ScriptableObject
     public struct DefinedLevelInfo
     {
         public bool shouldShuffle;
-        //[TextArea(5, 5)] public string gridsData;
     }
 
     public TextAsset helperTextFile;
