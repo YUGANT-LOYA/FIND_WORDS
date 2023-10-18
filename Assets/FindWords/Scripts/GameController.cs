@@ -346,22 +346,15 @@ namespace YugantLoyaLibrary.FindWords
             int index = 0;
             foreach (GridTile gridTile in list)
             {
-                gridTile.GridTextData = randomPickedWord[index].ToString();
-                index++;
-            }
-
-
-            foreach (GridTile gridTile in list)
-            {
                 yield return new WaitForSeconds(_currLevel.timeToWaitForEachGrid);
                 //Debug.Log("Moving To Grid Place Again !");
                 gridTile.isBlastAfterWordComplete = false;
+                gridTile.GridTextData = randomPickedWord[index].ToString();
                 levelHandler.gridAvailableOnScreenList.Add(gridTile);
                 gridTile.MoveTowardsGrid();
                 levelHandler.wordCompletedGridList.Remove(gridTile);
             }
 
-            //levelHandler.AssignDataAccordingToGrids(list, list.Count);
             StartCoroutine(ResetLevelHandlerData(_currLevel.timeToWaitForEachGrid * list.Count));
         }
 

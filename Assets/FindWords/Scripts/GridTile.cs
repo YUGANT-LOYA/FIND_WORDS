@@ -252,7 +252,7 @@ namespace YugantLoyaLibrary.FindWords
         }
 
 
-        public void DeckAnimation(int totalVowels, float timeToPlaceGrids, Vector2 pos, bool shouldReturn = true)
+        public void DeckAnimation(float timeToPlaceGrids, Vector2 pos, bool shouldReturn = true)
         {
             if (!_levelHandler.gridAvailableOnScreenList.Contains(this))
             {

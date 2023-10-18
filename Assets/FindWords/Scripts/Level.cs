@@ -35,7 +35,7 @@ namespace YugantLoyaLibrary.FindWords
         [Tooltip("Time to place Grid in its original Position")]
         public float timeToPlaceGrid = 0.4f, timeToWaitForEachGrid = 0.1f;
 
-        public Transform quesGridTrans, rotationContainer;
+        public Transform quesGridTrans;
         [SerializeField] private Transform gridContainer;
         private float _currGridWidth, _currGridHeight, _currGridSize, _currQuesSize;
         [SerializeField] private float gridSpacing = 0.1f, quesSpacing = 0.2f;
@@ -55,10 +55,8 @@ namespace YugantLoyaLibrary.FindWords
 
         public void StartInit()
         {
-            _camOrthographicSize = _cam.orthographicSize;
             //Debug.Log("Level StartInit Called !");
             Debug.Log($"Aspect Ratio : {_cam.aspect} , Width : {Screen.width} , Height  : {Screen.height}");
-            Debug.Log($"Factor  : {_cam.aspect * _camOrthographicSize}");
 
             SetCameraPos();
             CreateGrid();
@@ -92,7 +90,7 @@ namespace YugantLoyaLibrary.FindWords
             if (isNotMatching)
             {
                 //No Screen Size Matched !!!
-
+                Debug.Log("No Screen Size Matched !");
                 foreach (GridCamScriptable.CamGridSizeStruct camInfo in gridCamScriptable.camGridInfoList)
                 {
                     if (camInfo.screenSize.x == 0 && camInfo.screenSize.y == 0)
@@ -152,6 +150,7 @@ namespace YugantLoyaLibrary.FindWords
                                 quesSpacing = quesInfo.quesSpacing;
                                 quesGridTrans.transform.position = quesInfo.queContainerPos;
                                 _currQuesSize = quesInfo.quesBlockScale;
+                                _camOrthographicSize = gridInfo.camOrthographicSize;
                                 break;
                             }
                         }
@@ -286,7 +285,7 @@ namespace YugantLoyaLibrary.FindWords
                     gridTileScript.AssignInfo(this);
                     gridTileScript.GridID = new Vector2Int(i, j);
                     _levelHandler.totalGridsList.Add(gridTileScript);
-                    startPos.x += /*gridSpacing +*/ _currGridSize;
+                    startPos.x += _currGridSize;
 
                     if ((i == gridSize.x - 1 || j == gridSize.y - 1) && DataHandler.IsMaxGridOpened == 0)
                     {
