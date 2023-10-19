@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using YugantLibrary.ParkingOrderGame;
 using Random = UnityEngine.Random;
 
 namespace YugantLoyaLibrary.FindWords
@@ -20,16 +21,9 @@ namespace YugantLoyaLibrary.FindWords
 
         private GameCompleteDelegate _onGameCompleteEvent;
 
-        [Header("References")] [HideInInspector]
-        public Camera cam;
-
-        DefinedLevelScriptable _definedLevelScriptable;
-        private List<DefinedLevelScriptable.DefinedLevelInfo> _definedLevelInfo;
-
         public EnglishDictWords englishDictWords;
         private Renderer _touchEffectRenderer;
         [SerializeField] Level currLevel;
-        [HideInInspector] public int totalQuesGridCount;
         public int coinPerLetter = 10;
         [Header("Level Info")] public char[][] gridData;
 
@@ -67,15 +61,6 @@ namespace YugantLoyaLibrary.FindWords
 
         void Init()
         {
-            //Debug.Log("Level Handler Init Called !");
-            cam = Camera.main;
-        }
-
-        public void SetHelperLevelDataScriptable()
-        {
-            _definedLevelScriptable = GameController.instance.GetDefinedLevelInfoScriptable();
-            _definedLevelInfo =
-                new List<DefinedLevelScriptable.DefinedLevelInfo>(_definedLevelScriptable.definedLevelInfoList);
         }
 
         public void LevelStartInit()
@@ -136,8 +121,8 @@ namespace YugantLoyaLibrary.FindWords
             int row = currLevel.gridSize.x;
             int col = currLevel.gridSize.y;
 
-            QuestionSizeInfo.SizeInfo sizeInfo = GameController.instance.GetQuestionDataInfo()
-                .difficultyInfos[DataHandler.CurrQuesInfoIndex];
+            // QuestionSizeInfo.SizeInfo sizeInfo = GameController.instance.GetQuestionDataInfo()
+            //     .difficultyInfos[DataHandler.CurrQuesInfoIndex];
 
             Debug.Log("Total Word To Find Q : " + DataHandler.UnlockedQuesLetter);
 
@@ -181,7 +166,7 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-            if (DataHandler.HelperWordIndex > GameController.instance.maxHelperIndex)
+            if (DataHandler.HelperWordIndex >= GameController.instance.maxHelperIndex)
             {
                 unlockStr = ShuffleString(unlockStr, 1);
             }
@@ -211,7 +196,7 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        public void AssignWholeGridData()
+        public string GetWholeGridData()
         {
             string mainStr = "";
             Debug.Log("Unlock String Count : " + mainStr.Length);
@@ -253,18 +238,12 @@ namespace YugantLoyaLibrary.FindWords
 
             Debug.Log("Unlock String Data " + mainStr);
 
-            if (DataHandler.HelperWordIndex > GameController.instance.maxHelperIndex)
+            if (DataHandler.HelperWordIndex >= GameController.instance.maxHelperIndex)
             {
                 mainStr = ShuffleString(mainStr);
             }
 
-            int index = 0;
-
-            foreach (GridTile gridTile in unlockedGridList)
-            {
-                gridTile.GridTextData = mainStr[index].ToString();
-                index++;
-            }
+            return mainStr;
         }
 
 
@@ -358,17 +337,10 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-            int index = 0;
-
             Debug.Log("Unlock String Data " + mainStr);
             mainStr = ShuffleString(mainStr);
 
             Debug.Log("Unlock String Data " + mainStr);
-            // foreach (GridTile gridTile in list)
-            // {
-            //     gridTile.GridTextData = mainStr[index].ToString();
-            //     index++;
-            // }
 
             return mainStr;
         }
@@ -445,6 +417,16 @@ namespace YugantLoyaLibrary.FindWords
                     {
                         hintAvailList.Add(word);
                     }
+                    else
+                    {
+                        bool isWordThere = CheckIfWholeWordExistsInGrids(word, ch);
+                        Debug.Log("IS WORD THERE : " + isWordThere);
+
+                        if (isWordThere)
+                        {
+                            hintAvailList.Add(word);
+                        }
+                    }
 
                     mainChar = ch;
                     return mainChar;
@@ -476,6 +458,37 @@ namespace YugantLoyaLibrary.FindWords
             return mainChar;
         }
 
+        //Check The Word That if all letters exists in the grids available on the Screen (From Index = 0 or that specified).
+        private bool CheckIfWholeWordExistsInGrids(string word, char singleChar = ' ')
+        {
+            List<GridTile> availGridList = new List<GridTile>(gridAvailableOnScreenList);
+
+            foreach (char ch in word)
+            {
+                //This If statement is only be true for single char does not match the word char.
+                if (ch != singleChar)
+                {
+                    bool isCharAvail = false;
+                    foreach (GridTile gridTile in availGridList)
+                    {
+                        if (gridTile.GridTextData == ch.ToString())
+                        {
+                            isCharAvail = true;
+                            availGridList.Remove(gridTile);
+                            break;
+                        }
+                    }
+
+                    if (!isCharAvail)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         public char GetLastUnMatchedLetter(string word, string textWord, int index = 0)
         {
             if (index >= word.Length || index >= textWord.Length)
@@ -486,21 +499,9 @@ namespace YugantLoyaLibrary.FindWords
                 Debug.Log($"Letter Not Same {word} , {textWord} , {index} ");
                 return word[index];
             }
-            else
-            {
-                return GetLastUnMatchedLetter(word, textWord, index);
-            }
 
             index++;
-            return ' ';
-        }
-
-        public string GenerateRandom_ASCII_Code()
-        {
-            int randomAsciiVal = UnityEngine.Random.Range(065, 091);
-            char letter = (char)randomAsciiVal;
-
-            return letter.ToString();
+            return GetLastUnMatchedLetter(word, textWord, index);
         }
 
         public void SetLevelRunningBool(bool canTouch = true)
@@ -538,7 +539,7 @@ namespace YugantLoyaLibrary.FindWords
                     quesTileList[index].isAssigned = true;
                     inputGridsList.Add(gridTileObj);
                     StartCoroutine(LevelRunningStatus(true, gridTileObj.reachTime + 0.1f));
-                    gridTileObj.Move(pos, true, quesTileList[index]);
+                    gridTileObj.MoveAfter(pos, true, quesTileList[index]);
                 }
             }
         }
@@ -548,7 +549,7 @@ namespace YugantLoyaLibrary.FindWords
             if (gridTileObj != null)
             {
                 inputGridsList.Remove(gridTileObj);
-                gridTileObj.Move(gridTileObj.defaultGridPos, false, gridTileObj.placedOnQuesTile);
+                gridTileObj.MoveAfter(gridTileObj.defaultGridPos, false, gridTileObj.placedOnQuesTile);
                 StartCoroutine(LevelRunningStatus(true, gridTileObj.reachTime + 0.1f));
             }
         }
@@ -587,14 +588,6 @@ namespace YugantLoyaLibrary.FindWords
         {
             if (buyGridList.Count <= 0 && DataHandler.CurrGridSize < GameController.instance.maxGridSize)
             {
-                DataHandler.CurrGridSize++;
-
-                // if (DataHandler.CurrGridSize > GameController.instance.maxGridSize)
-                // {
-                //     DataHandler.CurrGridSize = GameController.instance.maxGridSize;
-                // }
-
-
                 _isLevelRunning = false;
                 float time = currLevel.timeToWaitForEachGrid;
                 float timeToPlaceGrids = currLevel.timeToPlaceGrid;
@@ -625,26 +618,6 @@ namespace YugantLoyaLibrary.FindWords
 
             //Check Word Exists or Not !
             string word = WordFormed();
-
-            // TextAsset file = GameController.instance.get
-
-            // if (wordsLeftList.Contains(word))
-            // {
-            //     selectedWords.Add(word);
-            //     DataHandler.HelperWordIndex++;
-            //
-            //     foreach (string str in wordsLeftList)
-            //     {
-            //         if (str == word)
-            //         {
-            //             wordsLeftList.Remove(word);
-            //         }
-            //     }
-            //
-            //     WordComplete();
-            //     return;
-            // }
-            //
 
             //bool doWordExist = GameController.instance.Search(word);
 
@@ -677,6 +650,8 @@ namespace YugantLoyaLibrary.FindWords
                 Vibration.Vibrate(25);
                 SoundManager.instance.PlaySound(SoundManager.SoundType.WrongSound);
                 GridsBackToPos();
+                UIManager.instance.ShakeCam();
+                UIManager.instance.WrongEffect();
             }
         }
 
@@ -695,8 +670,9 @@ namespace YugantLoyaLibrary.FindWords
                 GridTile gridTile = inputGridsList[index];
                 wordCompletedGridList.Add(gridTile);
                 gridAvailableOnScreenList.Remove(gridTile);
-                gridTile.Blast();
-                gridTile.SetQuesTileStatus(gridTile.placedOnQuesTile, false, gridTile.blastTime / 2);
+                gridTile.CallBlastAfterTime();
+                gridTile.SetQuesTileStatus(gridTile.placedOnQuesTile, false,
+                    gridTile.blastTime / 2 + gridTile.blastEffectAfterTime);
 
                 if (index == inputGridsList.Count - 1)
                 {
@@ -705,6 +681,8 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
+            DataHandler.IqLevel++;
+            UIManager.instance.iqLevelText.text = $"IQ : {DataHandler.IqLevel.ToString()}";
             StartCoroutine(ResetLevelHandlerData(time, true));
             RevertQuesData();
         }
@@ -728,7 +706,8 @@ namespace YugantLoyaLibrary.FindWords
         {
             foreach (var gridTile in inputGridsList)
             {
-                gridTile.Move(gridTile.defaultGridPos, false, gridTile.placedOnQuesTile);
+                gridTile.MoveAfter(gridTile.defaultGridPos, false, gridTile.placedOnQuesTile,
+                    gridTile.blastEffectAfterTime);
                 gridTile.SetQuesTileStatus(gridTile.placedOnQuesTile, false, gridTile.blastTime / 2);
                 StartCoroutine(LevelRunningStatus(true, gridTile.reachTime + 0.1f));
             }
@@ -771,8 +750,15 @@ namespace YugantLoyaLibrary.FindWords
         {
             Vector2 pos = currLevel.BottomOfScreenPoint();
             float time = waitTime * gridLists.Count;
-            StartCoroutine(UpdateGridDataAfterATime(time));
+            string mainStr = "";
 
+            if (shouldReturnToGridPlace)
+            {
+                mainStr = GetWholeGridData();
+            }
+
+            int index = 0;
+            string gridString;
             foreach (GridTile gridTile in gridLists)
             {
                 yield return new WaitForSeconds(waitTime);
@@ -782,7 +768,17 @@ namespace YugantLoyaLibrary.FindWords
                     gridTile.ObjectStatus(false);
                 }
 
-                gridTile.DeckAnimation(timeToPlaceGrids, pos, shouldReturnToGridPlace);
+                if (mainStr.Length > index)
+                {
+                    gridString = mainStr[index].ToString();
+                }
+                else
+                {
+                    gridString = " ";
+                }
+
+                gridTile.DeckAnimation(timeToPlaceGrids, pos, gridString, shouldReturnToGridPlace);
+                index++;
             }
 
             if (shouldReturnToGridPlace)
@@ -791,12 +787,6 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             yield return null;
-        }
-
-        IEnumerator UpdateGridDataAfterATime(float time)
-        {
-            yield return new WaitForSeconds(time);
-            AssignWholeGridData();
         }
 
         public IEnumerator ResetLevelHandlerData(float time, bool doCheckGridLeft = false)
@@ -814,6 +804,7 @@ namespace YugantLoyaLibrary.FindWords
         public void FindHint()
         {
             List<GridTile> tileList = new List<GridTile>(gridAvailableOnScreenList);
+
             string gridString = "";
             bool isHintThere = false;
             string finalStr = "";
@@ -825,6 +816,8 @@ namespace YugantLoyaLibrary.FindWords
 
             if (hintAvailList.Count > 0)
             {
+                GameController.ShuffleList(hintAvailList);
+
                 foreach (string hintStr in hintAvailList)
                 {
                     if (LettersExistInWord(hintStr, gridString))
@@ -1029,6 +1022,26 @@ namespace YugantLoyaLibrary.FindWords
             hintTileList.Clear();
             finalStr = "";
             return false;
+        }
+
+        public void ClearAllLists()
+        {
+            inputGridsList.Clear();
+            unlockedGridList.Clear();
+            totalGridsList.Clear();
+            quesTileList.Clear();
+            buyGridList.Clear();
+            wordCompletedGridList.Clear();
+            gridAvailableOnScreenList.Clear();
+            hintAvailList.Clear();
+            wordsLeftList.Clear();
+        }
+
+        public void ClearInGameList()
+        {
+            inputGridsList.Clear();
+            wordCompletedGridList.Clear();
+            hintAvailList.Clear();
         }
     }
 }

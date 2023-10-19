@@ -199,6 +199,7 @@ MonoBehaviour:
   reachTime: 0.5
   blastEase: 4
   blasRotationTime: 1
+  blastEffectAfterTime: 0.5
   blastTime: 1.5
   blastReturnEase: 4
   amountToUnlockText: {fileID: 4584858875892991531}

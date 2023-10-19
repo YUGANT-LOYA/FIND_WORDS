@@ -66,16 +66,22 @@ namespace YugantLoyaLibrary.FindWords
             coin.transform.localScale = Vector3.one * (UIManager.instance.maxCoinScale / 2f);
         }
 
+        public static int UnlockGridIndex
+        {
+            get => PlayerPrefs.GetInt(StringHelper.UNLOCK_GRID_INDEX, 0);
+            set => PlayerPrefs.SetInt(StringHelper.UNLOCK_GRID_INDEX, value);
+        }
+        
         public static int CurrDefinedLevel
         {
             get => PlayerPrefs.GetInt(StringHelper.CURR_DEFINED_LEVEL, 0);
             set => PlayerPrefs.SetInt(StringHelper.CURR_DEFINED_LEVEL, value);
         }
 
-        public static int CurrQuesInfoIndex
+        public static int IqLevel
         {
-            get => PlayerPrefs.GetInt(StringHelper.QUES_INFO_INDEX, 0);
-            set => PlayerPrefs.SetInt(StringHelper.QUES_INFO_INDEX, value);
+            get => PlayerPrefs.GetInt(StringHelper.IQ_LEVEL, GameController.instance.defaultIq);
+            set => PlayerPrefs.SetInt(StringHelper.IQ_LEVEL, value);
         }
 
         //This is for traversing the Pick Data Info Word List
@@ -84,7 +90,7 @@ namespace YugantLoyaLibrary.FindWords
             get => PlayerPrefs.GetInt(StringHelper.PICK_DATA_INDEX, 0);
             set => PlayerPrefs.SetInt(StringHelper.PICK_DATA_INDEX, value);
         }
-        
+
         //This is for traversing the Pick Data Struct List.
         public static int PickDataStructIndex
         {
@@ -115,8 +121,7 @@ namespace YugantLoyaLibrary.FindWords
             get => PlayerPrefs.GetInt((StringHelper.CURR_TOTAL_QUES_SIZE), GameController.instance.startingQuesSize);
             set => PlayerPrefs.SetInt(StringHelper.CURR_TOTAL_QUES_SIZE, value);
         }
-
-
+        
         public static int TotalCoin
         {
             get => PlayerPrefs.GetInt(StringHelper.COIN_AVAIL, _initCoins);

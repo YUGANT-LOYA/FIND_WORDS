@@ -28,7 +28,7 @@ namespace YugantLoyaLibrary.FindWords
 
         [Header("Blasting Info")] public Ease blastEase = Ease.InCirc;
         public int blasRotationTime = 1;
-        public float blastTime = 1f;
+        public float blastEffectAfterTime = 0.5f, blastTime = 1f;
         public Ease blastReturnEase = Ease.OutCirc;
 
         [Header("Lock Info")] public TextMeshPro amountToUnlockText;
@@ -50,7 +50,7 @@ namespace YugantLoyaLibrary.FindWords
         public string GridTextData
         {
             get => gridText.text.ToLower();
-            set => gridText.text = value;
+            set => gridText.text = value.ToUpper();
         }
 
         public TextMeshPro GetText()
@@ -175,9 +175,17 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        public void Move(Vector3 pos, bool isMovingToQues, QuesTile quesTile)
+        public void MoveAfter(Vector3 pos, bool isMovingToQues, QuesTile quesTile, float time = 0f)
+        {
+            StartCoroutine(Move(pos, isMovingToQues, quesTile, time));
+        }
+
+        IEnumerator Move(Vector3 pos, bool isMovingToQues, QuesTile quesTile, float time = 0f)
         {
             isMoving = true;
+
+            yield return new WaitForSeconds(time);
+
             if (isMovingToQues)
             {
                 placedOnQuesTile = quesTile;
@@ -223,12 +231,18 @@ namespace YugantLoyaLibrary.FindWords
 
             if (isMovingToQues)
             {
-                placedOnQuesTile.AddData(GridTextData.ToUpper());
+                placedOnQuesTile.AddData(GridTextData);
             }
         }
 
-        public void Blast()
+        public void CallBlastAfterTime()
         {
+            StartCoroutine(Blast());
+        }
+
+        IEnumerator Blast()
+        {
+            yield return new WaitForSeconds(blastEffectAfterTime);
             blastPos = _level.GetRandomPointOutOfScreen();
             transform.DOMove(blastPos, blastTime / 2).SetEase(blastEase);
             transform.DOScale(defaultGridSize, blastTime / 2).SetEase(movingEase);
@@ -237,6 +251,7 @@ namespace YugantLoyaLibrary.FindWords
             {
                 isBlastAfterWordComplete = true;
                 transform.rotation = Quaternion.Euler(Vector3.zero);
+                isMoving = false;
             });
         }
 
@@ -252,7 +267,7 @@ namespace YugantLoyaLibrary.FindWords
         }
 
 
-        public void DeckAnimation(float timeToPlaceGrids, Vector2 pos, bool shouldReturn = true)
+        public void DeckAnimation(float timeToPlaceGrids, Vector2 pos, string gridData, bool shouldReturn = true)
         {
             if (!_levelHandler.gridAvailableOnScreenList.Contains(this))
             {
@@ -269,6 +284,7 @@ namespace YugantLoyaLibrary.FindWords
                 if (!shouldReturn)
                     return;
 
+                GridTextData = gridData;
                 transform.rotation = Quaternion.Euler(Vector3.zero);
                 ObjectStatus(true);
                 isBlastAfterWordComplete = false;

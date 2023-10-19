@@ -4,6 +4,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using YugantLibrary.ParkingOrderGame;
 using Random = UnityEngine.Random;
 
 namespace YugantLoyaLibrary.FindWords
@@ -11,18 +12,27 @@ namespace YugantLoyaLibrary.FindWords
     public class UIManager : MonoBehaviour
     {
         public static UIManager instance;
+        private Camera cam;
+        private CameraShake camShakeScript;
         public float coinAnimTime = 1.5f, coinRotateAngle = 810f, maxCoinScale = 45f;
-        public TextMeshProUGUI levelText, coinText;
+        public TextMeshProUGUI iqLevelText;
+        public TextMeshProUGUI coinText;
         public Button shuffleButton, dealButton, hintButton;
-        public GameObject winPanel;
-        public GameObject menuGameObj, coinHolderGm;
+        public Sprite pressedDealButton, normalDealButton;
         public Ease coinMovementEase;
         private float _coinTextUpdateTime;
         public Color disableHintColor;
+        [SerializeField] float wrongEffectTime = 0.2f;
+        [SerializeField] Image wrongEffectImg;
+        public Color defaultWrongEffectColor, redWrongEffectColor;
 
         private void Awake()
         {
             CreateSingleton();
+
+            cam = Camera.main;
+            if (cam != null) camShakeScript = cam.GetComponent<CameraShake>();
+
             shuffleButton.onClick.AddListener(() => { GameController.instance.ShuffleGrid(); });
             dealButton.onClick.AddListener(() => { GameController.instance.Deal(); });
             hintButton.onClick.AddListener(() => { GameController.instance.Hint(); });
@@ -52,6 +62,23 @@ namespace YugantLoyaLibrary.FindWords
                 hintButton.enabled = true;
                 hintButton.GetComponent<Image>().color = Color.white;
             }
+        }
+
+        public void WrongEffect()
+        {
+            float redTime = 2 * wrongEffectTime / 3;
+            float whiteTime = wrongEffectTime / 3;
+            wrongEffectImg.DOColor(redWrongEffectColor, redTime / 2).OnComplete(() =>
+            {
+                wrongEffectImg.DOColor(defaultWrongEffectColor, whiteTime / 2).OnComplete(() =>
+                {
+                    wrongEffectImg.DOColor(redWrongEffectColor, redTime / 2).OnComplete(() =>
+                    {
+                        wrongEffectImg.DOColor(defaultWrongEffectColor, whiteTime / 2)
+                            .OnComplete(() => { wrongEffectImg.color = defaultWrongEffectColor; });
+                    });
+                });
+            });
         }
 
         public void CoinCollectionAnimation(int coinToAdd)
@@ -102,11 +129,6 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        void CallWinPanel()
-        {
-            winPanel.SetActive(true);
-        }
-
         private IEnumerator UpdateAddedCoinText(float waitTime, int coinToBeAdded, float coinMoveTime,
             Action callback = null)
         {
@@ -128,7 +150,6 @@ namespace YugantLoyaLibrary.FindWords
         {
             yield return new WaitForSeconds(waitTime);
 
-
             int startVal = int.Parse(coinText.text);
             float time = coinMoveTime / (float)coinToSubtract;
 
@@ -144,6 +165,23 @@ namespace YugantLoyaLibrary.FindWords
             int totalCoins = DataHandler.TotalCoin + coinToBeAdded * sign;
             DataHandler.TotalCoin = totalCoins;
             Debug.Log("Total Coin Left : " + DataHandler.TotalCoin);
+        }
+
+        public void ShakeCam()
+        {
+            camShakeScript.ShakeCamera(cam.transform.position);
+        }
+
+        public void DealButtonEffect()
+        {
+            StartCoroutine(DealButtonClicked());
+        }
+
+        IEnumerator DealButtonClicked()
+        {
+            dealButton.gameObject.GetComponent<Image>().sprite = pressedDealButton;
+            yield return new WaitForSeconds(0.2f);
+            dealButton.gameObject.GetComponent<Image>().sprite = normalDealButton;
         }
     }
 }

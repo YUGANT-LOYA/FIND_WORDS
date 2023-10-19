@@ -11,15 +11,11 @@ namespace YugantLoyaLibrary.FindWords
 {
     public class Level : MonoBehaviour
     {
-        [Header("Main Info")]
-        //public Vector2 lineOffset;
-        private LevelHandler _levelHandler;
+        [Header("Main Info")] private LevelHandler _levelHandler;
 
         private Camera _cam;
         [HideInInspector] public Vector2Int gridSize;
         private float _camOrthographicSize;
-        public int totalWordsToFind = 4;
-        [SerializeField] private int quesInOneRow = 5;
         public Material gridMaterial;
         private readonly int[] _randomScreenPointArr = { -1, 1 };
         public Ease gridPlacementEase;
@@ -40,14 +36,6 @@ namespace YugantLoyaLibrary.FindWords
         private float _currGridWidth, _currGridHeight, _currGridSize, _currQuesSize;
         [SerializeField] private float gridSpacing = 0.1f, quesSpacing = 0.2f;
 
-        [Header("Input Data Info")] TextMeshProUGUI _levelNumText;
-
-        public string LevelNumData
-        {
-            get => _levelNumText.text;
-            set => _levelNumText.text = value;
-        }
-
         private void Awake()
         {
             _cam = Camera.main;
@@ -60,7 +48,6 @@ namespace YugantLoyaLibrary.FindWords
 
             SetCameraPos();
             CreateGrid();
-            _levelNumText = UIManager.instance.levelText;
         }
 
         void SetCameraPos()
@@ -122,17 +109,9 @@ namespace YugantLoyaLibrary.FindWords
             GridCamScriptable gridCamScriptable = GameController.instance.GetGridCamScriptable();
             GameObject quesPrefab = DataHandler.instance.quesPrefab;
             Vector3 startPos = quesGridTrans.transform.position;
-            GridCamScriptable.QuesDataInfo mainQuesInfo;
             int totalChild = quesGridTrans.childCount;
-            bool isNewQuesBlockBuyThere = false;
             bool isQuesNotMatching = true;
             int numOfQues = DataHandler.CurrTotalQuesSize;
-
-            if (DataHandler.CurrGridSize > GameController.instance.startingGridSize &&
-                DataHandler.IsMaxGridOpened == 0)
-            {
-                isNewQuesBlockBuyThere = true;
-            }
 
             foreach (GridCamScriptable.CamGridSizeStruct camInfo in gridCamScriptable.camGridInfoList)
             {
@@ -146,11 +125,11 @@ namespace YugantLoyaLibrary.FindWords
                         {
                             if (quesInfo.numOfQues == numOfQues)
                             {
-                                mainQuesInfo = quesInfo;
                                 quesSpacing = quesInfo.quesSpacing;
                                 quesGridTrans.transform.position = quesInfo.queContainerPos;
                                 _currQuesSize = quesInfo.quesBlockScale;
                                 _camOrthographicSize = gridInfo.camOrthographicSize;
+                                isQuesNotMatching = false;
                                 break;
                             }
                         }
@@ -158,18 +137,38 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
+            if (isQuesNotMatching)
+            {
+                foreach (GridCamScriptable.CamGridSizeStruct camInfo in gridCamScriptable.camGridInfoList)
+                {
+                    if (camInfo.screenSize.x == 0 && camInfo.screenSize.y == 0)
+                    {
+                        foreach (GridCamScriptable.GridDataInfo gridInfo in camInfo.gridDataInfos)
+                        {
+                            List<GridCamScriptable.QuesDataInfo> quesInfoList = gridInfo.queBlockInfoList;
+
+                            foreach (GridCamScriptable.QuesDataInfo quesInfo in quesInfoList)
+                            {
+                                if (quesInfo.numOfQues == numOfQues)
+                                {
+                                    quesSpacing = quesInfo.quesSpacing;
+                                    quesGridTrans.transform.position = quesInfo.queContainerPos;
+                                    _currQuesSize = quesInfo.quesBlockScale;
+                                    _camOrthographicSize = gridInfo.camOrthographicSize;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
             for (int i = 0; i < numOfQues; i++)
             {
-                GameObject gmObj;
-
-                if (totalChild > 0)
-                {
-                    gmObj = quesGridTrans.GetChild(i).gameObject;
-                }
-                else
-                {
-                    gmObj = Instantiate(quesPrefab, quesGridTrans);
-                }
+                GameObject gmObj = totalChild > 0
+                    ? quesGridTrans.GetChild(i).gameObject
+                    : Instantiate(quesPrefab, quesGridTrans);
 
                 QuesTile quesTileScript = gmObj.GetComponent<QuesTile>();
                 quesTileScript.SetLevelHandler(_levelHandler);
@@ -177,14 +176,6 @@ namespace YugantLoyaLibrary.FindWords
                 gmObj.transform.localPosition = new Vector3(startPos.x, 0, 0);
                 gmObj.name = $"Ques_{i}";
                 _levelHandler.UpdateQuesList(quesTileScript);
-
-                if (i == numOfQues - 1 && isNewQuesBlockBuyThere)
-                {
-                    quesTileScript.SetUnlockCoinAmount(100);
-                    quesTileScript.isUnlocked = false;
-                    quesTileScript.IsLocked(true);
-                }
-
                 startPos.x += quesSpacing + _currQuesSize;
                 totalChild--;
             }
@@ -262,7 +253,8 @@ namespace YugantLoyaLibrary.FindWords
             _defaultStartPos.x = -_camOrthographicSize / 2 + _currGridSize / 2;
             Debug.Log("Default Pos : " + _defaultStartPos.x);
             Vector3 startPos = new Vector3(_defaultStartPos.x, _defaultStartPos.y, _defaultStartPos.z);
-
+            //int gridToUnlockIndex = DataHandler.UnlockGridIndex;
+            //bool gridLocked = false;
             if (GameController.instance.maxGridSize < DataHandler.CurrGridSize)
             {
                 DataHandler.IsMaxGridOpened = 1;
@@ -289,13 +281,17 @@ namespace YugantLoyaLibrary.FindWords
 
                     if ((i == gridSize.x - 1 || j == gridSize.y - 1) && DataHandler.IsMaxGridOpened == 0)
                     {
-                        _levelHandler.buyGridList.Add(gridTileScript);
-                        gridTileScript.SetLockStatus(true);
-                        gridTileScript.SetLockTextAmount(100);
-                        gridTileScript.isLocked = true;
-                        gridTileScript.GetText().gameObject.SetActive(false);
-                        gridTileScript.isGridActive = false;
-                        gmRenderer.material = new Material(gridTileScript.lockMaterial);
+                        //if (gridToUnlockIndex == 0 && !gridLocked)
+                        //{
+                            //gridLocked = true;
+                            _levelHandler.buyGridList.Add(gridTileScript);
+                            gridTileScript.SetLockStatus(true);
+                            gridTileScript.SetLockTextAmount(100);
+                            gridTileScript.isLocked = true;
+                            gridTileScript.GetText().gameObject.SetActive(false);
+                            gridTileScript.isGridActive = false;
+                            gmRenderer.material = new Material(gridTileScript.lockMaterial);
+                        //}
                     }
                     else
                     {
@@ -305,6 +301,7 @@ namespace YugantLoyaLibrary.FindWords
                         gridTileScript.gridMaterial = gmRenderer.material;
                     }
 
+                    //gridToUnlockIndex--;
                     AssignGridData(gridTileScript, i, j);
                 }
 

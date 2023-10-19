@@ -23,14 +23,14 @@ namespace YugantLoyaLibrary.FindWords
         [Range(4, 7)] public int startingGridSize = 5;
 
         [Tooltip("Level Without Shuffling the Letter and copy exact letters for keeping some level easy !")]
-        public int maxHelperIndex = 20;
+        public int maxHelperIndex = 3;
 
         [HideInInspector] public int startingQuesSize = 3, maxGridSize = 7;
+        public int defaultIq = 5;
 
-        [FormerlySerializedAs("difficultyDataInfo")] [Header("References")] [SerializeField]
-        private QuestionSizeInfo questionSizeInfo;
+        [Header("References")] [SerializeField]
+        private PickWordDataInfo pickWordDataInfo;
 
-        [SerializeField] private PickWordDataInfo pickWordDataInfo;
         [SerializeField] private DefinedLevelScriptable definedLevelInfo;
         [SerializeField] private GridCamScriptable gridCamScriptable;
         [SerializeField] private MainDictionary mainDictionary;
@@ -38,20 +38,8 @@ namespace YugantLoyaLibrary.FindWords
         [SerializeField] private Transform levelContainer;
         [SerializeField] private CanvasGroup fadeCanvasGroup;
         public Transform coinContainerTran;
-        public int coinPoolSize = 20;
+        public int coinPoolSize = 10, shuffleUsingCoin = 30, dealUsingCoin = 10, hintUsingCoin = 20;
         private Level _currLevel;
-        [SerializeField] private float timeToSwitchToNextLevel = 1f;
-
-        public enum CurrDifficulty
-        {
-            VeryEasy,
-            Easy,
-            Moderate,
-            Hard,
-            Expert
-        }
-
-        public CurrDifficulty currDiff = CurrDifficulty.VeryEasy;
 
         private void Awake()
         {
@@ -81,7 +69,6 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             levelHandler.englishDictWords.UpdateEnglishDict();
-            levelHandler.SetHelperLevelDataScriptable();
             Init();
             StartGame();
         }
@@ -94,45 +81,21 @@ namespace YugantLoyaLibrary.FindWords
             DataHandler.PickDataIndex = 0;
             DataHandler.HelperWordIndex = 0;
             DataHandler.CurrGridSize = startingGridSize;
+            UIManager.instance.iqLevelText.text = $"IQ : {DataHandler.IqLevel.ToString()}";
         }
 
         private void Init()
         {
             UIManager.instance.coinText.text = DataHandler.TotalCoin.ToString();
-            //levelHandler.currUnlockedQuesGridCount = DataHandler.CurrQuesSize;
-            //levelHandler.totalQuesGridCount = DataHandler.CurrGridSize - 1;
-
-            // if (DataHandler.CurrQuesSize == DataHandler.UnlockedQuesLetter)
-            // {
-            //     DataHandler.CurrQuesSize = DataHandler.UnlockedQuesLetter + 1;
-            // }
         }
 
         public IEnumerator StartGameAfterCertainTime(float time)
         {
             Debug.Log($"Game Restarting After {time}");
-            //levelHandler.currUnlockedQuesGridCount = DataHandler.UnlockedQuesLetter;
-            List<QuestionSizeInfo.SizeInfo> quesInfoList = GetQuestionDataInfo().difficultyInfos;
 
-            if (DataHandler.CurrQuesInfoIndex < quesInfoList.Count)
-            {
-                DataHandler.CurrQuesInfoIndex++;
-            }
-            else
-            {
-                DataHandler.CurrQuesInfoIndex = quesInfoList.Count - 1;
-            }
-
-            Debug.Log("Player Pref Curr Ques Info Index : " + DataHandler.CurrQuesInfoIndex);
-
-            QuestionSizeInfo.SizeInfo sizeInfo = quesInfoList[DataHandler.CurrQuesInfoIndex];
-
-            DataHandler.CurrTotalQuesSize = sizeInfo.maxQuesLetter;
-
-            if (sizeInfo.minQuesLetter > DataHandler.UnlockedQuesLetter)
-            {
-                DataHandler.UnlockedQuesLetter = sizeInfo.minQuesLetter;
-            }
+            DataHandler.CurrTotalQuesSize = DataHandler.CurrGridSize;
+            DataHandler.UnlockedQuesLetter = DataHandler.CurrTotalQuesSize;
+            DataHandler.CurrGridSize++;
 
             yield return new WaitForSeconds(time);
 
@@ -198,11 +161,6 @@ namespace YugantLoyaLibrary.FindWords
             return pickInfo;
         }
 
-        public QuestionSizeInfo GetQuestionDataInfo()
-        {
-            return questionSizeInfo;
-        }
-
         void ClearContainer(Transform container)
         {
             if (container.childCount > 0)
@@ -224,25 +182,14 @@ namespace YugantLoyaLibrary.FindWords
             return levelHandler;
         }
 
-
-        public void ResetData()
+        private void ResetData()
         {
-            levelHandler.inputGridsList.Clear();
-            levelHandler.unlockedGridList.Clear();
-            levelHandler.totalGridsList.Clear();
-            levelHandler.quesTileList.Clear();
-            levelHandler.buyGridList.Clear();
-            levelHandler.wordCompletedGridList.Clear();
-            levelHandler.gridAvailableOnScreenList.Clear();
-            levelHandler.hintAvailList.Clear();
-            levelHandler.wordsLeftList.Clear();
+            levelHandler.ClearAllLists();
         }
 
         void ResetInGameData()
         {
-            levelHandler.inputGridsList.Clear();
-            levelHandler.wordCompletedGridList.Clear();
-            levelHandler.hintAvailList.Clear();
+            levelHandler.ClearInGameList();
         }
 
         public void ShuffleGrid()
@@ -259,17 +206,25 @@ namespace YugantLoyaLibrary.FindWords
 
         public void Deal()
         {
-            if (levelHandler.wordCompletedGridList.Count > 0)
+            if (levelHandler.wordCompletedGridList.Count > 0 && DataHandler.TotalCoin >= dealUsingCoin)
             {
+                UIManager.SetCoinData(dealUsingCoin, -1);
                 List<GridTile> list = new List<GridTile>(levelHandler.wordCompletedGridList);
                 ShuffleList(list);
                 StartCoroutine(BackToDeckAnim(list));
+                UIManager.instance.UpdateReducedCoinText(0f, hintUsingCoin, 0.5f);
+                UIManager.instance.DealButtonEffect();
             }
         }
 
         public void Hint()
         {
-            levelHandler.ShowHint();
+            if (DataHandler.TotalCoin >= hintUsingCoin)
+            {
+                UIManager.SetCoinData(hintUsingCoin, -1);
+                levelHandler.ShowHint();
+                UIManager.instance.UpdateReducedCoinText(0f, hintUsingCoin, 0.5f);
+            }
         }
 
         IEnumerator BackToDeckAnim(List<GridTile> list)
@@ -280,6 +235,7 @@ namespace YugantLoyaLibrary.FindWords
             string remainingLetter = "";
             string gridExistingString = "";
             List<string> hintFitStringList = new List<string>();
+
             while (total > 0)
             {
                 Debug.Log("Forming Word From Screen Letters");
@@ -353,6 +309,7 @@ namespace YugantLoyaLibrary.FindWords
                 levelHandler.gridAvailableOnScreenList.Add(gridTile);
                 gridTile.MoveTowardsGrid();
                 levelHandler.wordCompletedGridList.Remove(gridTile);
+                index++;
             }
 
             StartCoroutine(ResetLevelHandlerData(_currLevel.timeToWaitForEachGrid * list.Count));

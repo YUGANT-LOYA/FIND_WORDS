@@ -490,6 +490,9 @@ MonoBehaviour:
   quesText: {fileID: 6876171384789056413}
   coinToUnlockText: {fileID: 363884847242961167}
   lockedParent: {fileID: 363884848177006168}
+  unlockRotationTime: 1
+  unlockTime: 0.75
+  rotatingEase: 27
   isAssigned: 0
   isUnlocked: 1
 --- !u!1 &6876171384789056412
@@ -738,7 +741,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 85358b37f91ce764ebf3bde03848414f, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.10196079, g: 0.21568629, b: 0.3921569, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
