@@ -2,6 +2,7 @@ using System.Collections;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace YugantLoyaLibrary.FindWords
 {
@@ -10,12 +11,11 @@ namespace YugantLoyaLibrary.FindWords
         private Level _level;
         public GameObject cube;
         public Material lockMaterial;
-        [SerializeField] private GameObject lockGm;
+        [SerializeField] private GameObject currlockGm, otherLockGm;
         [SerializeField] private TextMeshPro gridText;
         public Material gridMaterial;
         [HideInInspector] public Vector3 defaultGridSize, defaultGridPos;
         public Vector3 blastPos;
-        public Color defaultColor = Color.white, selectedColor = Color.cyan;
         public bool isGridActive = true, isSelected, isBlastAfterWordComplete;
         [SerializeField] private Vector2Int id;
         private LevelHandler _levelHandler;
@@ -32,7 +32,7 @@ namespace YugantLoyaLibrary.FindWords
         public Ease blastReturnEase = Ease.OutCirc;
 
         [Header("Lock Info")] public TextMeshPro amountToUnlockText;
-        public bool isLocked;
+        public bool isFullLocked, isCurrLock;
         public Ease lockEase = Ease.InOutBounce;
         public float lockShakeTime = 0.5f, shakeStrength = 0.1f;
         public int vibrationStrength = 12;
@@ -58,9 +58,20 @@ namespace YugantLoyaLibrary.FindWords
             return gridText;
         }
 
-        public void SetLockStatus(bool isActive)
+        public void SetCurrentLockStatus(bool isActive)
         {
-            lockGm.SetActive(isActive);
+            currlockGm.SetActive(isActive);
+            otherLockGm.SetActive(!isActive);
+        }
+
+        public void DeactivateLockStatus()
+        {
+            ObjectStatus(true);
+            currlockGm.SetActive(false);
+            otherLockGm.SetActive(false);
+            isCurrLock = false;
+            isFullLocked = false;
+            isGridActive = true;
         }
 
         public void SetLockTextAmount(int valToOpen)
@@ -92,17 +103,23 @@ namespace YugantLoyaLibrary.FindWords
             if (!_levelHandler.GetLevelRunningBool() || isMoving)
                 return;
 
-            if (isLocked)
+            if (isCurrLock && DataHandler.TotalCoin >= 100)
             {
-                if (DataHandler.TotalCoin >= 100)
-                {
-                    NewGridUnlockAnimation(100);
-                }
-                else
-                {
-                    ShakeAnim();
-                    return;
-                }
+                isFullLocked = false;
+                isGridActive = true;
+                isCurrLock = false;
+                DataHandler.UnlockGridIndex++;
+                _levelHandler.unlockedGridList.Add(this);
+                _levelHandler.totalBuyingGridList.Remove(this);
+                _levelHandler.gridAvailableOnScreenList.Add(this);
+                NewGridUnlockAnimation(_levelHandler.coinToUnlockNextGrid);
+                return;
+            }
+
+            if (isFullLocked || isCurrLock)
+            {
+                ShakeAnim();
+                return;
             }
 
             if (!isGridActive)
@@ -139,7 +156,6 @@ namespace YugantLoyaLibrary.FindWords
         private void NewGridUnlockAnimation(int coinToSubtract)
         {
             isMoving = true;
-            //DOTween.Kill(transform, false);
 
             FillData();
 
@@ -151,18 +167,15 @@ namespace YugantLoyaLibrary.FindWords
                     unlockTime, RotateMode.FastBeyond360)
                 .SetEase(movingEase).OnComplete(() =>
                 {
-                    _levelHandler.buyGridList.Remove(this);
-                    isGridActive = true;
-                    isLocked = false;
-                    SetLockStatus(false);
-                    _levelHandler.unlockedGridList.Add(this);
-                    _levelHandler.gridAvailableOnScreenList.Add(this);
+                    _levelHandler.UnlockNextGridForCoins();
+                    DeactivateLockStatus();
                     cube.GetComponent<Renderer>().material = new Material(gridMaterial);
                     gridText.gameObject.SetActive(true);
                     isMoving = false;
                     _levelHandler.CheckAllGridBuyed();
                 });
         }
+
 
         //Filling Letter According to the word in WordLeftList.
         void FillData()

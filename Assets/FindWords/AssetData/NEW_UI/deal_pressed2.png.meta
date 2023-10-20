@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6c618bb7bc9e2d8428699152de2de600
+guid: 9c1c5f2362fbf1f4480eedb886565bbe
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,13 +117,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: shuffle_0
+      name: deal_pressed2_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 284
-        height: 363
+        y: 17
+        width: 532
+        height: 367
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,8 +131,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 314c0d821dc9c814fb99d813d81f4f32
-      internalID: 750168720
+      spriteID: 63e32009b9090ed43875168e1d4d683e
+      internalID: 1902458795
       vertices: []
       indices: 
       edges: []
@@ -140,7 +140,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 1d9fc925797a7fd478db07420d67807b
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      shuffle_0: 750168720
+      deal_pressed2_0: 1902458795
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

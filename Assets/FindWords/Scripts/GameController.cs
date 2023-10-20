@@ -31,6 +31,7 @@ namespace YugantLoyaLibrary.FindWords
         [Header("References")] [SerializeField]
         private PickWordDataInfo pickWordDataInfo;
 
+        [SerializeField] private CoinHandlerScriptable coinHandlerScriptable;
         [SerializeField] private DefinedLevelScriptable definedLevelInfo;
         [SerializeField] private GridCamScriptable gridCamScriptable;
         [SerializeField] private MainDictionary mainDictionary;
@@ -62,9 +63,9 @@ namespace YugantLoyaLibrary.FindWords
 
         private void Start()
         {
-            if (!PlayerPrefs.HasKey(StringHelper.FIRST_TIME_OPEN))
+            if (DataHandler.FirstTimeGameOpen == 0)
             {
-                PlayerPrefs.SetInt(StringHelper.FIRST_TIME_OPEN, 1);
+                DataHandler.FirstTimeGameOpen = 1;
                 GameStartInfo();
             }
 
@@ -96,7 +97,8 @@ namespace YugantLoyaLibrary.FindWords
             DataHandler.CurrTotalQuesSize = DataHandler.CurrGridSize;
             DataHandler.UnlockedQuesLetter = DataHandler.CurrTotalQuesSize;
             DataHandler.CurrGridSize++;
-
+            DataHandler.UnlockGridIndex = 0;
+            DataHandler.NewGridCreated = 0;
             yield return new WaitForSeconds(time);
 
             StartGame();
@@ -125,7 +127,19 @@ namespace YugantLoyaLibrary.FindWords
             _currLevel.FillData(levelHandler);
             levelHandler.AssignLevel(_currLevel);
             _currLevel.gridSize = new Vector2Int(DataHandler.CurrGridSize, DataHandler.CurrGridSize);
-            levelHandler.GetGridLetterData();
+
+            if (DataHandler.NewGridCreated == 0)
+            {
+                DataHandler.NewGridCreated = 1;
+                Debug.Log("New Data Created !!");
+                levelHandler.GetGridLetterData();
+            }
+            else
+            {
+                Debug.Log("Loaded Previous Data !!");
+                levelHandler.ReadAlreadyCreatedGrid();
+            }
+
             _currLevel.StartInit();
             levelHandler.LevelStartInit();
         }
@@ -145,20 +159,9 @@ namespace YugantLoyaLibrary.FindWords
             return pickWordDataInfo;
         }
 
-        public PickWordDataInfo.PickingDataInfo GetPickWordListAccordingToQuesSize()
+        public CoinHandlerScriptable GetCoinDataScriptable()
         {
-            PickWordDataInfo.PickingDataInfo pickInfo = new PickWordDataInfo.PickingDataInfo();
-
-            foreach (PickWordDataInfo.PickingDataInfo info in pickWordDataInfo.pickDataInfoList)
-            {
-                if (info.quesLetterCount == DataHandler.UnlockedQuesLetter)
-                {
-                    return info;
-                }
-            }
-
-            Debug.Log("No Pick Data Info Found !!");
-            return pickInfo;
+            return coinHandlerScriptable;
         }
 
         void ClearContainer(Transform container)
@@ -194,6 +197,12 @@ namespace YugantLoyaLibrary.FindWords
 
         public void ShuffleGrid()
         {
+            if (!levelHandler.GetLevelRunningBool() || DataHandler.TotalCoin < shuffleUsingCoin)
+                return;
+
+            UIManager.SetCoinData(shuffleUsingCoin, -1);
+            StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, shuffleUsingCoin, 0.5f));
+
             levelHandler.SetLevelRunningBool(false);
             ResetInGameData();
             float time = _currLevel.timeToWaitForEachGrid;
@@ -206,25 +215,26 @@ namespace YugantLoyaLibrary.FindWords
 
         public void Deal()
         {
-            if (levelHandler.wordCompletedGridList.Count > 0 && DataHandler.TotalCoin >= dealUsingCoin)
-            {
-                UIManager.SetCoinData(dealUsingCoin, -1);
-                List<GridTile> list = new List<GridTile>(levelHandler.wordCompletedGridList);
-                ShuffleList(list);
-                StartCoroutine(BackToDeckAnim(list));
-                UIManager.instance.UpdateReducedCoinText(0f, hintUsingCoin, 0.5f);
-                UIManager.instance.DealButtonEffect();
-            }
+            if (!levelHandler.GetLevelRunningBool() || levelHandler.wordCompletedGridList.Count <= 0 ||
+                DataHandler.TotalCoin < dealUsingCoin)
+                return;
+
+            UIManager.SetCoinData(dealUsingCoin, -1);
+            List<GridTile> list = new List<GridTile>(levelHandler.wordCompletedGridList);
+            ShuffleList(list);
+            StartCoroutine(BackToDeckAnim(list));
+            StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, dealUsingCoin, 0.5f));
+            UIManager.instance.DealButtonEffect();
         }
 
         public void Hint()
         {
-            if (DataHandler.TotalCoin >= hintUsingCoin)
-            {
-                UIManager.SetCoinData(hintUsingCoin, -1);
-                levelHandler.ShowHint();
-                UIManager.instance.UpdateReducedCoinText(0f, hintUsingCoin, 0.5f);
-            }
+            if (!levelHandler.GetLevelRunningBool() || DataHandler.TotalCoin < hintUsingCoin)
+                return;
+
+            UIManager.SetCoinData(hintUsingCoin, -1);
+            levelHandler.ShowHint();
+            StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, hintUsingCoin, 0.5f));
         }
 
         IEnumerator BackToDeckAnim(List<GridTile> list)

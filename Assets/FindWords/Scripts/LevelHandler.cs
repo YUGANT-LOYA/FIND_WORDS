@@ -24,16 +24,18 @@ namespace YugantLoyaLibrary.FindWords
         public EnglishDictWords englishDictWords;
         private Renderer _touchEffectRenderer;
         [SerializeField] Level currLevel;
-        public int coinPerLetter = 10;
+        public int coinPerWord = 10;
+        [HideInInspector] public int coinToUnlockNextGrid;
         [Header("Level Info")] public char[][] gridData;
 
         public List<GridTile> totalGridsList = new List<GridTile>(),
             inputGridsList = new List<GridTile>(),
             wordCompletedGridList = new List<GridTile>(),
             unlockedGridList = new List<GridTile>(),
+            //This will not remove grids from it after unlocking also, becoz it is needed for unlocking next grid for coins.
+            lockedGridList = new List<GridTile>(),
             gridAvailableOnScreenList = new List<GridTile>(),
-            buyGridList = new List<GridTile>(),
-            buyQuesGridList = new List<GridTile>();
+            totalBuyingGridList = new List<GridTile>();
 
         public List<QuesTile> quesTileList = new List<QuesTile>();
         public List<string> selectedWords = new List<string>(), wordsLeftList = new List<string>();
@@ -52,6 +54,11 @@ namespace YugantLoyaLibrary.FindWords
         {
             onNewLetterAddEvent -= AddNewLetter;
             onRemoveLetterEvent -= RemoveLetter;
+
+            SaveGridLockSystem();
+            SaveGridOnScreenSystem();
+            SaveHintList();
+            DataHandler.FirstTimeGameClose = 1;
         }
 
         private void Awake()
@@ -116,13 +123,27 @@ namespace YugantLoyaLibrary.FindWords
             set => _lastQuesTile = value;
         }
 
+        public void ReadAlreadyCreatedGrid()
+        {
+            List<char> readCharList = SaveManager.Instance.state.gridDataList;
+            int index = 0;
+            gridData = new char[DataHandler.CurrGridSize][];
+            for (var i = 0; i < gridData.Length; i++)
+            {
+                gridData[i] = new char[DataHandler.CurrGridSize];
+
+                for (var j = 0; j < gridData[i].Length; j++)
+                {
+                    gridData[i][j] = readCharList[index];
+                    index++;
+                }
+            }
+        }
+
         public void GetGridLetterData()
         {
             int row = currLevel.gridSize.x;
             int col = currLevel.gridSize.y;
-
-            // QuestionSizeInfo.SizeInfo sizeInfo = GameController.instance.GetQuestionDataInfo()
-            //     .difficultyInfos[DataHandler.CurrQuesInfoIndex];
 
             Debug.Log("Total Word To Find Q : " + DataHandler.UnlockedQuesLetter);
 
@@ -583,10 +604,9 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-
         public void CheckAllGridBuyed()
         {
-            if (buyGridList.Count <= 0 && DataHandler.CurrGridSize < GameController.instance.maxGridSize)
+            if (totalBuyingGridList.Count <= 0 && DataHandler.CurrGridSize < GameController.instance.maxGridSize)
             {
                 _isLevelRunning = false;
                 float time = currLevel.timeToWaitForEachGrid;
@@ -658,8 +678,8 @@ namespace YugantLoyaLibrary.FindWords
         private void AddCoin()
         {
             int count = DataHandler.UnlockedQuesLetter;
-            UIManager.instance.CoinCollectionAnimation(coinPerLetter * count);
-            Debug.Log("Coin Per Word To Add: " + coinPerLetter * count);
+            UIManager.instance.CoinCollectionAnimation(coinPerWord);
+            Debug.Log("Coin Per Word To Add: " + coinPerWord);
         }
 
         void WordComplete()
@@ -768,14 +788,7 @@ namespace YugantLoyaLibrary.FindWords
                     gridTile.ObjectStatus(false);
                 }
 
-                if (mainStr.Length > index)
-                {
-                    gridString = mainStr[index].ToString();
-                }
-                else
-                {
-                    gridString = " ";
-                }
+                gridString = mainStr.Length > index ? mainStr[index].ToString() : " ";
 
                 gridTile.DeckAnimation(timeToPlaceGrids, pos, gridString, shouldReturnToGridPlace);
                 index++;
@@ -927,7 +940,7 @@ namespace YugantLoyaLibrary.FindWords
 
                 List<MainDictionary.WordLengthDetailedInfo> dictWordList =
                     GameController.instance.GetWordListOfLength(count,
-                        gridsRemainingList[i].GridTextData);
+                        gridsRemainingList[0].GridTextData);
 
                 Debug.Log("Word List Length : " + dictWordList.Count);
                 Debug.Log("Char Selected : " + dictWordList[i].wordStartChar);
@@ -1024,17 +1037,51 @@ namespace YugantLoyaLibrary.FindWords
             return false;
         }
 
+        public void SetCoinPerWord()
+        {
+            foreach (CoinHandlerScriptable.WordCompleteCoinData wordInfo in GameController.instance
+                         .GetCoinDataScriptable().wordCompleteCoinDataList)
+            {
+                if (wordInfo.quesLetterCount == DataHandler.CurrTotalQuesSize)
+                {
+                    coinPerWord = wordInfo.coinPerWord;
+                }
+            }
+        }
+
+        public void UnlockNextGridForCoins()
+        {
+            //Unlock next grid using coins...
+            if (DataHandler.UnlockGridIndex < lockedGridList.Count)
+            {
+                GridTile gridTile = lockedGridList[DataHandler.UnlockGridIndex];
+
+                int unlockAmount = GameController.instance.GetCoinDataScriptable()
+                    .quesUnlockDataList[DataHandler.CoinGridUnlockIndex];
+
+                coinToUnlockNextGrid = unlockAmount;
+                gridTile.SetLockTextAmount(coinToUnlockNextGrid);
+
+                DataHandler.CoinGridUnlockIndex++;
+
+                Debug.Log(" Unlock Next Grid Coin Called for " + gridTile.gameObject.name);
+                gridTile.SetCurrentLockStatus(true);
+                gridTile.isCurrLock = true;
+            }
+        }
+
         public void ClearAllLists()
         {
             inputGridsList.Clear();
             unlockedGridList.Clear();
             totalGridsList.Clear();
             quesTileList.Clear();
-            buyGridList.Clear();
+            totalBuyingGridList.Clear();
             wordCompletedGridList.Clear();
             gridAvailableOnScreenList.Clear();
             hintAvailList.Clear();
             wordsLeftList.Clear();
+            lockedGridList.Clear();
         }
 
         public void ClearInGameList()
@@ -1042,6 +1089,75 @@ namespace YugantLoyaLibrary.FindWords
             inputGridsList.Clear();
             wordCompletedGridList.Clear();
             hintAvailList.Clear();
+        }
+
+        private void SaveGridLockSystem()
+        {
+            List<GridTile> totalList = new List<GridTile>(totalGridsList);
+            List<char> gridLockStatusList = new List<char>();
+
+            // 0 : Unlocked Grid Tile..
+            // 1 : Curr Lock Grid To Open..
+            // 2 : Fully Locked Grid , cannot be opened yet..
+            foreach (var gridTile in totalList)
+            {
+                if (!gridTile.isCurrLock && !gridTile.isFullLocked)
+                {
+                    //Grid is opened...
+                    gridLockStatusList.Add(gridTile.GridTextData[0]);
+                }
+                else if (gridTile.isCurrLock)
+                {
+                    //This is next Tile which will open with coins...
+                    gridLockStatusList.Add('*');
+                }
+                else
+                {
+                    //This tile is fully Locked and only opens when it changes to isCurrLock..
+                    gridLockStatusList.Add('-');
+                }
+            }
+
+            SaveManager.Instance.state.gridDataList = new List<char>(gridLockStatusList);
+            SaveManager.Instance.UpdateState();
+        }
+
+        private void SaveGridOnScreenSystem()
+        {
+            List<GridTile> totalList = new List<GridTile>(totalGridsList);
+            List<bool> gridScreenList = new List<bool>();
+
+            // 0 : Grid Tile is not inside the Screen..
+            // 1 : Grid Tile is inside the Screen..
+            foreach (var gridTile in totalList)
+            {
+                if (!gridTile.isBlastAfterWordComplete)
+                {
+                    gridScreenList.Add(false);
+                }
+                else
+                {
+                    gridScreenList.Add(true);
+                }
+            }
+
+            SaveManager.Instance.state.gridOnScreenList = new List<bool>(gridScreenList);
+            SaveManager.Instance.UpdateState();
+        }
+
+        private void SaveHintList()
+        {
+            List<string> hintList = new List<string>(hintAvailList);
+
+            // 0 : Grid Tile is not inside the Screen..
+            // 1 : Grid Tile is inside the Screen..
+            foreach (string str in hintAvailList)
+            {
+                hintList.Add(str);
+            }
+
+            SaveManager.Instance.state.hintList = new List<string>(hintList);
+            SaveManager.Instance.UpdateState();
         }
     }
 }

@@ -66,12 +66,42 @@ namespace YugantLoyaLibrary.FindWords
             coin.transform.localScale = Vector3.one * (UIManager.instance.maxCoinScale / 2f);
         }
 
+        public static int FirstTimeGameOpen
+        {
+            get => PlayerPrefs.GetInt(StringHelper.FIRST_TIME_OPEN, 0);
+            set => PlayerPrefs.SetInt(StringHelper.FIRST_TIME_OPEN, value);
+        } 
+        
+        public static int GridsGeneratingFirstTime
+        {
+            get => PlayerPrefs.GetInt(StringHelper.GRID_GENERATING_FIRST_TIME, 0);
+            set => PlayerPrefs.SetInt(StringHelper.GRID_GENERATING_FIRST_TIME, value);
+        }
+        
+        public static int FirstTimeGameClose
+        {
+            get => PlayerPrefs.GetInt(StringHelper.FIRST_TIME_GAME_CLOSE, 0);
+            set => PlayerPrefs.SetInt(StringHelper.FIRST_TIME_GAME_CLOSE, value);
+        }
+        
+        public static int NewGridCreated
+        {
+            get => PlayerPrefs.GetInt(StringHelper.NEW_GRID_CREATED, 0);
+            set => PlayerPrefs.SetInt(StringHelper.NEW_GRID_CREATED, value);
+        }
+        
+        public static int CoinGridUnlockIndex
+        {
+            get => PlayerPrefs.GetInt(StringHelper.COIN_GRID_UNLOCK_INDEX, 0);
+            set => PlayerPrefs.SetInt(StringHelper.COIN_GRID_UNLOCK_INDEX, value);
+        }
+        
         public static int UnlockGridIndex
         {
             get => PlayerPrefs.GetInt(StringHelper.UNLOCK_GRID_INDEX, 0);
             set => PlayerPrefs.SetInt(StringHelper.UNLOCK_GRID_INDEX, value);
         }
-        
+
         public static int CurrDefinedLevel
         {
             get => PlayerPrefs.GetInt(StringHelper.CURR_DEFINED_LEVEL, 0);
@@ -121,7 +151,7 @@ namespace YugantLoyaLibrary.FindWords
             get => PlayerPrefs.GetInt((StringHelper.CURR_TOTAL_QUES_SIZE), GameController.instance.startingQuesSize);
             set => PlayerPrefs.SetInt(StringHelper.CURR_TOTAL_QUES_SIZE, value);
         }
-        
+
         public static int TotalCoin
         {
             get => PlayerPrefs.GetInt(StringHelper.COIN_AVAIL, _initCoins);

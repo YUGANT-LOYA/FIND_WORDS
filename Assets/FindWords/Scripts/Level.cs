@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
+using NaughtyAttributes;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
@@ -45,9 +47,9 @@ namespace YugantLoyaLibrary.FindWords
         {
             //Debug.Log("Level StartInit Called !");
             Debug.Log($"Aspect Ratio : {_cam.aspect} , Width : {Screen.width} , Height  : {Screen.height}");
-
             SetCameraPos();
             CreateGrid();
+            _levelHandler.SetCoinPerWord();
         }
 
         void SetCameraPos()
@@ -253,14 +255,16 @@ namespace YugantLoyaLibrary.FindWords
             _defaultStartPos.x = -_camOrthographicSize / 2 + _currGridSize / 2;
             Debug.Log("Default Pos : " + _defaultStartPos.x);
             Vector3 startPos = new Vector3(_defaultStartPos.x, _defaultStartPos.y, _defaultStartPos.z);
-            //int gridToUnlockIndex = DataHandler.UnlockGridIndex;
-            //bool gridLocked = false;
+
             if (GameController.instance.maxGridSize < DataHandler.CurrGridSize)
             {
                 DataHandler.IsMaxGridOpened = 1;
             }
 
+            List<bool> gridScreenList = new List<bool>(SaveManager.Instance.state.gridOnScreenList);
+            int index = 0;
             //Debug.Log("Start Pos : " + startPos);
+
             for (int i = 0; i < gridSize.x; i++)
             {
                 for (int j = 0; j < gridSize.y; j++)
@@ -277,21 +281,25 @@ namespace YugantLoyaLibrary.FindWords
                     gridTileScript.AssignInfo(this);
                     gridTileScript.GridID = new Vector2Int(i, j);
                     _levelHandler.totalGridsList.Add(gridTileScript);
+
+                    //This will execute after 
+                    if (DataHandler.FirstTimeGameClose != 0)
+                    {
+                        gridTileScript.isBlastAfterWordComplete = gridScreenList[index];
+                    }
+
                     startPos.x += _currGridSize;
 
                     if ((i == gridSize.x - 1 || j == gridSize.y - 1) && DataHandler.IsMaxGridOpened == 0)
                     {
-                        //if (gridToUnlockIndex == 0 && !gridLocked)
-                        //{
-                            //gridLocked = true;
-                            _levelHandler.buyGridList.Add(gridTileScript);
-                            gridTileScript.SetLockStatus(true);
-                            gridTileScript.SetLockTextAmount(100);
-                            gridTileScript.isLocked = true;
-                            gridTileScript.GetText().gameObject.SetActive(false);
-                            gridTileScript.isGridActive = false;
-                            gmRenderer.material = new Material(gridTileScript.lockMaterial);
-                        //}
+                        _levelHandler.totalBuyingGridList.Add(gridTileScript);
+                        gridTileScript.GetText().gameObject.SetActive(false);
+                        gridTileScript.isGridActive = false;
+                        gmRenderer.material = new Material(gridTileScript.lockMaterial);
+                        _levelHandler.lockedGridList.Add(gridTileScript);
+                        gridTileScript.SetCurrentLockStatus(false);
+                        gridTileScript.SetLockTextAmount(_levelHandler.coinToUnlockNextGrid);
+                        gridTileScript.isFullLocked = true;
                     }
                     else
                     {
@@ -301,7 +309,7 @@ namespace YugantLoyaLibrary.FindWords
                         gridTileScript.gridMaterial = gmRenderer.material;
                     }
 
-                    //gridToUnlockIndex--;
+                    index++;
                     AssignGridData(gridTileScript, i, j);
                 }
 
@@ -315,7 +323,43 @@ namespace YugantLoyaLibrary.FindWords
                 DataHandler.IsMaxGridOpened = 1;
             }
 
+            UnlockPreviousGrids();
+            LoadHintData();
+
             StartCoroutine(PlaceGrids());
+        }
+
+        private void LoadHintData()
+        {
+            if (SaveManager.Instance.state.hintList.Count <= 0)
+                return;
+
+            _levelHandler.hintAvailList.Clear();
+
+            foreach (string str in SaveManager.Instance.state.hintList)
+            {
+                _levelHandler.hintAvailList.Add(str);
+            }
+        }
+
+        void UnlockPreviousGrids()
+        {
+            List<GridTile> list = new List<GridTile>(_levelHandler.lockedGridList);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                GridTile tile = list[i];
+                if (i < DataHandler.UnlockGridIndex)
+                {
+                    _levelHandler.gridAvailableOnScreenList.Add(tile);
+                    tile.DeactivateLockStatus();
+                    continue;
+                }
+
+                Debug.Log("Tile Unlocked : " + tile + " at : " + i);
+                _levelHandler.UnlockNextGridForCoins();
+                break;
+            }
         }
 
         private IEnumerator PlaceGrids()
@@ -325,8 +369,18 @@ namespace YugantLoyaLibrary.FindWords
                 foreach (GridTile gmObj in _levelHandler.totalGridsList)
                 {
                     yield return new WaitForSeconds(timeToWaitForEachGrid / 2);
+
                     gmObj.gameObject.SetActive(true);
-                    gmObj.transform.DOLocalMove(gmObj.defaultGridPos, timeToPlaceGrid).SetEase(gridPlacementEase);
+
+                    if (!gmObj.isBlastAfterWordComplete)
+                    {
+                        gmObj.transform.DOLocalMove(gmObj.defaultGridPos, timeToPlaceGrid).SetEase(gridPlacementEase);
+                    }
+                    else
+                    {
+                        _levelHandler.wordCompletedGridList.Add(gmObj);
+                        _levelHandler.gridAvailableOnScreenList.Remove(gmObj);
+                    }
                 }
             }
         }
@@ -341,5 +395,6 @@ namespace YugantLoyaLibrary.FindWords
                 gridTileScript.isGridActive = false;
             }
         }
+        
     }
 }

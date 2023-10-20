@@ -109,14 +109,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridSize: {x: 0, y: 0}
-  totalWordsToFind: 4
-  quesInOneRow: 5
   gridMaterial: {fileID: 2100000, guid: 66e9ed285ea4b894d8e60f8479edcdec, type: 2}
   gridPlacementEase: 21
   defaultStartYPos: 2
   camGridOffset: 0
   distanceFromScreen: 3
-  timeToPlaceGrid: 1
+  timeToPlaceGrid: 0.75
   timeToWaitForEachGrid: 0.1
   quesGridTrans: {fileID: 379044332734406932}
   gridContainer: {fileID: 2675200230521095590}
