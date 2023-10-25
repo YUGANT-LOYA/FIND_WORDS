@@ -10,4 +10,5 @@ public class SaveState
     public List<char> gridDataList = new List<char>();
     public List<bool> gridOnScreenList = new List<bool>();
     public List<string> hintList = new List<string>();
+    public List<string> wordLeftList = new List<string>();
 }

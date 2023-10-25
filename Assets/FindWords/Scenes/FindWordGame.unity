@@ -401,6 +401,7 @@ MonoBehaviour:
     gridDataList: 
     gridOnScreenList: 
     hintList: []
+    wordLeftList: []
   saveKey: 
 --- !u!4 &181879657
 Transform:
@@ -1361,7 +1362,7 @@ MonoBehaviour:
     type: 3}
   normalDealButton: {fileID: -452995933, guid: 2ee34ef6468feb24182b6dfb9255c423, type: 3}
   coinMovementEase: 26
-  disableHintColor: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
+  disableButtonColor: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
   wrongEffectTime: 0.3
   wrongEffectImg: {fileID: 617413402}
   defaultWrongEffectColor: {r: 1, g: 1, b: 1, a: 0}
@@ -1412,14 +1413,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isTesting: 0
   startingGridSize: 4
-  maxHelperIndex: 3
+  maxHelperIndex: 6
   startingQuesSize: 3
   maxGridSize: 7
   defaultIq: 5
   pickWordDataInfo: {fileID: 11400000, guid: 705e50367ef97c646ab4c1cd1b227194, type: 2}
+  definedLevelScriptable: {fileID: 11400000, guid: 4780e79b37aa4534c88ee4c735d1c69d,
+    type: 2}
   coinHandlerScriptable: {fileID: 11400000, guid: 52e5a38d84809d4419f4f0ef5539c0d1,
     type: 2}
-  definedLevelInfo: {fileID: 11400000, guid: 4780e79b37aa4534c88ee4c735d1c69d, type: 2}
   gridCamScriptable: {fileID: 11400000, guid: 7bf22db1e57398e46a45160ed1db8855, type: 2}
   mainDictionary: {fileID: 11400000, guid: 851a5cb24c798f44dba4329d5b47384a, type: 2}
   levelHandler: {fileID: 399063912}
@@ -2709,7 +2711,7 @@ MonoBehaviour:
     type: 3}
   quesPrefab: {fileID: 6876171383429484901, guid: 2b60b11f0918330469795326020309c3,
     type: 3}
-  initialCoins: 5000
+  initialCoins: 50
 --- !u!1 &5704458314791691809
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,9 +9,8 @@ public class DefinedLevelScriptable : ScriptableObject
     [Serializable]
     public struct DefinedLevelInfo
     {
-        public bool shouldShuffle;
+        [TextArea(5, 5)] public string gridData;
     }
 
-    public TextAsset helperTextFile;
     public List<DefinedLevelInfo> definedLevelInfoList;
 }

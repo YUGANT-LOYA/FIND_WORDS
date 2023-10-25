@@ -355,7 +355,7 @@ MonoBehaviour:
   minLength: 3
   maxLength: 8
   oxfordDictTextFile: {fileID: 4900000, guid: 2004dc16b8fe2174d815a78b90311881, type: 3}
-  wordLengthTextFile: {fileID: 4900000, guid: b89d7a48e821bf2418eed9ee400c8b7c, type: 3}
+  wordLengthTextFile: {fileID: 4900000, guid: 226db899b08c5714c8f5d9748798a663, type: 3}
   mainDict: {fileID: 11400000, guid: 851a5cb24c798f44dba4329d5b47384a, type: 2}
   minMaxScriptableWordLength: {x: 3, y: 7}
 --- !u!4 &1398960110
@@ -365,7 +365,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1398960108}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -402,11 +402,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59462f6c56f921b48a882700f6d3061b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wordLength: 4
-  minLength: 3
-  maxLength: 8
-  oxfordDictTextFile: {fileID: 4900000, guid: ab1c40ef23335ff49900be6d0f098734, type: 3}
-  wordLengthTextFile: {fileID: 4900000, guid: 139c6680067926a4fb29d6ed346684e0, type: 3}
+  wordLength: 5
+  minLength: 0
+  maxLength: 0
+  oxfordDictTextFile: {fileID: 0}
+  wordLengthTextFile: {fileID: 4900000, guid: 1fa1a80e60c2ee54a8b1c841844d50c9, type: 3}
   mainDict: {fileID: 11400000, guid: 851a5cb24c798f44dba4329d5b47384a, type: 2}
   pickWordDataInfo: {fileID: 11400000, guid: 705e50367ef97c646ab4c1cd1b227194, type: 2}
   minMaxScriptableWordLength: {x: 3, y: 7}

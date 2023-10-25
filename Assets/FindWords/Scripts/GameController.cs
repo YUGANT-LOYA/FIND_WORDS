@@ -31,8 +31,8 @@ namespace YugantLoyaLibrary.FindWords
         [Header("References")] [SerializeField]
         private PickWordDataInfo pickWordDataInfo;
 
+        [SerializeField] private DefinedLevelScriptable definedLevelScriptable;
         [SerializeField] private CoinHandlerScriptable coinHandlerScriptable;
-        [SerializeField] private DefinedLevelScriptable definedLevelInfo;
         [SerializeField] private GridCamScriptable gridCamScriptable;
         [SerializeField] private MainDictionary mainDictionary;
         [SerializeField] private LevelHandler levelHandler;
@@ -49,6 +49,23 @@ namespace YugantLoyaLibrary.FindWords
             Vibration.Init();
         }
 
+        private void OnDisable()
+        {
+            Debug.Log("On Disable Called !");
+        }
+
+        private void OnDestroy()
+        {
+            Debug.Log("On Destroy Called !");
+            levelHandler.SaveSystem();
+            DataHandler.FirstTimeGameClose = 1;
+            Debug.Log("Game Quit (Word Left List) Count : " + SaveManager.Instance.state.wordLeftList.Count);
+            Debug.Log("Game Quit (Hint List) Count : " + SaveManager.Instance.state.hintList.Count);
+            Debug.Log("Game Quit (Grid On Screen List) Count : " +
+                      SaveManager.Instance.state.gridOnScreenList.Count);
+            Debug.Log("Game Quit (Grid Data List) Count : " + SaveManager.Instance.state.gridDataList.Count);
+        }
+        
         private void CreateSingleton()
         {
             if (instance == null)
@@ -78,9 +95,6 @@ namespace YugantLoyaLibrary.FindWords
         {
             Debug.Log("First Time Game Start Info Called !!");
             UIManager.instance.coinText.text = DataHandler.TotalCoin.ToString();
-            DataHandler.CurrDefinedLevel = 0;
-            DataHandler.PickDataIndex = 0;
-            DataHandler.HelperWordIndex = 0;
             DataHandler.CurrGridSize = startingGridSize;
             UIManager.instance.iqLevelText.text = $"IQ : {DataHandler.IqLevel.ToString()}";
         }
@@ -107,10 +121,7 @@ namespace YugantLoyaLibrary.FindWords
         private void StartGame()
         {
             ResetData();
-
             //Give Condition for Updating The Word Left List !
-            levelHandler.UpdateWordLeftList();
-
             ClearContainer(levelContainer);
             CreateLevel();
         }
@@ -128,18 +139,7 @@ namespace YugantLoyaLibrary.FindWords
             levelHandler.AssignLevel(_currLevel);
             _currLevel.gridSize = new Vector2Int(DataHandler.CurrGridSize, DataHandler.CurrGridSize);
 
-            if (DataHandler.NewGridCreated == 0)
-            {
-                DataHandler.NewGridCreated = 1;
-                Debug.Log("New Data Created !!");
-                levelHandler.GetGridLetterData();
-            }
-            else
-            {
-                Debug.Log("Loaded Previous Data !!");
-                levelHandler.ReadAlreadyCreatedGrid();
-            }
-
+            levelHandler.AssignGridData();
             _currLevel.StartInit();
             levelHandler.LevelStartInit();
         }
@@ -149,9 +149,9 @@ namespace YugantLoyaLibrary.FindWords
             return gridCamScriptable;
         }
 
-        public DefinedLevelScriptable GetDefinedLevelInfoScriptable()
+        public DefinedLevelScriptable GetDefinedLevelScriptable()
         {
-            return definedLevelInfo;
+            return definedLevelScriptable;
         }
 
         public PickWordDataInfo GetPickDataInfo()
@@ -195,13 +195,19 @@ namespace YugantLoyaLibrary.FindWords
             levelHandler.ClearInGameList();
         }
 
-        public void ShuffleGrid()
+        public void ShuffleGrid(bool isCalledByPlayer = true)
         {
-            if (!levelHandler.GetLevelRunningBool() || DataHandler.TotalCoin < shuffleUsingCoin)
+            if (!levelHandler.GetLevelRunningBool())
                 return;
 
-            UIManager.SetCoinData(shuffleUsingCoin, -1);
-            StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, shuffleUsingCoin, 0.5f));
+            if (isCalledByPlayer)
+            {
+                if (DataHandler.TotalCoin < shuffleUsingCoin)
+                    return;
+
+                UIManager.SetCoinData(shuffleUsingCoin, -1);
+                StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, shuffleUsingCoin, 0.5f));
+            }
 
             levelHandler.SetLevelRunningBool(false);
             ResetInGameData();
@@ -213,28 +219,42 @@ namespace YugantLoyaLibrary.FindWords
             levelHandler.RevertQuesData();
         }
 
-        public void Deal()
+        public void Deal(bool isCalledByPlayer = true)
         {
-            if (!levelHandler.GetLevelRunningBool() || levelHandler.wordCompletedGridList.Count <= 0 ||
-                DataHandler.TotalCoin < dealUsingCoin)
+            if (!levelHandler.GetLevelRunningBool() || levelHandler.wordCompletedGridList.Count <= 0)
                 return;
 
-            UIManager.SetCoinData(dealUsingCoin, -1);
+            if (isCalledByPlayer)
+            {
+                if (DataHandler.TotalCoin < dealUsingCoin)
+                    return;
+
+                UIManager.SetCoinData(dealUsingCoin, -1);
+                StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, dealUsingCoin, 0.5f));
+            }
+
             List<GridTile> list = new List<GridTile>(levelHandler.wordCompletedGridList);
             ShuffleList(list);
             StartCoroutine(BackToDeckAnim(list));
-            StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, dealUsingCoin, 0.5f));
+
             UIManager.instance.DealButtonEffect();
         }
 
-        public void Hint()
+        public void Hint(bool isCalledByPlayer = true)
         {
-            if (!levelHandler.GetLevelRunningBool() || DataHandler.TotalCoin < hintUsingCoin)
+            if (!levelHandler.GetLevelRunningBool())
                 return;
 
-            UIManager.SetCoinData(hintUsingCoin, -1);
+            if (isCalledByPlayer)
+            {
+                if (DataHandler.TotalCoin < hintUsingCoin)
+                    return;
+
+                UIManager.SetCoinData(hintUsingCoin, -1);
+                StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, hintUsingCoin, 0.5f));
+            }
+
             levelHandler.ShowHint();
-            StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, hintUsingCoin, 0.5f));
         }
 
         IEnumerator BackToDeckAnim(List<GridTile> list)
@@ -243,14 +263,13 @@ namespace YugantLoyaLibrary.FindWords
             List<GridTile> tempList = new List<GridTile>(levelHandler.gridAvailableOnScreenList);
             int total = list.Count;
             string remainingLetter = "";
-            string gridExistingString = "";
             List<string> hintFitStringList = new List<string>();
 
             while (total > 0)
             {
                 Debug.Log("Forming Word From Screen Letters");
                 string tempStr =
-                    levelHandler.PickRandomWordFormingLetters(tempList, 2, out gridExistingString);
+                    levelHandler.PickRandomWordFormingLetters(tempList, 2, out string gridExistingString);
 
                 Debug.Log("Temp Word : " + tempStr);
 
@@ -313,7 +332,7 @@ namespace YugantLoyaLibrary.FindWords
             foreach (GridTile gridTile in list)
             {
                 yield return new WaitForSeconds(_currLevel.timeToWaitForEachGrid);
-                //Debug.Log("Moving To Grid Place Again !");
+                Debug.Log("Moving To Grid Place Again !");
                 gridTile.isBlastAfterWordComplete = false;
                 gridTile.GridTextData = randomPickedWord[index].ToString();
                 levelHandler.gridAvailableOnScreenList.Add(gridTile);
@@ -373,7 +392,8 @@ namespace YugantLoyaLibrary.FindWords
             yield return new WaitForSeconds(time);
             levelHandler.LastQuesTile = null;
             levelHandler.SetLevelRunningBool(true);
-            //levelHandler.SetHintButtonActivationStatus();
+            bool isHintAvail = levelHandler.CheckHintStatus(out string finalStr);
+            UIManager.instance.HintStatus(isHintAvail);
         }
 
         public List<MainDictionary.WordLengthDetailedInfo> GetWordListOfLength(int wordLength,

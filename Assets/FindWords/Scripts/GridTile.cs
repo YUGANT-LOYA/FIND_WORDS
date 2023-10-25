@@ -103,7 +103,7 @@ namespace YugantLoyaLibrary.FindWords
             if (!_levelHandler.GetLevelRunningBool() || isMoving)
                 return;
 
-            if (isCurrLock && DataHandler.TotalCoin >= 100)
+            if (isCurrLock && DataHandler.TotalCoin >= _levelHandler.coinToUnlockNextGrid)
             {
                 isFullLocked = false;
                 isGridActive = true;
@@ -112,6 +112,8 @@ namespace YugantLoyaLibrary.FindWords
                 _levelHandler.unlockedGridList.Add(this);
                 _levelHandler.totalBuyingGridList.Remove(this);
                 _levelHandler.gridAvailableOnScreenList.Add(this);
+                UIManager.SetCoinData(_levelHandler.coinToUnlockNextGrid, -1);
+                StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, _levelHandler.coinToUnlockNextGrid, 0.5f));
                 NewGridUnlockAnimation(_levelHandler.coinToUnlockNextGrid);
                 return;
             }
@@ -160,13 +162,14 @@ namespace YugantLoyaLibrary.FindWords
             FillData();
 
             float time = UIManager.instance.coinAnimTime;
-            StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, coinToSubtract, time));
+            //StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, coinToSubtract, time));
             transform.DORotate(
                     new Vector3(unlockRotationTime * 360f, transform.rotation.eulerAngles.y,
                         transform.rotation.eulerAngles.z),
                     unlockTime, RotateMode.FastBeyond360)
                 .SetEase(movingEase).OnComplete(() =>
                 {
+                    DataHandler.CoinGridUnlockIndex++;
                     _levelHandler.UnlockNextGridForCoins();
                     DeactivateLockStatus();
                     cube.GetComponent<Renderer>().material = new Material(gridMaterial);

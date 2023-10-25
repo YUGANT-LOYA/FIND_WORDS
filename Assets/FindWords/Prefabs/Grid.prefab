@@ -154,8 +154,6 @@ MonoBehaviour:
   defaultGridSize: {x: 0, y: 0, z: 0}
   defaultGridPos: {x: 0, y: 0, z: 0}
   blastPos: {x: -4, y: 0, z: 0}
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
-  selectedColor: {r: 1, g: 1, b: 1, a: 1}
   isGridActive: 1
   isSelected: 0
   isBlastAfterWordComplete: 0
@@ -171,7 +169,8 @@ MonoBehaviour:
   blastTime: 1.5
   blastReturnEase: 4
   amountToUnlockText: {fileID: 6592827426016865442}
-  isLocked: 0
+  isFullLocked: 0
+  isCurrLock: 0
   lockEase: 31
   lockShakeTime: 0.5
   shakeStrength: 0.1
@@ -784,7 +783,7 @@ Transform:
   m_GameObject: {fileID: 7268490142264523750}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.006, y: -0.144, z: -1}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5002505}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.30015033}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7268490141901637096}

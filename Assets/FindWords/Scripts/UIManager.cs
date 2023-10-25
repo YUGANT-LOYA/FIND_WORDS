@@ -3,6 +3,7 @@ using System.Collections;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using YugantLibrary.ParkingOrderGame;
 using Random = UnityEngine.Random;
@@ -21,7 +22,7 @@ namespace YugantLoyaLibrary.FindWords
         public Sprite pressedDealButton, normalDealButton;
         public Ease coinMovementEase;
         private float _coinTextUpdateTime;
-        public Color disableHintColor;
+        public Color disableButtonColor;
         [SerializeField] float wrongEffectTime = 0.2f;
         [SerializeField] Image wrongEffectImg;
         public Color defaultWrongEffectColor, redWrongEffectColor;
@@ -54,13 +55,40 @@ namespace YugantLoyaLibrary.FindWords
         {
             if (!isActive)
             {
-                hintButton.GetComponent<Image>().color = disableHintColor;
+                hintButton.GetComponent<Image>().color = disableButtonColor;
                 hintButton.enabled = false;
             }
             else
             {
                 hintButton.enabled = true;
                 hintButton.GetComponent<Image>().color = Color.white;
+            }
+
+            CheckOtherButtonStatus();
+        }
+
+        private void CheckOtherButtonStatus()
+        {
+            if (DataHandler.TotalCoin < GameController.instance.shuffleUsingCoin)
+            {
+                shuffleButton.GetComponent<Image>().color = disableButtonColor;
+                shuffleButton.enabled = false;
+            }
+            else
+            {
+                shuffleButton.enabled = true;
+                shuffleButton.GetComponent<Image>().color = Color.white;
+            }
+            
+            if (DataHandler.TotalCoin < GameController.instance.dealUsingCoin)
+            {
+                dealButton.GetComponent<Image>().color = disableButtonColor;
+                dealButton.enabled = false;
+            }
+            else
+            {
+                dealButton.enabled = true;
+                dealButton.GetComponent<Image>().color = Color.white;
             }
         }
 
@@ -129,6 +157,11 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
+        void SetUICoinText()
+        {
+            coinText.text = $"{DataHandler.TotalCoin}";
+        }
+
         private IEnumerator UpdateAddedCoinText(float waitTime, int coinToBeAdded, float coinMoveTime,
             Action callback = null)
         {
@@ -143,11 +176,14 @@ namespace YugantLoyaLibrary.FindWords
                 coinText.text = $"{startVal + i}";
                 yield return new WaitForSeconds(time);
             }
+
+            SetUICoinText();
         }
 
         public IEnumerator UpdateReducedCoinText(float waitTime, int coinToSubtract, float coinMoveTime,
             Action callback = null)
         {
+            Debug.Log("Reduced Coin Text Called !");
             yield return new WaitForSeconds(waitTime);
 
             int startVal = int.Parse(coinText.text);
@@ -158,6 +194,8 @@ namespace YugantLoyaLibrary.FindWords
                 coinText.text = $"{startVal - i}";
                 yield return new WaitForSeconds(time);
             }
+
+            SetUICoinText();
         }
 
         public static void SetCoinData(int coinToBeAdded, int sign = 1)

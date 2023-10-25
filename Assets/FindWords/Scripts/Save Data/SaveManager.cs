@@ -22,6 +22,11 @@ public class SaveManager : MonoBehaviour
         }
         
         Load();
+        Debug.Log("Save Manager (Word Left List) Count : " + SaveManager.Instance.state.wordLeftList.Count);
+        Debug.Log("Save Manager (Hint List) Count : " + SaveManager.Instance.state.hintList.Count);
+        Debug.Log("Save Manager (Grid On Screen List) Count : " +
+                  SaveManager.Instance.state.gridOnScreenList.Count);
+        Debug.Log("Save Manager (Grid Data List) Count : " + SaveManager.Instance.state.gridDataList.Count);
     }
     
     public void Save()

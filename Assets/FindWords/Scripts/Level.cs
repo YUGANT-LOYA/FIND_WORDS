@@ -309,6 +309,7 @@ namespace YugantLoyaLibrary.FindWords
                         gridTileScript.gridMaterial = gmRenderer.material;
                     }
 
+                    Debug.Log("GRID CREATED INDEX : " + index);
                     index++;
                     AssignGridData(gridTileScript, i, j);
                 }
@@ -341,7 +342,7 @@ namespace YugantLoyaLibrary.FindWords
                 _levelHandler.hintAvailList.Add(str);
             }
         }
-
+        
         void UnlockPreviousGrids()
         {
             List<GridTile> list = new List<GridTile>(_levelHandler.lockedGridList);
@@ -352,6 +353,8 @@ namespace YugantLoyaLibrary.FindWords
                 if (i < DataHandler.UnlockGridIndex)
                 {
                     _levelHandler.gridAvailableOnScreenList.Add(tile);
+                    _levelHandler.totalBuyingGridList.Remove(tile);
+                    _levelHandler.unlockedGridList.Add(tile);
                     tile.DeactivateLockStatus();
                     continue;
                 }
@@ -395,6 +398,5 @@ namespace YugantLoyaLibrary.FindWords
                 gridTileScript.isGridActive = false;
             }
         }
-        
     }
 }

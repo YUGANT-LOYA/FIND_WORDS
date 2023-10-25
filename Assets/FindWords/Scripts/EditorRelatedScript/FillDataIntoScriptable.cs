@@ -239,4 +239,49 @@ public class FillDataIntoScriptable : MonoBehaviour
         AssetDatabase.Refresh();
 #endif
     }
+
+    [Button]
+    void RemoveDuplicateWords()
+    {
+        string[] lines = wordLengthTextFile.text.Trim().Split('\n');
+        List<string> totalWordList = new List<string>();
+        List<string> wordAddedToCsv = new List<string>();
+        
+        string assetsFolderPath = Application.dataPath;
+        
+        // Specify the relative path within the "Assets" folder where you want to save the CSV file
+        string relativeFilePath =
+            $"FindWords/Resources/PredefinedWords/{wordLength}_Letter.csv";
+
+        // Combine the paths to get the full path of the CSV file
+        string filePath = Path.Combine(assetsFolderPath, relativeFilePath);
+        
+        foreach (string str in lines)
+        {
+            totalWordList.Add(str.Trim());
+        }
+
+        StringBuilder csvContent = new StringBuilder();
+
+        foreach (var str in totalWordList)
+        {
+            if (!string.IsNullOrEmpty(str) && !string.IsNullOrWhiteSpace(str) && !wordAddedToCsv.Contains(str))
+            {
+                wordAddedToCsv.Add(str);
+                csvContent.AppendLine(str.Trim());
+            }
+        }
+
+        using (StreamWriter writer = new StreamWriter(filePath, true))
+        {
+            writer.Write(csvContent.ToString());
+        }
+
+        Debug.Log("Duplicate Removed Successfully !!");
+        
+#if UNITY_EDITOR
+        EditorUtility.SetDirty(wordLengthTextFile);
+        AssetDatabase.Refresh();
+#endif
+    }
 }
