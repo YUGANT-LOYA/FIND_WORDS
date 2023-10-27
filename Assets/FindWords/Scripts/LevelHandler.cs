@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -150,6 +151,7 @@ namespace YugantLoyaLibrary.FindWords
                 var levelInfo = definedLevelList[index];
                 if (levelInfo.gridSize == DataHandler.CurrGridSize)
                 {
+                    //DataHandler.HelperWordIndex++;
                     DataHandler.CurrDefinedLevel = index;
                     string[] data = levelInfo.gridData.Split('\n');
                     hintAvailList = new List<string>(levelInfo.hintList);
@@ -259,10 +261,11 @@ namespace YugantLoyaLibrary.FindWords
                     }
                 }
 
-                if (DataHandler.HelperWordIndex >= GameController.instance.maxHelperIndex)
-                {
-                    unlockStr = ShuffleString(unlockStr, 1);
-                }
+                // if (DataHandler.HelperWordIndex >= GameController.instance.maxHelperIndex)
+                // {
+                //     unlockStr = ShuffleString(unlockStr, 1);
+                // }
+                unlockStr = ShuffleString(unlockStr, 1);
             }
 
 
@@ -386,12 +389,14 @@ namespace YugantLoyaLibrary.FindWords
                 Debug.Log("Temp Str " + tempStr);
                 Debug.Log("Unlock String Data " + mainStr);
 
-                if (DataHandler.HelperWordIndex >= GameController.instance.maxHelperIndex)
-                {
-                    mainStr = ShuffleString(mainStr);
-                }
+                // if (DataHandler.HelperWordIndex >= GameController.instance.maxHelperIndex)
+                // {
+                //     mainStr = ShuffleString(mainStr);
+                // }
+                
+                mainStr = ShuffleString(mainStr);
             }
-
+            
             GameController.instance.onSaveGameEvent?.Invoke();
 
             return mainStr;
@@ -778,7 +783,7 @@ namespace YugantLoyaLibrary.FindWords
             if (doWordExist)
             {
                 selectedWords.Add(word);
-                DataHandler.HelperWordIndex++;
+                //DataHandler.HelperWordIndex++;
 
                 string temp = word.Trim().ToLower();
 

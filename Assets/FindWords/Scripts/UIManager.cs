@@ -28,7 +28,6 @@ namespace YugantLoyaLibrary.FindWords
         public Color defaultWrongEffectColor, redWrongEffectColor;
         public GameObject loadingScreen;
 
-        
         // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         // static void OnBeforeSceneLoadRuntimeMethod()
         // {

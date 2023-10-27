@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +18,10 @@ namespace YugantLoyaLibrary.FindWords
         private void Awake()
         {
             CreateSingleton();
+        }
+
+        private void Start()
+        {
             Init();
         }
 

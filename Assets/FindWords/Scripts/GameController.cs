@@ -46,9 +46,13 @@ namespace YugantLoyaLibrary.FindWords
 
         private void Awake()
         {
-            Debug.Log("Awake Called !!");
-            Application.targetFrameRate = 120;
             CreateSingleton();
+        }
+
+        public void MakeInstance()
+        {
+            Debug.Log("Make Instance Called !!");
+            Application.targetFrameRate = 120;
             Vibration.Init();
             //cancelToken = new CancellationToken();
         }
@@ -78,6 +82,7 @@ namespace YugantLoyaLibrary.FindWords
 
         private void Start()
         {
+            MakeInstance();
             Init();
         }
 
@@ -91,7 +96,7 @@ namespace YugantLoyaLibrary.FindWords
             var result = Task.Run(() => { LevelHandler.instance.SaveSystem(); });
         }
 
-        private void Init()
+        public void Init()
         {
             if (DataHandler.FirstTimeGameOpen == 0)
             {
@@ -114,7 +119,7 @@ namespace YugantLoyaLibrary.FindWords
             Debug.Log("Game Created !");
 
 
-            _currLevel.GridPlacement();
+            //_currLevel.GridPlacement();
         }
 
         public IEnumerator StartGameAfterCertainTime(float time)
