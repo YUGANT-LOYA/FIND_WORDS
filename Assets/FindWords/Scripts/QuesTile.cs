@@ -10,23 +10,12 @@ namespace YugantLoyaLibrary.FindWords
         [SerializeField] private TextMeshPro quesText;
         private int unlockAmount;
         public bool isAssigned;
-        private LevelHandler _levelHandler;
         public bool isUnlocked = true;
 
         public string QuesTextData
         {
             get => quesText.text;
             set => quesText.text = value;
-        }
-
-        public void SetLevelHandler(LevelHandler handler)
-        {
-            _levelHandler = handler;
-        }
-
-        public LevelHandler GetLevelHandler()
-        {
-            return _levelHandler;
         }
 
         public void AddData(string str)

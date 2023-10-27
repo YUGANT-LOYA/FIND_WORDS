@@ -24,6 +24,7 @@ namespace YugantLoyaLibrary.FindWords
                     if (!string.IsNullOrEmpty(cleanedWord))
                     {
                         dictionaryData.dictionaryTrie.Insert(cleanedWord);
+                        
                     }
                 }
 

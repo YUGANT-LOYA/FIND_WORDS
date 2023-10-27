@@ -26,6 +26,14 @@ namespace YugantLoyaLibrary.FindWords
         [SerializeField] float wrongEffectTime = 0.2f;
         [SerializeField] Image wrongEffectImg;
         public Color defaultWrongEffectColor, redWrongEffectColor;
+        public GameObject loadingScreen;
+
+        
+        // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        // static void OnBeforeSceneLoadRuntimeMethod()
+        // {
+        //     Debug.Log("Before scene loaded");
+        // }
 
         private void Awake()
         {
@@ -79,7 +87,7 @@ namespace YugantLoyaLibrary.FindWords
                 shuffleButton.enabled = true;
                 shuffleButton.GetComponent<Image>().color = Color.white;
             }
-            
+
             if (DataHandler.TotalCoin < GameController.instance.dealUsingCoin)
             {
                 dealButton.GetComponent<Image>().color = disableButtonColor;

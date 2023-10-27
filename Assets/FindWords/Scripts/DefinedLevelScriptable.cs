@@ -9,7 +9,9 @@ public class DefinedLevelScriptable : ScriptableObject
     [Serializable]
     public struct DefinedLevelInfo
     {
+        public int gridSize;
         [TextArea(5, 5)] public string gridData;
+        public List<string> hintList;
     }
 
     public List<DefinedLevelInfo> definedLevelInfoList;

@@ -1,11 +1,8 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
 using NaughtyAttributes;
-using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -251,14 +248,14 @@ public class FillDataIntoScriptable : MonoBehaviour
         
         // Specify the relative path within the "Assets" folder where you want to save the CSV file
         string relativeFilePath =
-            $"FindWords/Resources/PredefinedWords/{wordLength}_Letter.csv";
+            $"FindWords/Resources/PredefinedWords/{wordLength}_Duplicate_Letter.csv";
 
         // Combine the paths to get the full path of the CSV file
         string filePath = Path.Combine(assetsFolderPath, relativeFilePath);
         
         foreach (string str in lines)
         {
-            totalWordList.Add(str.Trim());
+            totalWordList.Add(str.Trim().ToLower());
         }
 
         StringBuilder csvContent = new StringBuilder();

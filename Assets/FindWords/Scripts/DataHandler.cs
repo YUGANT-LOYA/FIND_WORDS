@@ -28,7 +28,7 @@ namespace YugantLoyaLibrary.FindWords
             }
             else if (instance != this)
             {
-                Destroy(this.gameObject);
+                Destroy(gameObject);
             }
         }
 

@@ -406,7 +406,7 @@ MonoBehaviour:
   minLength: 0
   maxLength: 0
   oxfordDictTextFile: {fileID: 0}
-  wordLengthTextFile: {fileID: 4900000, guid: 1fa1a80e60c2ee54a8b1c841844d50c9, type: 3}
+  wordLengthTextFile: {fileID: 4900000, guid: 06800d2a8ddd1844faa231362ca3d1a6, type: 3}
   mainDict: {fileID: 11400000, guid: 851a5cb24c798f44dba4329d5b47384a, type: 2}
   pickWordDataInfo: {fileID: 11400000, guid: 705e50367ef97c646ab4c1cd1b227194, type: 2}
   minMaxScriptableWordLength: {x: 3, y: 7}
