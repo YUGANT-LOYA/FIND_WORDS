@@ -398,10 +398,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eae775c8e9fa08d4b83cf5e44f63d2e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wordLength: 3
+  wordLength: 6
   minLength: 3
-  maxLength: 8
-  oxfordDictTextFile: {fileID: 4900000, guid: 364274cbacaf66042b6da3688278ae3f, type: 3}
+  maxLength: 6
+  oxfordDictTextFile: {fileID: 4900000, guid: ab1c40ef23335ff49900be6d0f098734, type: 3}
   wordLengthTextFile: {fileID: 4900000, guid: 226db899b08c5714c8f5d9748798a663, type: 3}
   mainDict: {fileID: 11400000, guid: 851a5cb24c798f44dba4329d5b47384a, type: 2}
   minMaxScriptableWordLength: {x: 3, y: 7}
@@ -452,7 +452,7 @@ MonoBehaviour:
   wordLength: 5
   minLength: 0
   maxLength: 0
-  oxfordDictTextFile: {fileID: 4900000, guid: 364274cbacaf66042b6da3688278ae3f, type: 3}
+  oxfordDictTextFile: {fileID: 4900000, guid: ab1c40ef23335ff49900be6d0f098734, type: 3}
   wordLengthTextFile: {fileID: 0}
   mainDict: {fileID: 11400000, guid: 851a5cb24c798f44dba4329d5b47384a, type: 2}
   pickWordDataInfo: {fileID: 11400000, guid: 705e50367ef97c646ab4c1cd1b227194, type: 2}

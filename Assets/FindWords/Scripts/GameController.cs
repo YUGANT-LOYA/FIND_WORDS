@@ -97,7 +97,8 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             Debug.Log("Loading Dict !!");
-            LevelHandler.instance.englishDictWords.UpdateEnglishDict();
+            LevelHandler.instance.englishDictWords.UpdateFullEnglishDict();
+            LevelHandler.instance.englishDictWords.UpdateFilteredEnglishDict();
             Debug.Log("Dict Loaded !!");
             UIManager.instance.coinText.text = DataHandler.TotalCoin.ToString();
 

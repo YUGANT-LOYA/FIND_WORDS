@@ -752,13 +752,20 @@ namespace YugantLoyaLibrary.FindWords
             //Check Word Exists or Not !
             string word = WordFormed();
 
+            Debug.Log("Word : " + word + " Word Length : " + word.Length);
             //bool doWordExist = GameController.instance.Search(word);
 
-            bool doWordExist = englishDictWords.Search(word);
+            //bool doWordExistInFullDict = englishDictWords.SearchInFullDict(word);
+            bool isCommonWord = englishDictWords.CompareWordsInGame(word, out bool doExist);
 
-            Debug.Log("Do Word Exist : " + doWordExist);
+            if (isCommonWord && doExist)
+            {
+                Debug.LogError("Word UnCommon Found!");
+                UIManager.instance.toastMessageScript.ShowNewWordFoundToast();
+            }
 
-            if (doWordExist)
+
+            if (doExist)
             {
                 selectedWords.Add(word);
                 //DataHandler.HelperWordIndex++;
@@ -996,7 +1003,7 @@ namespace YugantLoyaLibrary.FindWords
                 coinAvail = 1;
                 return true;
             }
-            
+
             //Debug.Log("Hint Not Found!");
             passingStr = "";
             coinAvail = 1;

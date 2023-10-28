@@ -8,44 +8,70 @@ namespace YugantLoyaLibrary.FindWords
     [CustomEditor(typeof(EnglishDictWords))]
     public class EnglishDictEditor : Editor
     {
-        private SerializedProperty _englishWordTextFile, _dictScriptable;
+        private SerializedProperty _fullDictWordTextFile,
+            _filteredDictWordTextFile,
+            _fullDictScriptable,
+            _filteredDictScriptable;
 
         private void OnEnable()
         {
             //English Dictionary File (Text File)
-            _englishWordTextFile = serializedObject.FindProperty("wordTextFile");
-            _dictScriptable = serializedObject.FindProperty("dictionaryData");
+            _fullDictWordTextFile = serializedObject.FindProperty("fullWordTextFile");
+            _filteredDictWordTextFile = serializedObject.FindProperty("filteredWordTextFile");
+            _fullDictScriptable = serializedObject.FindProperty("fullDictData");
+            _filteredDictScriptable = serializedObject.FindProperty("filteredDictData");
         }
 
         public override void OnInspectorGUI()
         {
             EnglishDictWords englishDict = (EnglishDictWords)target;
 
-            englishDict.inputString = EditorGUILayout.TextField("Input String : ", englishDict.inputString);
+            englishDict.wordInFullDict =
+                EditorGUILayout.TextField("Find Word In Full Dict : ", englishDict.wordInFullDict);
+            englishDict.wordInFilteredDict =
+                EditorGUILayout.TextField("Find Word In Filtered Dict : ", englishDict.wordInFilteredDict);
+            englishDict.compareWord =
+                EditorGUILayout.TextField("Compare Word : ", englishDict.compareWord);
 
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(_englishWordTextFile);
-            EditorGUILayout.PropertyField(_dictScriptable);
+            EditorGUILayout.PropertyField(_fullDictWordTextFile);
+            EditorGUILayout.PropertyField(_filteredDictWordTextFile);
+            EditorGUILayout.PropertyField(_fullDictScriptable);
+            EditorGUILayout.PropertyField(_filteredDictScriptable);
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Update English Dict"))
+            if (GUILayout.Button("Update Full English Dict"))
             {
-                Debug.Log("Updating English Dictionary File !");
-                englishDict.UpdateEnglishDict();
+                Debug.Log("Updating Full English Dictionary File !");
+                englishDict.UpdateFullEnglishDict();
+            }
+
+
+            if (GUILayout.Button("Update Filtered English Dict"))
+            {
+                Debug.Log("Updating Filtered English Dictionary File !");
+                englishDict.UpdateFilteredEnglishDict();
             }
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space(5f);
             EditorGUILayout.BeginHorizontal();
 
-            if (!string.IsNullOrWhiteSpace(englishDict.inputString))
+            if (GUILayout.Button("Compare Word in Both Dict"))
+            {
+                Debug.Log("Compare Word in Both Dict !");
+                englishDict.CompareWordsInEditor();
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(englishDict.wordInFullDict))
             {
                 if (GUILayout.Button("Search Word of Input Text in Dict"))
                 {
                     Debug.Log("Searching Word in English Dictionary !");
-                    englishDict.Search(englishDict.inputString);
+                    englishDict.SearchInFullDict(englishDict.wordInFullDict);
                 }
             }
 

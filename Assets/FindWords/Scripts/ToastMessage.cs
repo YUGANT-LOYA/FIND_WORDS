@@ -2,29 +2,34 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ToastMessage : MonoBehaviour
 {
-    [SerializeField] GameObject toastMessage;
+    [SerializeField] GameObject hintMessageGm, newWordFoundGm;
     [SerializeField] GameObject toastMessageCanvasGm;
     [SerializeField] string noHintMessage;
     public float toastMsgTime = 0.5f;
 
-    private void Start()
-    {
-    }
-
     public void ShowHintToast()
     {
+        StopCoroutine(nameof(ToastAnimation));
         //toastMessage.SetActive(false);
-        toastMessageCanvasGm.SetActive(true);
-
-        StartCoroutine(ToastAnimation());
+        hintMessageGm.SetActive(true);
+        StartCoroutine(ToastAnimation(hintMessageGm));
     }
 
-    IEnumerator ToastAnimation()
+    public void ShowNewWordFoundToast()
+    {
+        //toastMessage.SetActive(false);
+        StopCoroutine(nameof(ToastAnimation));
+        newWordFoundGm.SetActive(true);
+        StartCoroutine(ToastAnimation(newWordFoundGm));
+    }
+
+    IEnumerator ToastAnimation(GameObject messageGm)
     {
         yield return new WaitForSeconds(toastMsgTime);
-        toastMessageCanvasGm.SetActive(false);
+        messageGm.SetActive(false);
     }
 }
