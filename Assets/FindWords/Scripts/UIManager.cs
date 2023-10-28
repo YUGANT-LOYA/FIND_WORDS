@@ -14,7 +14,9 @@ namespace YugantLoyaLibrary.FindWords
     {
         public static UIManager instance;
         private Camera cam;
+        [SerializeField] GameObject touchPanelGm;
         private CameraShake camShakeScript;
+        public ToastMessage toastMessageScript;
         public float coinAnimTime = 1.5f, coinRotateAngle = 810f, maxCoinScale = 45f;
         public TextMeshProUGUI iqLevelText;
         public TextMeshProUGUI coinText;
@@ -27,12 +29,6 @@ namespace YugantLoyaLibrary.FindWords
         [SerializeField] Image wrongEffectImg;
         public Color defaultWrongEffectColor, redWrongEffectColor;
         public GameObject loadingScreen;
-
-        // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        // static void OnBeforeSceneLoadRuntimeMethod()
-        // {
-        //     Debug.Log("Before scene loaded");
-        // }
 
         private void Awake()
         {
@@ -54,11 +50,16 @@ namespace YugantLoyaLibrary.FindWords
             }
             else if (instance != this)
             {
-                Destroy(this.gameObject);
+                Destroy(gameObject);
             }
         }
 
-        public void HintStatus(bool isActive)
+        public void TouchPanelStatus(bool isActive)
+        {
+            touchPanelGm.SetActive(isActive);
+        }
+
+        public void HintStatus(bool isActive, int coinAvail)
         {
             if (!isActive)
             {
@@ -67,6 +68,11 @@ namespace YugantLoyaLibrary.FindWords
             }
             else
             {
+                // if (DataHandler.TotalCoin < GameController.instance.hintUsingCoin)
+                // {
+                //     
+                // }
+                
                 hintButton.enabled = true;
                 hintButton.GetComponent<Image>().color = Color.white;
             }
@@ -74,7 +80,20 @@ namespace YugantLoyaLibrary.FindWords
             CheckOtherButtonStatus();
         }
 
-        private void CheckOtherButtonStatus()
+        public void CheckAllButtonStatus()
+        {
+            Debug.Log("Checking All Button Status !");
+
+            if (DataHandler.TotalCoin >= GameController.instance.hintUsingCoin)
+            {
+                hintButton.enabled = true;
+                hintButton.GetComponent<Image>().color = Color.white;
+            }
+
+            CheckOtherButtonStatus();
+        }
+
+        public void CheckOtherButtonStatus()
         {
             if (DataHandler.TotalCoin < GameController.instance.shuffleUsingCoin)
             {
@@ -98,6 +117,13 @@ namespace YugantLoyaLibrary.FindWords
                 dealButton.GetComponent<Image>().color = Color.white;
             }
         }
+
+        public void SetAllButtonStatus(bool isActive)
+        {
+            dealButton.enabled = isActive;
+            shuffleButton.enabled = isActive;
+        }
+
 
         public void WrongEffect()
         {

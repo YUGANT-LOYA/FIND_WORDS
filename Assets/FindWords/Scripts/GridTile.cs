@@ -128,9 +128,9 @@ namespace YugantLoyaLibrary.FindWords
             if (LevelHandler.instance.LastQuesTile == null)
             {
                 SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
-                Debug.Log($"Grid {gameObject.name} Clicked !");
+                //Debug.Log($"Grid {gameObject.name} Clicked !");
                 isSelected = !isSelected;
-                Debug.Log("Is Selected : " + isSelected);
+                //Debug.Log("Is Selected : " + isSelected);
 
                 if (isSelected)
                 {
@@ -174,7 +174,6 @@ namespace YugantLoyaLibrary.FindWords
                     gridText.gameObject.SetActive(true);
                     isMoving = false;
                     LevelHandler.instance.CheckAllGridBuyed();
-                    GameController.instance.onSaveGameEvent?.Invoke();
                 });
         }
 
@@ -248,6 +247,10 @@ namespace YugantLoyaLibrary.FindWords
             {
                 placedOnQuesTile.AddData(GridTextData);
             }
+            // else
+            // {
+            //     placedOnQuesTile.RevertData();
+            // }
         }
 
         public void CallBlastAfterTime()

@@ -18,10 +18,7 @@ namespace YugantLoyaLibrary.FindWords
         private void Awake()
         {
             CreateSingleton();
-        }
-
-        private void Start()
-        {
+            CreateSingleton();
             Init();
         }
 

@@ -271,12 +271,6 @@ namespace YugantLoyaLibrary.FindWords
                     gridTileScript.GridID = new Vector2Int(i, j);
                     LevelHandler.instance.totalGridsList.Add(gridTileScript);
 
-                    //This will execute after First Time Game Closes and Opens... 
-                    // if (DataHandler.FirstTimeGameClose != 0)
-                    // {
-                    //     gridTileScript.isBlastAfterWordComplete = gridScreenList[index];
-                    // }
-
                     gridTileScript.isBlastAfterWordComplete = gridScreenList.Count > index && gridScreenList[index];
 
                     startPos.x += _currGridSize;
@@ -300,9 +294,9 @@ namespace YugantLoyaLibrary.FindWords
                         gridTileScript.gridMaterial = gmRenderer.material;
                     }
 
-                    Debug.Log("GRID CREATED INDEX : " + index);
+                    //Debug.Log("GRID CREATED INDEX : " + index);
                     index++;
-                    Debug.Log($"Curr Grid Data Size New : {i} {j}");
+                    //Debug.Log($"Curr Grid Data Size New : {i} {j}");
                     AssignGridData(gridTileScript, i, j);
                 }
 
@@ -382,7 +376,7 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-            LevelHandler.instance.LevelStartInit();
+            LevelHandler.instance.SetLevelRunningBool(true);
         }
 
         private void AssignGridData(GridTile gridTileScript, int row, int column)
