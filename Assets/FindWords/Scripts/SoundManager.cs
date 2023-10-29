@@ -21,7 +21,8 @@ public class SoundManager : MonoBehaviour
     {
         None,
         ClickSound,
-        WrongSound
+        WrongSound,
+        CorrectSound
     }
 
 

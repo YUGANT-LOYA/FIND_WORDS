@@ -669,7 +669,9 @@ MonoBehaviour:
   - soundType: 1
     audioClip: {fileID: 8300000, guid: d9250ee9e7c85ce4fa4653d30827982d, type: 3}
   - soundType: 2
-    audioClip: {fileID: 8300000, guid: d9250ee9e7c85ce4fa4653d30827982d, type: 3}
+    audioClip: {fileID: 8300000, guid: ea8f5835c9f87504399e30ee5ed20a09, type: 3}
+  - soundType: 3
+    audioClip: {fileID: 8300000, guid: a1eb2c4fd449fff468c555fe0dffd900, type: 3}
 --- !u!4 &341999786
 Transform:
   m_ObjectHideFlags: 0
@@ -3775,7 +3777,7 @@ MonoBehaviour:
     type: 3}
   quesPrefab: {fileID: 6876171383429484901, guid: 2b60b11f0918330469795326020309c3,
     type: 3}
-  initialCoins: 0
+  initialCoins: 100
 --- !u!1 &5704458314791691809
 GameObject:
   m_ObjectHideFlags: 0

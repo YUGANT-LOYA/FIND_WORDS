@@ -784,6 +784,7 @@ namespace YugantLoyaLibrary.FindWords
                 }
 
                 WordComplete();
+                SoundManager.instance.PlaySound(SoundManager.SoundType.CorrectSound);
             }
             else
             {
