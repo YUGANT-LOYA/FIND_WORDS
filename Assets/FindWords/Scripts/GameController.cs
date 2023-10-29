@@ -100,7 +100,6 @@ namespace YugantLoyaLibrary.FindWords
             LevelHandler.instance.englishDictWords.UpdateFullEnglishDict();
             LevelHandler.instance.englishDictWords.UpdateFilteredEnglishDict();
             Debug.Log("Dict Loaded !!");
-            UIManager.instance.coinText.text = DataHandler.TotalCoin.ToString();
 
             Debug.Log("Save Manager (Word Left List) Count : " + SaveManager.Instance.state.wordLeftList.Count);
             Debug.Log("Save Manager (Hint List) Count : " + SaveManager.Instance.state.hintList.Count);
@@ -110,8 +109,6 @@ namespace YugantLoyaLibrary.FindWords
 
             StartGame();
             Debug.Log("Game Created !");
-
-            //_currLevel.GridPlacement();
         }
 
         public IEnumerator StartGameAfterCertainTime(float time)
@@ -133,6 +130,7 @@ namespace YugantLoyaLibrary.FindWords
 
         private void StartGame()
         {
+            UIManager.instance.coinText.text = DataHandler.TotalCoin.ToString();
             LevelHandler.instance.ClearAllLists();
             ClearContainer(levelContainer);
             CreateLevel();
@@ -391,8 +389,8 @@ namespace YugantLoyaLibrary.FindWords
             yield return new WaitForSeconds(time);
             LevelHandler.instance.LastQuesTile = null;
             LevelHandler.instance.SetLevelRunningBool(true);
-            bool isHintAvail = LevelHandler.instance.CheckHintStatus(out string finalStr, out int coinAvail);
-            UIManager.instance.HintStatus(isHintAvail, coinAvail);
+            bool isHintAvail = LevelHandler.instance.CheckHintStatus(out string finalStr);
+            UIManager.instance.HintStatus(isHintAvail);
         }
 
         public List<MainDictionary.WordLengthDetailedInfo> GetWordListOfLength(int wordLength,
@@ -462,14 +460,6 @@ namespace YugantLoyaLibrary.FindWords
                             {
                                 return true;
                             }
-
-                            // bool isWordFound = IsWordSame(index, word, str);
-                            //
-                            // if (isWordFound)
-                            // {
-                            //     Debug.Log(word + " Word Found !!");
-                            //     return true;
-                            // }
                         }
                     }
                 }

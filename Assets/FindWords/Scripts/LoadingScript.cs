@@ -23,7 +23,6 @@ public class LoadingScript : MonoBehaviour
         {
             Debug.Log("Loading Bar Destroyed !");
             GameController.instance.GetCurrentLevel().GridPlacement();
-            UIManager.instance.CheckAllButtonStatus();
             Destroy(gameObject);
         });
     }

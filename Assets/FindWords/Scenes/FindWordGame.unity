@@ -2166,7 +2166,7 @@ MonoBehaviour:
   coinHandlerScriptable: {fileID: 11400000, guid: 52e5a38d84809d4419f4f0ef5539c0d1,
     type: 2}
   gridCamScriptable: {fileID: 11400000, guid: 7bf22db1e57398e46a45160ed1db8855, type: 2}
-  mainDictionary: {fileID: 11400000, guid: 851a5cb24c798f44dba4329d5b47384a, type: 2}
+  mainDictionary: {fileID: 11400000, guid: 6b4f292976b38254db73e94443d02645, type: 2}
   levelContainer: {fileID: 399063913}
   coinContainerTran: {fileID: 1738746827}
   coinPoolSize: 10

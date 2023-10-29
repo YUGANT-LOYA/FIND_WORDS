@@ -120,12 +120,6 @@ namespace YugantLoyaLibrary.FindWords
 
         public bool CompareWordsInGame(string word, out bool doExist)
         {
-            // if (string.IsNullOrWhiteSpace(word) || string.IsNullOrEmpty(word))
-            // {
-            //     doExist = false;
-            //     return false;
-            // }
-
             bool isWordInFullDict = SearchInFullDict(word);
 
             if (isWordInFullDict)

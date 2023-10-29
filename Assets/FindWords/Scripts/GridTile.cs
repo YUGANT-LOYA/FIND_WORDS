@@ -173,7 +173,14 @@ namespace YugantLoyaLibrary.FindWords
                     cube.GetComponent<Renderer>().material = new Material(gridMaterial);
                     gridText.gameObject.SetActive(true);
                     isMoving = false;
-                    LevelHandler.instance.CheckAllGridBuyed();
+                    
+                    bool allGridBought = LevelHandler.instance.CheckAllGridBought();
+
+                    if (!allGridBought)
+                    {
+                        bool isHintAvail = LevelHandler.instance.CheckHintStatus(out string finalStr);
+                        UIManager.instance.HintStatus(isHintAvail);
+                    }
                 });
         }
 

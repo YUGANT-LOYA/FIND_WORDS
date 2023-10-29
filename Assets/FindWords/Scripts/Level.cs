@@ -375,7 +375,8 @@ namespace YugantLoyaLibrary.FindWords
                     }
                 }
             }
-
+            
+            UIManager.instance.CheckAllButtonStatus();
             LevelHandler.instance.SetLevelRunningBool(true);
         }
 

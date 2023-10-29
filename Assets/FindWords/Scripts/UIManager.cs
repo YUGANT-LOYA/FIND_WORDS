@@ -54,13 +54,17 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        public void TouchPanelStatus(bool isActive)
+        public void CanTouch(bool isActive)
         {
-            touchPanelGm.SetActive(isActive);
+            Debug.Log("Touch is " + isActive);
+            touchPanelGm.SetActive(!isActive);
+            //SetAllButtonStatus(isActive);
         }
 
-        public void HintStatus(bool isActive, int coinAvail)
+        public bool HintStatus(bool isActive)
         {
+            Debug.Log("Hint Button Status : " + hintButton.enabled);
+
             if (!isActive)
             {
                 hintButton.GetComponent<Image>().color = disableButtonColor;
@@ -78,22 +82,25 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             CheckOtherButtonStatus();
+
+            return hintButton.enabled;
         }
 
         public void CheckAllButtonStatus()
         {
             Debug.Log("Checking All Button Status !");
 
-            if (DataHandler.TotalCoin >= GameController.instance.hintUsingCoin)
+            bool isHintAvail = LevelHandler.instance.CheckHintStatus(out string finalStr);
+            bool isButtonActive = HintStatus(isHintAvail);
+
+            if (isButtonActive && DataHandler.TotalCoin >= GameController.instance.hintUsingCoin)
             {
                 hintButton.enabled = true;
                 hintButton.GetComponent<Image>().color = Color.white;
             }
-
-            CheckOtherButtonStatus();
         }
 
-        public void CheckOtherButtonStatus()
+        private void CheckOtherButtonStatus()
         {
             if (DataHandler.TotalCoin < GameController.instance.shuffleUsingCoin)
             {
@@ -118,10 +125,46 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        public void SetAllButtonStatus(bool isActive)
+        private void SetAllButtonStatus(bool isActive)
         {
-            dealButton.enabled = isActive;
-            shuffleButton.enabled = isActive;
+            Image hintImage = hintButton.GetComponent<Image>();
+            Image dealImage = dealButton.GetComponent<Image>();
+            Image shuffleImage = shuffleButton.GetComponent<Image>();
+
+            if (DataHandler.TotalCoin < GameController.instance.shuffleUsingCoin)
+            {
+                shuffleButton.enabled = false;
+                shuffleImage.color = disableButtonColor;
+            }
+            else
+            {
+                shuffleButton.enabled = isActive;
+
+                shuffleImage.color = isActive ? Color.white : disableButtonColor;
+            }
+
+            if (DataHandler.TotalCoin < GameController.instance.dealUsingCoin)
+            {
+                dealButton.enabled = false;
+                dealImage.color = disableButtonColor;
+            }
+            else
+            {
+                dealButton.enabled = isActive;
+                dealImage.color = isActive ? Color.white : disableButtonColor;
+            }
+
+
+            if (DataHandler.TotalCoin < GameController.instance.hintUsingCoin)
+            {
+                hintButton.enabled = false;
+                hintImage.color = disableButtonColor;
+            }
+            else
+            {
+                hintButton.enabled = isActive;
+                hintImage.color = isActive ? Color.white : disableButtonColor;
+            }
         }
 
 
