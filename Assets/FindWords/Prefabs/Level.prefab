@@ -118,5 +118,6 @@ MonoBehaviour:
   timeToWaitForEachGrid: 0.1
   quesGridTrans: {fileID: 379044332734406932}
   gridContainer: {fileID: 2675200230521095590}
-  gridSpacing: 0.1
+  gridSpacing: 0
   quesSpacing: 0.4
+  gridXSpacing: -0.1

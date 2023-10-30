@@ -15,6 +15,7 @@ namespace YugantLoyaLibrary.FindWords
         public static UIManager instance;
         private Camera cam;
         [SerializeField] GameObject touchPanelGm;
+        public GameObject gameBG;
         private CameraShake camShakeScript;
         public ToastMessage toastMessageScript;
         public float coinAnimTime = 1.5f, coinRotateAngle = 810f, maxCoinScale = 45f;
@@ -153,7 +154,7 @@ namespace YugantLoyaLibrary.FindWords
                 dealButton.enabled = isActive;
                 dealImage.color = isActive ? Color.white : disableButtonColor;
             }
-            
+
             if (DataHandler.TotalCoin < GameController.instance.hintUsingCoin)
             {
                 hintButton.enabled = false;

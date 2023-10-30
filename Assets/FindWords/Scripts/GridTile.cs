@@ -104,6 +104,7 @@ namespace YugantLoyaLibrary.FindWords
 
             if (isCurrLock && DataHandler.TotalCoin >= LevelHandler.instance.coinToUnlockNextGrid)
             {
+                Vibration.Vibrate(20);
                 isFullLocked = false;
                 isGridActive = true;
                 isCurrLock = false;
@@ -127,6 +128,8 @@ namespace YugantLoyaLibrary.FindWords
             if (!isGridActive)
                 return;
 
+            Vibration.Vibrate(20);
+            
             if (LevelHandler.instance.LastQuesTile == null)
             {
                 SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);

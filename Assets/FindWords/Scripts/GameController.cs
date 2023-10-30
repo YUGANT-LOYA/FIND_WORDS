@@ -78,7 +78,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             Debug.Log("First Time Game Start Info Called !!");
             DataHandler.CurrGridSize = startingGridSize;
-            UIManager.instance.iqLevelText.text = $"IQ : {DataHandler.IqLevel.ToString()}";
+            UIManager.instance.iqLevelText.text = $" {DataHandler.IqLevel.ToString()}";
             LevelHandler.instance.SaveSystem();
         }
 
@@ -192,7 +192,8 @@ namespace YugantLoyaLibrary.FindWords
             {
                 if (DataHandler.TotalCoin < shuffleUsingCoin)
                     return;
-
+                
+                Vibration.Vibrate(20);
                 UIManager.SetCoinData(shuffleUsingCoin, -1);
                 StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, shuffleUsingCoin, 0.5f));
             }
@@ -217,7 +218,8 @@ namespace YugantLoyaLibrary.FindWords
             {
                 if (DataHandler.TotalCoin < dealUsingCoin)
                     return;
-
+                
+                Vibration.Vibrate(20);
                 UIManager.SetCoinData(dealUsingCoin, -1);
                 StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, dealUsingCoin, 0.5f));
             }
@@ -245,7 +247,7 @@ namespace YugantLoyaLibrary.FindWords
                     UIManager.instance.toastMessageScript.ShowHintToast();
                     return;
                 }
-
+                Vibration.Vibrate(20);
                 StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, hintUsingCoin, 0.5f));
             }
 

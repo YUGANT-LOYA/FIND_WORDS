@@ -835,7 +835,7 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             DataHandler.IqLevel++;
-            UIManager.instance.iqLevelText.text = $"IQ : {DataHandler.IqLevel.ToString()}";
+            UIManager.instance.iqLevelText.text = $" {DataHandler.IqLevel.ToString()}";
             StartCoroutine(ResetLevelHandlerData(time, true));
             //RevertQuesData();
             StartCoroutine(DataResetAfterGridAnimation(time));
@@ -965,7 +965,7 @@ namespace YugantLoyaLibrary.FindWords
                     gridTile.ObjectStatus(false);
                 }
 
-                if (lockedGridList.Contains(gridTile) && gridTile.isGridActive)
+                if (lockedGridList.Contains(gridTile) && !gridTile.isGridActive)
                 {
                     newUnlockGridList[i].DeckAnimation(timeToPlaceGrids, pos, newUnlockString[lockIndex].ToString(),
                         shouldReturnToGridPlace);
@@ -985,6 +985,7 @@ namespace YugantLoyaLibrary.FindWords
 
             if (shouldReturnToGridPlace)
             {
+                Debug.Log("Should Return To Grid Place Entered !");
                 StartCoroutine(ResetLevelHandlerData(timeToPlaceGrids));
             }
 
@@ -993,10 +994,12 @@ namespace YugantLoyaLibrary.FindWords
             yield return null;
         }
 
-        public IEnumerator ResetLevelHandlerData(float time, bool doCheckGridLeft = false)
+        private IEnumerator ResetLevelHandlerData(float time, bool doCheckGridLeft = false)
         {
             yield return new WaitForSeconds(time);
 
+            Debug.Log("Do Check Grid Left : " + doCheckGridLeft);
+            
             if (doCheckGridLeft)
             {
                 Debug.Log("Checking Grid Left !");

@@ -34,7 +34,7 @@ namespace YugantLoyaLibrary.FindWords
         public Transform quesGridTrans;
         [SerializeField] private Transform gridContainer;
         private float _currGridWidth, _currGridHeight, _currGridSize, _currQuesSize;
-        [SerializeField] private float gridSpacing = 0.1f, quesSpacing = 0.2f;
+        [SerializeField] private float gridSpacing = 0.1f, quesSpacing = 0.2f, gridXSpacing = -0.2f;
 
         private void Awake()
         {
@@ -171,7 +171,7 @@ namespace YugantLoyaLibrary.FindWords
                 gmObj.transform.localScale = new Vector3(_currQuesSize, _currQuesSize, _currQuesSize / 2);
                 gmObj.transform.localPosition = new Vector3(startPos.x, 0, 0);
                 gmObj.name = $"Ques_{i}";
-                LevelHandler.instance.UpdateQuesList(quesTileScript,i);
+                LevelHandler.instance.UpdateQuesList(quesTileScript, i);
                 startPos.x += quesSpacing + _currQuesSize;
                 totalChild--;
             }
@@ -273,7 +273,7 @@ namespace YugantLoyaLibrary.FindWords
 
                     gridTileScript.isBlastAfterWordComplete = gridScreenList.Count > index && gridScreenList[index];
 
-                    startPos.x += _currGridSize;
+                    startPos.x += _currGridSize + gridXSpacing;
 
                     if ((i == gridSize.x - 1 || j == gridSize.y - 1) && DataHandler.IsMaxGridOpened == 0)
                     {
@@ -356,7 +356,7 @@ namespace YugantLoyaLibrary.FindWords
         private IEnumerator PlaceGrids()
         {
             SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeckSound);
-            
+
             if (LevelHandler.instance.totalGridsList.Count > 0)
             {
                 foreach (GridTile gmObj in LevelHandler.instance.totalGridsList)
@@ -376,7 +376,7 @@ namespace YugantLoyaLibrary.FindWords
                     }
                 }
             }
-            
+
             UIManager.instance.CheckAllButtonStatus();
             LevelHandler.instance.SetLevelRunningBool(true);
         }
