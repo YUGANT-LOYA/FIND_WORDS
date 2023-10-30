@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -336,7 +337,7 @@ namespace YugantLoyaLibrary.FindWords
             }
 
 
-            if (mainStr.Length == 0)
+            if (mainStr.Length < unlockedGridList.Count)
             {
                 hintAvailList.Clear();
                 for (var i = 0; i < unlockedGridWord; i++)
@@ -933,7 +934,7 @@ namespace YugantLoyaLibrary.FindWords
 
             int index = 0;
             float time = timeToPlaceGrids / gridLists.Count;
-
+            List<GridTile> newUnlockGridList = new List<GridTile>();
             foreach (GridTile gridTile in gridLists)
             {
                 yield return new WaitForSeconds(time);
@@ -943,10 +944,31 @@ namespace YugantLoyaLibrary.FindWords
                     gridTile.ObjectStatus(false);
                 }
 
-                string gridString = mainStr.Length > index ? mainStr[index].ToString() : " ";
+                string gridString = "";
 
-                gridTile.DeckAnimation(timeToPlaceGrids, pos, gridString, shouldReturnToGridPlace);
+                if (lockedGridList.Contains(gridTile) && gridTile.isGridActive)
+                {
+                    newUnlockGridList.Add(gridTile);
+                }
+                else
+                {
+                    gridString = mainStr.Length > index
+                        ? mainStr[index].ToString()
+                        : "";
+
+                    gridTile.DeckAnimation(timeToPlaceGrids, pos, gridString, shouldReturnToGridPlace);
+                }
+
+
                 index++;
+            }
+
+            string newUnlockString = GetDataAccordingToGrid(newUnlockGridList.Count);
+
+            for (int i = 0; i < newUnlockGridList.Count; i++)
+            {
+                newUnlockGridList[i].DeckAnimation(timeToPlaceGrids, pos, newUnlockString[i].ToString(),
+                    shouldReturnToGridPlace);
             }
 
             if (shouldReturnToGridPlace)
