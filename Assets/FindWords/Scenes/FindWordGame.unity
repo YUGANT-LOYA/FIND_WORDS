@@ -1001,6 +1001,7 @@ MonoBehaviour:
   selectedWords: []
   wordsLeftList: []
   hintAvailList: []
+  isHintAvailInButton: 0
 --- !u!4 &399063913
 Transform:
   m_ObjectHideFlags: 0
@@ -1875,7 +1876,7 @@ MonoBehaviour:
   wrongEffectTime: 0.3
   wrongEffectImg: {fileID: 617413402}
   defaultWrongEffectColor: {r: 1, g: 1, b: 1, a: 0}
-  redWrongEffectColor: {r: 1, g: 0, b: 0, a: 0.15686275}
+  redWrongEffectColor: {r: 1, g: 0, b: 0, a: 0.3137255}
   loadingScreen: {fileID: 0}
 --- !u!1 &875319661
 GameObject:
@@ -3779,7 +3780,7 @@ MonoBehaviour:
     type: 3}
   quesPrefab: {fileID: 6876171383429484901, guid: 2b60b11f0918330469795326020309c3,
     type: 3}
-  initialCoins: 0
+  initialCoins: 100
 --- !u!1 &5704458314791691809
 GameObject:
   m_ObjectHideFlags: 0

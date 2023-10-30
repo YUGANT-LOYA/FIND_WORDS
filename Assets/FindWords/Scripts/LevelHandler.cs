@@ -35,6 +35,7 @@ namespace YugantLoyaLibrary.FindWords
         private int _colorIndex;
         private QuesTile _lastQuesTile;
         public List<string> hintAvailList = new List<string>();
+        [HideInInspector] public bool isHintAvailInButton;
 
         private void OnEnable()
         {
@@ -722,19 +723,18 @@ namespace YugantLoyaLibrary.FindWords
 
         public bool CheckAllGridBought()
         {
-            if (totalBuyingGridList.Count <= 0 && DataHandler.CurrGridSize < GameController.instance.maxGridSize)
-            {
-                _isLevelRunning = false;
-                float time = currLevel.timeToWaitForEachGrid;
-                float timeToPlaceGrids = currLevel.timeToPlaceGrid;
-                StartCoroutine(ReturnToDeck(unlockedGridList, time, timeToPlaceGrids, false));
-                StartCoroutine(
-                    GameController.instance.StartGameAfterCertainTime(timeToPlaceGrids +
-                                                                      (time * (totalGridsList.Count + 1))));
-                return true;
-            }
+            if (totalBuyingGridList.Count > 0 ||
+                DataHandler.CurrGridSize >= GameController.instance.maxGridSize)
+                return false;
 
-            return false;
+            _isLevelRunning = false;
+            float time = currLevel.timeToWaitForEachGrid;
+            float timeToPlaceGrids = currLevel.timeToPlaceGrid;
+            StartCoroutine(ReturnToDeck(unlockedGridList, time, timeToPlaceGrids, false));
+            StartCoroutine(
+                GameController.instance.StartGameAfterCertainTime(timeToPlaceGrids +
+                                                                  (time * (totalGridsList.Count + 1))));
+            return true;
         }
 
         public void CheckAnswer()
@@ -883,10 +883,10 @@ namespace YugantLoyaLibrary.FindWords
             yield return new WaitForSeconds(time);
             UIManager.instance.CanTouch(true);
             Debug.Log("Data Reset After Grid Animation !");
-            
+
             inputGridsList.Clear();
             LastQuesTile = null;
-            
+
             if (!isCalledByHint)
             {
                 RevertQuesData();
@@ -969,13 +969,21 @@ namespace YugantLoyaLibrary.FindWords
                 bool isGridLeft = CheckGridLeft();
                 Debug.Log("Grid Left Bool : " + isGridLeft);
 
-                if (isGridLeft)
+                if (gridAvailableOnScreenList.Count < DataHandler.CurrTotalQuesSize && isGridLeft)
                 {
+                    Debug.Log("GRID CHECK IF");
+                    GameController.instance.Deal(false);
+                }
+                else if (isGridLeft)
+                {
+                    Debug.Log("GRID CHECK ELSE IF");
                     bool isHintAvail = CheckHintStatus(out string finalStr);
+                    Debug.Log("IF Is Hint Avail : " + isHintAvail);
                     UIManager.instance.HintStatus(isHintAvail);
                 }
                 else
                 {
+                    Debug.Log("GRID CHECK ELSE ");
                     GameController.instance.ShuffleGrid(false);
                 }
             }
@@ -983,6 +991,7 @@ namespace YugantLoyaLibrary.FindWords
             {
                 Debug.Log("Not Checking Grid Left !");
                 bool isHintAvail = CheckHintStatus(out string finalStr);
+                Debug.Log("ELSE Is Hint Avail : " + isHintAvail);
                 UIManager.instance.HintStatus(isHintAvail);
             }
 

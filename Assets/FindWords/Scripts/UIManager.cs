@@ -65,18 +65,23 @@ namespace YugantLoyaLibrary.FindWords
         {
             Debug.Log("Hint Button Status : " + hintButton.enabled);
 
-            if (!isActive)
+            if (isActive == false ||
+                DataHandler.CurrTotalQuesSize > LevelHandler.instance.gridAvailableOnScreenList.Count)
             {
+                Debug.Log("Hint Disable Called !");
                 hintButton.GetComponent<Image>().color = disableButtonColor;
                 hintButton.enabled = false;
             }
             else
             {
+                Debug.Log("Hint Enable Called !");
                 hintButton.enabled = true;
                 hintButton.GetComponent<Image>().color = Color.white;
             }
 
+            Debug.Log("Hint Button Status : " + hintButton.enabled);
             CheckOtherButtonStatus();
+            LevelHandler.instance.isHintAvailInButton = hintButton.enabled;
 
             return hintButton.enabled;
         }
@@ -148,9 +153,13 @@ namespace YugantLoyaLibrary.FindWords
                 dealButton.enabled = isActive;
                 dealImage.color = isActive ? Color.white : disableButtonColor;
             }
-
-
+            
             if (DataHandler.TotalCoin < GameController.instance.hintUsingCoin)
+            {
+                hintButton.enabled = false;
+                hintImage.color = disableButtonColor;
+            }
+            else if (!LevelHandler.instance.isHintAvailInButton)
             {
                 hintButton.enabled = false;
                 hintImage.color = disableButtonColor;

@@ -114,7 +114,7 @@ namespace YugantLoyaLibrary.FindWords
             }
             else
             {
-                Debug.Log($"{compareWord} Word Found !!");
+                Debug.Log($"{compareWord} Word Not Found !!");
             }
         }
 
