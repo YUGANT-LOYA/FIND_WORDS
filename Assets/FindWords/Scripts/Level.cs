@@ -330,7 +330,6 @@ namespace YugantLoyaLibrary.FindWords
         void UnlockPreviousGrids()
         {
             List<GridTile> list = new List<GridTile>(LevelHandler.instance.lockedGridList);
-
             for (int i = 0; i < list.Count; i++)
             {
                 GridTile tile = list[i];
@@ -356,6 +355,8 @@ namespace YugantLoyaLibrary.FindWords
 
         private IEnumerator PlaceGrids()
         {
+            SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeckSound);
+            
             if (LevelHandler.instance.totalGridsList.Count > 0)
             {
                 foreach (GridTile gmObj in LevelHandler.instance.totalGridsList)

@@ -58,7 +58,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             Debug.Log("Touch is " + isActive);
             touchPanelGm.SetActive(!isActive);
-            //SetAllButtonStatus(isActive);
+            SetAllButtonStatus(isActive);
         }
 
         public bool HintStatus(bool isActive)
@@ -72,11 +72,6 @@ namespace YugantLoyaLibrary.FindWords
             }
             else
             {
-                // if (DataHandler.TotalCoin < GameController.instance.hintUsingCoin)
-                // {
-                //     
-                // }
-                
                 hintButton.enabled = true;
                 hintButton.GetComponent<Image>().color = Color.white;
             }

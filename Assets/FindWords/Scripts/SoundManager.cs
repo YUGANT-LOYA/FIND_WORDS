@@ -22,7 +22,8 @@ public class SoundManager : MonoBehaviour
         None,
         ClickSound,
         WrongSound,
-        CorrectSound
+        CorrectSound,
+        CardDeckSound
     }
 
 

@@ -111,7 +111,8 @@ namespace YugantLoyaLibrary.FindWords
                 LevelHandler.instance.totalBuyingGridList.Remove(this);
                 LevelHandler.instance.gridAvailableOnScreenList.Add(this);
                 UIManager.SetCoinData(LevelHandler.instance.coinToUnlockNextGrid, -1);
-                StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, LevelHandler.instance.coinToUnlockNextGrid, 0.5f));
+                StartCoroutine(
+                    UIManager.instance.UpdateReducedCoinText(0f, LevelHandler.instance.coinToUnlockNextGrid, 0.5f));
                 NewGridUnlockAnimation(LevelHandler.instance.coinToUnlockNextGrid);
                 return;
             }
@@ -173,7 +174,7 @@ namespace YugantLoyaLibrary.FindWords
                     cube.GetComponent<Renderer>().material = new Material(gridMaterial);
                     gridText.gameObject.SetActive(true);
                     isMoving = false;
-                    
+
                     bool allGridBought = LevelHandler.instance.CheckAllGridBought();
 
                     if (!allGridBought)
@@ -299,6 +300,7 @@ namespace YugantLoyaLibrary.FindWords
                 LevelHandler.instance.gridAvailableOnScreenList.Add(this);
             }
 
+            SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeckSound);
             blastPos = pos;
             transform.DOMove(blastPos, timeToPlaceGrids / 2).SetEase(movingEase);
             transform.DOScale(defaultGridSize, timeToPlaceGrids / 2).SetEase(movingEase);

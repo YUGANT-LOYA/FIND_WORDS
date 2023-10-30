@@ -49,18 +49,13 @@ namespace YugantLoyaLibrary.FindWords
             Debug.Log("Make Instance Called !!");
             Application.targetFrameRate = 120;
             Vibration.Init();
-            //cancelToken = new CancellationToken();
         }
 
         private void OnEnable()
         {
             Debug.Log("OnEnable Called !!");
         }
-
-        private void OnDisable()
-        {
-        }
-
+        
         private void CreateSingleton()
         {
             if (instance == null)
@@ -82,7 +77,6 @@ namespace YugantLoyaLibrary.FindWords
         void GameStartInfo()
         {
             Debug.Log("First Time Game Start Info Called !!");
-            UIManager.instance.coinText.text = DataHandler.TotalCoin.ToString();
             DataHandler.CurrGridSize = startingGridSize;
             UIManager.instance.iqLevelText.text = $"IQ : {DataHandler.IqLevel.ToString()}";
             LevelHandler.instance.SaveSystem();
@@ -122,6 +116,8 @@ namespace YugantLoyaLibrary.FindWords
             DataHandler.UnlockGridIndex = 0;
             DataHandler.NewGridCreated = 0;
             DataHandler.PickDataIndex = 0;
+            UIManager.instance.coinText.text = DataHandler.TotalCoin.ToString();
+            
             yield return new WaitForSeconds(time);
 
             StartGame();
@@ -202,6 +198,7 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             LevelHandler.instance.SetLevelRunningBool(false);
+            SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
             LevelHandler.instance.ClearInGameList();
             float time = _currLevel.timeToWaitForEachGrid;
             float timeToPlaceGrids = _currLevel.timeToPlaceGrid;
@@ -226,6 +223,7 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             LevelHandler.instance.SetLevelRunningBool(false);
+            SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
             List<GridTile> list = new List<GridTile>(LevelHandler.instance.wordCompletedGridList);
             ShuffleList(list);
             StartCoroutine(BackToDeckAnim(list));
@@ -239,7 +237,7 @@ namespace YugantLoyaLibrary.FindWords
                 return;
 
             //LevelHandler.instance.SetLevelRunningBool(false);
-            
+
             if (isCalledByPlayer)
             {
                 if (DataHandler.TotalCoin < hintUsingCoin)
@@ -251,6 +249,7 @@ namespace YugantLoyaLibrary.FindWords
                 StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, hintUsingCoin, 0.5f));
             }
 
+            SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
             LevelHandler.instance.ShowHint();
         }
 
@@ -326,6 +325,9 @@ namespace YugantLoyaLibrary.FindWords
             //Debug.Log("RANDOM PICK VAL : " + randomPickedWord);
 
             int index = 0;
+
+            SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeckSound);
+
             foreach (GridTile gridTile in list)
             {
                 yield return new WaitForSeconds(_currLevel.timeToWaitForEachGrid);
@@ -492,19 +494,6 @@ namespace YugantLoyaLibrary.FindWords
             Debug.Log($"Letter Not Same {word} , {textWord} , {index} ");
             return false;
         }
-
-        public void SaveGame()
-        {
-            // Debug.Log("Save Game Called !");
-            // levelHandler.SaveSystem();
-            // DataHandler.FirstTimeGameClose = 1;
-            // Debug.Log("Game Quit (Word Left List) Count : " + SaveManager.Instance.state.wordLeftList.Count);
-            // Debug.Log("Game Quit (Hint List) Count : " + SaveManager.Instance.state.hintList.Count);
-            // Debug.Log("Game Quit (Grid On Screen List) Count : " +
-            //           SaveManager.Instance.state.gridOnScreenList.Count);
-            // Debug.Log("Game Quit (Grid Data List) Count : " + SaveManager.Instance.state.gridDataList.Count);
-        }
-
 
         private void OnApplicationPause(bool isGameActive)
         {
