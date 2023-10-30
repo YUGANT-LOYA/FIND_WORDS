@@ -1002,6 +1002,7 @@ MonoBehaviour:
   wordsLeftList: []
   hintAvailList: []
   isHintAvailInButton: 0
+  currHint: 
 --- !u!4 &399063913
 Transform:
   m_ObjectHideFlags: 0
@@ -1872,7 +1873,7 @@ MonoBehaviour:
     type: 3}
   normalDealButton: {fileID: -452995933, guid: 2ee34ef6468feb24182b6dfb9255c423, type: 3}
   coinMovementEase: 26
-  disableButtonColor: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
+  disableButtonColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
   wrongEffectTime: 0.3
   wrongEffectImg: {fileID: 617413402}
   defaultWrongEffectColor: {r: 1, g: 1, b: 1, a: 0}

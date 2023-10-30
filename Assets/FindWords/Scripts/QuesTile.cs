@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using DG.Tweening;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace YugantLoyaLibrary.FindWords
@@ -8,6 +10,7 @@ namespace YugantLoyaLibrary.FindWords
     public class QuesTile : MonoBehaviour
     {
         [SerializeField] private TextMeshPro quesText;
+        public int id;
         private int unlockAmount;
         public bool isAssigned;
         public bool isUnlocked = true;
@@ -27,10 +30,10 @@ namespace YugantLoyaLibrary.FindWords
         {
             isAssigned = false;
             QuesTextData = "";
-            Invoke(nameof(DeActivateObject), 0.2f);
+            Invoke(nameof(ActivateObject), 0.2f);
         }
 
-        void DeActivateObject()
+        public void ActivateObject()
         {
             gameObject.SetActive(true);
         }

@@ -74,12 +74,6 @@ namespace YugantLoyaLibrary.FindWords
             set => PlayerPrefs.SetInt(StringHelper.FIRST_TIME_OPEN, value);
         } 
         
-        public static int GridsGeneratingFirstTime
-        {
-            get => PlayerPrefs.GetInt(StringHelper.GRID_GENERATING_FIRST_TIME, 0);
-            set => PlayerPrefs.SetInt(StringHelper.GRID_GENERATING_FIRST_TIME, value);
-        }
-        
         public static int FirstTimeGameClose
         {
             get => PlayerPrefs.GetInt(StringHelper.FIRST_TIME_GAME_CLOSE, 0);

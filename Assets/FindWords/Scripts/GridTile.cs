@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -215,7 +216,19 @@ namespace YugantLoyaLibrary.FindWords
             }
             else
             {
-                placedOnQuesTile.RevertData();
+                if (!string.IsNullOrEmpty(LevelHandler.instance.currHint) &&
+                    !string.IsNullOrWhiteSpace(LevelHandler.instance.currHint))
+                {
+                    int id = placedOnQuesTile.id;
+                    placedOnQuesTile.QuesTextData = LevelHandler.instance.currHint[id].ToString();
+                    placedOnQuesTile.isAssigned = false;
+                    Invoke(nameof(ActivatePlacedQuesTile),0.2f);
+                }
+                else
+                {
+                    placedOnQuesTile.RevertData();
+                }
+
                 isSelected = false;
                 transform.DOScale(defaultGridSize, reachTime);
             }
@@ -239,7 +252,11 @@ namespace YugantLoyaLibrary.FindWords
             });
         }
 
-
+        void ActivatePlacedQuesTile()
+        {
+            placedOnQuesTile.ActivateObject();
+        }
+        
         public void SetQuesTileStatus(QuesTile quesTile, bool isMovingToQues, float time)
         {
             StartCoroutine(QuesStatus(quesTile, isMovingToQues, time));

@@ -171,7 +171,7 @@ namespace YugantLoyaLibrary.FindWords
                 gmObj.transform.localScale = new Vector3(_currQuesSize, _currQuesSize, _currQuesSize / 2);
                 gmObj.transform.localPosition = new Vector3(startPos.x, 0, 0);
                 gmObj.name = $"Ques_{i}";
-                LevelHandler.instance.UpdateQuesList(quesTileScript);
+                LevelHandler.instance.UpdateQuesList(quesTileScript,i);
                 startPos.x += quesSpacing + _currQuesSize;
                 totalChild--;
             }
