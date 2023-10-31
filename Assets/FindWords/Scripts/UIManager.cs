@@ -220,7 +220,7 @@ namespace YugantLoyaLibrary.FindWords
                 GameObject coin = DataHandler.instance.GetCoin();
                 coin.transform.localScale = Vector3.one * maxCoinScale;
                 coin.transform.rotation = Quaternion.identity;
-                coin.transform.position = new Vector3(xVal, yVal, -0.5f);
+                coin.transform.position = new Vector3(xVal, yVal, -1f);
                 coin.SetActive(true);
 
                 yield return new WaitForSeconds(coinMovementTime);
@@ -228,7 +228,8 @@ namespace YugantLoyaLibrary.FindWords
                 coin.transform.DORotate(new Vector3(coinRotateAngle, coinRotateAngle,
                     coinRotateAngle), _coinTextUpdateTime, RotateMode.FastBeyond360).SetEase(coinMovementEase);
 
-                coin.transform.DOMove(new Vector2(1.75f, 5f), _coinTextUpdateTime)
+                coin.transform.DOMove(GameController.instance.coinContainerTran.position + new Vector3(1.5f, 2.5f, -1f),
+                        _coinTextUpdateTime)
                     .SetEase(coinMovementEase).OnComplete(
                         () =>
                         {

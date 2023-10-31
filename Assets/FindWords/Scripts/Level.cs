@@ -1,12 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using TMPro;
 using UnityEngine;
 using DG.Tweening;
-using NaughtyAttributes;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace YugantLoyaLibrary.FindWords
@@ -39,205 +34,104 @@ namespace YugantLoyaLibrary.FindWords
         private void Awake()
         {
             _cam = Camera.main;
+            _camOrthographicSize = _cam.orthographicSize;
         }
 
         public void StartInit()
         {
             //Debug.Log("Level StartInit Called !");
             Debug.Log($"Aspect Ratio : {_cam.aspect} , Width : {Screen.width} , Height  : {Screen.height}");
-            SetCameraPos();
+            //SetCameraPos();
+            SetGridContainerPos();
             CreateGrid();
             LevelHandler.instance.SetCoinPerWord();
             Debug.Log("Level Init Completed !!");
         }
 
-        void SetCameraPos()
+        private void SetGridContainerPos()
         {
-            GridCamScriptable gridCamScriptable = GameController.instance.GetGridCamScriptable();
-            Transform boxTrans = LevelHandler.instance.boxContainer.transform;
-            bool isNotMatching = true;
-
-            foreach (GridCamScriptable.CamGridSizeStruct camInfo in gridCamScriptable.camGridInfoList)
+            switch (DataHandler.CurrGridSize)
             {
-                if (Screen.width == camInfo.screenSize.x && Screen.height == camInfo.screenSize.y)
-                {
-                    boxTrans.position = camInfo.gridPlacementContainerPos;
-                    boxTrans.localScale = camInfo.gridPlacementContainerSize;
-                    
-                    foreach (GridCamScriptable.GridDataInfo gridInfo in camInfo.gridDataInfos)
-                    {
-                        
-                        if (gridInfo.gridSize.x == DataHandler.CurrGridSize)
-                        {
-                            _cam.orthographicSize = gridInfo.camOrthographicSize;
-                            _currGridSize = gridInfo.gridScale;
-                            _cam.transform.position = gridInfo.camPos;
-                            isNotMatching = false;
-                            break;
-                        }
-                    }
-                }
+                case 4:
+                    _currGridSize = 1.2f;
+                    gridContainer.transform.position = LevelHandler.instance.boxContainer.transform.position -
+                                                       new Vector3(2.25f, 0.1f, 0f);
+                    break;
+
+                case 5:
+                    _currGridSize = 1f;
+                    gridContainer.transform.position = LevelHandler.instance.boxContainer.transform.position -
+                                                       new Vector3(2.25f, 0.1f, 0f);
+                    break;
+
+                case 6:
+                    _currGridSize = 0.85f;
+                    gridContainer.transform.position = LevelHandler.instance.boxContainer.transform.position -
+                                                       new Vector3(2.3f, -0.15f, 0f);
+                    break;
+
+                case 7:
+                    _currGridSize = 0.7f;
+                    gridContainer.transform.position = LevelHandler.instance.boxContainer.transform.position -
+                                                       new Vector3(2.25f, 0.1f, 0f);
+                    break;
             }
 
-            if (isNotMatching)
-            {
-                //No Screen Size Matched !!!
-                Debug.Log("No Screen Size Matched !");
-                foreach (GridCamScriptable.CamGridSizeStruct camInfo in gridCamScriptable.camGridInfoList)
-                {
-                    if (camInfo.screenSize.x == 0 && camInfo.screenSize.y == 0)
-                    {
-                        boxTrans.position = camInfo.gridPlacementContainerPos;
-                        boxTrans.localScale = camInfo.gridPlacementContainerSize;
-                        
-                        foreach (GridCamScriptable.GridDataInfo gridInfo in camInfo.gridDataInfos)
-                        {
-                            if (gridInfo.gridSize.x == DataHandler.CurrGridSize)
-                            {
-                                _cam.orthographicSize = gridInfo.camOrthographicSize;
-                                _currGridSize = gridInfo.gridScale;
-                                _cam.transform.position = gridInfo.camPos;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            SetQuestionGrid(boxTrans);
-        }
-
-
-        void SetQuestionGrid(Transform boxTrans)
-        {
-            GridCamScriptable gridCamScriptable = GameController.instance.GetGridCamScriptable();
-            GameObject quesPrefab = DataHandler.instance.quesPrefab;
-            Vector3 startPos = quesGridTrans.transform.position;
             int totalChild = quesGridTrans.childCount;
-            bool isQuesNotMatching = true;
-            int numOfQues = DataHandler.CurrTotalQuesSize;
+            Vector3 startPos = quesGridTrans.transform.position;
+            float spacing = 0f;
 
-            foreach (GridCamScriptable.CamGridSizeStruct camInfo in gridCamScriptable.camGridInfoList)
+
+            switch (DataHandler.CurrTotalQuesSize)
             {
-                if (Screen.width == camInfo.screenSize.x && Screen.height == camInfo.screenSize.y)
-                {
-                    boxTrans.position = camInfo.gridPlacementContainerPos;
-                    boxTrans.localScale = camInfo.gridPlacementContainerSize;
+                case 3:
+                    _currQuesSize = 1.1f;
+                    quesGridTrans.position = LevelHandler.instance.boxContainer.transform.position -
+                                             new Vector3(1.2f, -3.3f, 0f);
+                    spacing = 0.15f;
+                    break;
 
-                    foreach (GridCamScriptable.GridDataInfo gridInfo in camInfo.gridDataInfos)
-                    {
-                        quesSpacing = gridInfo.quesSpacing;
-                        quesGridTrans.transform.position = gridInfo.queContainerPos;
-                        _currQuesSize = gridInfo.quesBlockScale;
-                        _camOrthographicSize = gridInfo.camOrthographicSize;
-                        isQuesNotMatching = false;
-                        break;
-                    }
-                }
+                case 4:
+                    _currQuesSize = 0.9f;
+                    quesGridTrans.position = LevelHandler.instance.boxContainer.transform.position -
+                                             new Vector3(1.55f, -3.5f, 0f);
+                    spacing = 0.15f;
+                    break;
+
+                case 5:
+                    _currQuesSize = 0.7f;
+                    quesGridTrans.position = LevelHandler.instance.boxContainer.transform.position -
+                                             new Vector3(1.7f, -3.3f, 0f);
+                    spacing = 0.15f;
+                    break;
+
+                case 6:
+
+                    break;
             }
 
-            if (isQuesNotMatching)
-            {
-                foreach (GridCamScriptable.CamGridSizeStruct camInfo in gridCamScriptable.camGridInfoList)
-                {
-                    if (camInfo.screenSize.x == 0 && camInfo.screenSize.y == 0)
-                    {
-                        boxTrans.position = camInfo.gridPlacementContainerPos;
-                        boxTrans.localScale = camInfo.gridPlacementContainerSize;
-                        
-                        foreach (GridCamScriptable.GridDataInfo gridInfo in camInfo.gridDataInfos)
-                        {
-                            quesSpacing = gridInfo.quesSpacing;
-                            quesGridTrans.transform.position = gridInfo.queContainerPos;
-                            _currQuesSize = gridInfo.quesBlockScale;
-                            _camOrthographicSize = gridInfo.camOrthographicSize;
-                        }
-                    }
-                }
-            }
-
-
-            for (int i = 0; i < numOfQues; i++)
+            for (int i = 0; i < DataHandler.CurrTotalQuesSize; i++)
             {
                 GameObject gmObj = totalChild > 0
                     ? quesGridTrans.GetChild(i).gameObject
-                    : Instantiate(quesPrefab, quesGridTrans);
+                    : Instantiate(DataHandler.instance.quesPrefab, quesGridTrans);
 
                 QuesTile quesTileScript = gmObj.GetComponent<QuesTile>();
                 gmObj.transform.localScale = new Vector3(_currQuesSize, _currQuesSize, _currQuesSize / 2);
                 gmObj.transform.localPosition = new Vector3(startPos.x, 0, 0);
                 gmObj.name = $"Ques_{i}";
                 LevelHandler.instance.UpdateQuesList(quesTileScript, i);
-                startPos.x += quesSpacing + _currQuesSize;
+                startPos.x += (spacing) + _currQuesSize;
                 totalChild--;
             }
-        }
-
-        public Transform GetGridContainerTrans()
-        {
-            return gridContainer;
-        }
-
-        public Vector2 BottomOfScreenPoint()
-        {
-            var position = _cam.transform.position;
-            return new Vector2(position.x, position.y - _camOrthographicSize);
-        }
-
-        public Vector2 GetRandomPointOutOfScreen()
-        {
-            float orthographicSize = _camOrthographicSize + camGridOffset;
-            float randomX = 0f, randomY = 0f;
-            int side = Random.Range(0, _randomScreenPointArr.Length);
-
-            //Side  = -1 means Horizontal and Side = 1 means Vertical
-            if (_randomScreenPointArr[side] == -1)
-            {
-                int xPoint = Random.Range(0, _randomScreenPointArr.Length);
-
-                if (_randomScreenPointArr[xPoint] == -1)
-                {
-                    //When the side is selected as Left Side.
-                    randomX = Random.Range(-orthographicSize - distanceFromScreen,
-                        -orthographicSize / 2 - distanceFromScreen);
-                    randomY = Random.Range(-orthographicSize, orthographicSize);
-                }
-                else if (_randomScreenPointArr[xPoint] == 1)
-                {
-                    //When the side is selected as Right Side.
-                    randomX = Random.Range(orthographicSize / 2 + distanceFromScreen,
-                        orthographicSize + distanceFromScreen);
-                    randomY = Random.Range(-orthographicSize, orthographicSize);
-                }
-            }
-            else
-            {
-                int yPoint = Random.Range(0, _randomScreenPointArr.Length);
-
-                if (_randomScreenPointArr[yPoint] == -1)
-                {
-                    //When the side is selected as Bottom Side.
-                    randomX = Random.Range(-orthographicSize / 2, orthographicSize / 2 + distanceFromScreen);
-                    randomY = Random.Range(-orthographicSize - distanceFromScreen,
-                        -(orthographicSize * 2) - distanceFromScreen);
-                }
-                else if (_randomScreenPointArr[yPoint] == 1)
-                {
-                    //When the side is selected as Top Side.
-                    randomX = Random.Range(-orthographicSize / 2, orthographicSize / 2 + distanceFromScreen);
-                    randomY = Random.Range(orthographicSize + distanceFromScreen,
-                        orthographicSize * 2 + distanceFromScreen);
-                }
-            }
-
-            return new Vector2(randomX, randomY);
         }
 
         private void CreateGrid()
         {
             GameObject gridPrefab = DataHandler.instance.gridPrefab;
-            _defaultStartPos.y = defaultStartYPos;
-            _defaultStartPos.x = -_camOrthographicSize / 2 + _currGridSize / 2;
+            Transform boxTrans = gridContainer.transform;
+            _defaultStartPos.y = boxTrans.localScale.y * 2;
+            _defaultStartPos.x = _currGridSize / 2;
             Debug.Log("Default Pos : " + _defaultStartPos.x);
             Vector3 startPos = new Vector3(_defaultStartPos.x, _defaultStartPos.y, _defaultStartPos.z);
 
@@ -248,7 +142,6 @@ namespace YugantLoyaLibrary.FindWords
 
             List<bool> gridScreenList = new List<bool>(SaveManager.Instance.state.gridOnScreenList);
             int index = 0;
-            //Debug.Log("Start Pos : " + startPos);
 
             for (int i = 0; i < gridSize.x; i++)
             {
@@ -258,8 +151,10 @@ namespace YugantLoyaLibrary.FindWords
                     GridTile gridTileScript = gmObj.GetComponent<GridTile>();
                     //Assigning New Material to each grid.
                     Renderer gmRenderer = gridTileScript.cube.GetComponent<Renderer>();
+                    Vector3 globalPos = gmObj.transform.TransformPoint(startPos);
                     gmObj.transform.localScale = new Vector3(_currGridSize, _currGridSize, _currGridSize / 2);
-                    gridTileScript.DefaultGridData(startPos, gmObj.transform.rotation);
+                    gridTileScript.DefaultGridData(startPos, gmObj.transform.rotation, globalPos);
+                    Debug.Log("Start Pos : " + startPos);
                     gmObj.transform.position = BottomOfScreenPoint();
                     gmObj.SetActive(false);
                     gmObj.name = $"Grid_{i}_{j}";
@@ -308,6 +203,67 @@ namespace YugantLoyaLibrary.FindWords
 
             UnlockPreviousGrids();
             LoadHintData();
+        }
+
+        public Transform GetGridContainerTrans()
+        {
+            return gridContainer;
+        }
+
+
+        public Vector2 BottomOfScreenPoint()
+        {
+            var position = _cam.transform.position;
+            return new Vector2(position.x, position.y - _camOrthographicSize * 2);
+        }
+
+        public Vector2 GetRandomPointOutOfScreen()
+        {
+            float orthographicSize = _camOrthographicSize + camGridOffset;
+            float randomX = 0f, randomY = 0f;
+            int side = Random.Range(0, _randomScreenPointArr.Length);
+
+            //Side  = -1 means Horizontal and Side = 1 means Vertical
+            if (_randomScreenPointArr[side] == -1)
+            {
+                int xPoint = Random.Range(0, _randomScreenPointArr.Length);
+
+                if (_randomScreenPointArr[xPoint] == -1)
+                {
+                    //When the side is selected as Left Side.
+                    randomX = Random.Range(-orthographicSize - distanceFromScreen,
+                        -orthographicSize - distanceFromScreen);
+                    randomY = Random.Range(-orthographicSize, orthographicSize);
+                }
+                else if (_randomScreenPointArr[xPoint] == 1)
+                {
+                    //When the side is selected as Right Side.
+                    randomX = Random.Range(orthographicSize + distanceFromScreen,
+                        orthographicSize + distanceFromScreen);
+                    randomY = Random.Range(-orthographicSize, orthographicSize);
+                }
+            }
+            else
+            {
+                int yPoint = Random.Range(0, _randomScreenPointArr.Length);
+
+                if (_randomScreenPointArr[yPoint] == -1)
+                {
+                    //When the side is selected as Bottom Side.
+                    randomX = Random.Range(-orthographicSize * 2, orthographicSize * 2 + distanceFromScreen);
+                    randomY = Random.Range(-orthographicSize * 2 - distanceFromScreen,
+                        -(orthographicSize * 3) - distanceFromScreen);
+                }
+                else if (_randomScreenPointArr[yPoint] == 1)
+                {
+                    //When the side is selected as Top Side.
+                    randomX = Random.Range(-orthographicSize * 2, orthographicSize * 2 + distanceFromScreen);
+                    randomY = Random.Range(orthographicSize * 2 + distanceFromScreen,
+                        orthographicSize * 3 + distanceFromScreen);
+                }
+            }
+
+            return new Vector2(randomX, randomY);
         }
 
         private void LoadHintData()
@@ -363,7 +319,8 @@ namespace YugantLoyaLibrary.FindWords
 
                     if (!gmObj.isBlastAfterWordComplete)
                     {
-                        gmObj.transform.DOLocalMove(gmObj.defaultGridPos, timeToPlaceGrid).SetEase(gridPlacementEase);
+                        gmObj.transform.DOLocalMove(gmObj.defaultLocalGridPos, timeToPlaceGrid)
+                            .SetEase(gridPlacementEase);
                     }
                     else
                     {

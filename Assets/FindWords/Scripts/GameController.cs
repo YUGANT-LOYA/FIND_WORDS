@@ -89,7 +89,8 @@ namespace YugantLoyaLibrary.FindWords
                 DataHandler.FirstTimeGameOpen = 1;
                 GameStartInfo();
             }
-
+            
+            UIManager.instance.iqLevelText.text = $" {DataHandler.IqLevel.ToString()}";
             Debug.Log("Loading Dict !!");
             LevelHandler.instance.englishDictWords.UpdateFullEnglishDict();
             LevelHandler.instance.englishDictWords.UpdateFilteredEnglishDict();
@@ -200,6 +201,7 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             LevelHandler.instance.SetLevelRunningBool(false);
+            
             SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
             LevelHandler.instance.ClearInGameList();
             float time = _currLevel.timeToWaitForEachGrid;

@@ -15,7 +15,8 @@ namespace YugantLoyaLibrary.FindWords
         [SerializeField] private GameObject currlockGm, otherLockGm;
         [SerializeField] private TextMeshPro gridText;
         public Material gridMaterial;
-        [HideInInspector] public Vector3 defaultGridSize, defaultGridPos;
+        [HideInInspector] public Vector3 defaultGridSize;
+        [HideInInspector] public Vector3 defaultLocalGridPos, defaultGlobalGridPos;
         [HideInInspector] public Quaternion defaultQuaternionRotation;
         public Vector3 blastPos;
         public bool isGridActive = true, isSelected, isBlastAfterWordComplete;
@@ -80,10 +81,11 @@ namespace YugantLoyaLibrary.FindWords
             amountToUnlockText.text = valToOpen.ToString();
         }
 
-        public void DefaultGridData(Vector3 pos, Quaternion rot)
+        public void DefaultGridData(Vector3 pos, Quaternion rot, Vector3 globalPos)
         {
             defaultGridSize = transform.localScale;
-            defaultGridPos = pos;
+            defaultLocalGridPos = pos;
+            defaultGlobalGridPos = globalPos;
             defaultQuaternionRotation = rot;
         }
 
@@ -155,9 +157,9 @@ namespace YugantLoyaLibrary.FindWords
         void ShakeAnim()
         {
             DOTween.Kill(transform, false);
-            transform.position = defaultGridPos;
+            transform.localPosition = defaultLocalGridPos;
             transform.DOShakePosition(lockShakeTime, shakeStrength, vibrationStrength, shakeRandomness)
-                .SetEase(lockEase).OnComplete(() => { transform.position = defaultGridPos; });
+                .SetEase(lockEase).OnComplete(() => { transform.localPosition = defaultLocalGridPos; });
         }
 
         private void NewGridUnlockAnimation(int coinToSubtract)
@@ -308,7 +310,7 @@ namespace YugantLoyaLibrary.FindWords
             transform.DORotate(new Vector3(360f * blasRotationTime, 0f, 360f * blasRotationTime), blastTime / 2,
                 RotateMode.FastBeyond360).SetEase(blastReturnEase);
 
-            transform.DOMove(defaultGridPos, blastTime / 2).SetEase(blastReturnEase).OnComplete(() => { });
+            transform.DOMove(defaultGlobalGridPos, blastTime / 2).SetEase(blastReturnEase).OnComplete(() => { });
 
             StartCoroutine(ResetData(blastTime / 2));
         }
@@ -340,7 +342,8 @@ namespace YugantLoyaLibrary.FindWords
                     timeToPlaceGrids / 2,
                     RotateMode.FastBeyond360).SetEase(movingEase);
 
-                transform.DOMove(defaultGridPos, timeToPlaceGrids / 2).SetEase(movingEase).OnComplete(() => { });
+                transform.DOLocalMove(defaultLocalGridPos, timeToPlaceGrids / 2).SetEase(movingEase)
+                    .OnComplete(() => { });
             });
 
             StartCoroutine(ResetData(timeToPlaceGrids));

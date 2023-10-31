@@ -690,7 +690,7 @@ namespace YugantLoyaLibrary.FindWords
             if (gridTileObj != null)
             {
                 inputGridsList.Remove(gridTileObj);
-                gridTileObj.MoveAfter(gridTileObj.defaultGridPos, false, gridTileObj.placedOnQuesTile);
+                gridTileObj.MoveAfter(gridTileObj.defaultGlobalGridPos, false, gridTileObj.placedOnQuesTile);
                 StartCoroutine(LevelRunningStatus(true, gridTileObj.reachTime + 0.1f));
             }
         }
@@ -871,8 +871,7 @@ namespace YugantLoyaLibrary.FindWords
                     time = gridTile.reachTime + gridTile.blastEffectAfterTime;
                 }
 
-                //inputGridsList.Remove(gridTile);
-                gridTile.MoveAfter(gridTile.defaultGridPos, false, gridTile.placedOnQuesTile,
+                gridTile.MoveAfter(gridTile.defaultGlobalGridPos, false, gridTile.placedOnQuesTile,
                     gridTile.blastEffectAfterTime);
 
                 if (!calledByHint)
