@@ -119,6 +119,13 @@ namespace YugantLoyaLibrary.FindWords
             DataHandler.PickDataIndex = 0;
             UIManager.instance.coinText.text = DataHandler.TotalCoin.ToString();
 
+            foreach (GridTile tile in LevelHandler.instance.totalGridsList)
+            {
+                tile.ResetWholeData();
+            }
+
+            LevelHandler.instance.ClearInGameList();
+
             yield return new WaitForSeconds(time);
 
             StartGame();
@@ -138,6 +145,7 @@ namespace YugantLoyaLibrary.FindWords
             GameObject level = Instantiate(DataHandler.instance.levelPrefab, levelContainer);
             _currLevel = level.GetComponent<Level>();
             AssignLevelData();
+            _currLevel.StartInit();
         }
 
         private void AssignLevelData()
@@ -145,7 +153,6 @@ namespace YugantLoyaLibrary.FindWords
             LevelHandler.instance.AssignLevel(_currLevel);
             _currLevel.gridSize = new Vector2Int(DataHandler.CurrGridSize, DataHandler.CurrGridSize);
             LevelHandler.instance.AssignGridData();
-            _currLevel.StartInit();
         }
 
         public GridCamScriptable GetGridCamScriptable()
@@ -203,13 +210,14 @@ namespace YugantLoyaLibrary.FindWords
             LevelHandler.instance.SetLevelRunningBool(false);
 
             SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
-            LevelHandler.instance.ClearInGameList();
+
             float time = _currLevel.timeToWaitForEachGrid;
             float timeToPlaceGrids = _currLevel.timeToPlaceGrid;
             List<GridTile> list = new List<GridTile>(LevelHandler.instance.unlockedGridList);
             //ShuffleList(list);
+            LevelHandler.instance.DisableWordCompleteGameObject();
             StartCoroutine(LevelHandler.instance.ReturnToDeck(list, time, timeToPlaceGrids));
-            //LevelHandler.instance.RevertQuesData();
+            LevelHandler.instance.ClearInGameList();
         }
 
         public void Deal(bool isCalledByPlayer = true)

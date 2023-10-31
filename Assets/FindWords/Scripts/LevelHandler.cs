@@ -112,7 +112,6 @@ namespace YugantLoyaLibrary.FindWords
         {
             if (DataHandler.NewGridCreated == 0)
             {
-                DataHandler.NewGridCreated = 1;
                 Debug.Log("New Data Created !!");
                 FillNewWordInWordLeftList();
                 GetNewGridDataCreated();
@@ -740,6 +739,8 @@ namespace YugantLoyaLibrary.FindWords
             _isLevelRunning = false;
             float time = currLevel.timeToWaitForEachGrid;
             float timeToPlaceGrids = currLevel.timeToPlaceGrid;
+
+            DisableWordCompleteGameObject();
             StartCoroutine(ReturnToDeck(unlockedGridList, time, timeToPlaceGrids, false));
             StartCoroutine(
                 GameController.instance.StartGameAfterCertainTime(timeToPlaceGrids +
@@ -932,6 +933,14 @@ namespace YugantLoyaLibrary.FindWords
             return str;
         }
 
+        public void DisableWordCompleteGameObject()
+        {
+            foreach (GridTile tile in wordCompletedGridList)
+            {
+                tile.ObjectStatus(false);
+            }
+        }
+
         public IEnumerator ReturnToDeck(List<GridTile> gridLists, float waitTime, float timeToPlaceGrids,
             bool shouldReturnToGridPlace = true)
         {
@@ -969,10 +978,10 @@ namespace YugantLoyaLibrary.FindWords
                 var gridTile = gridLists[i];
                 yield return new WaitForSeconds(time);
 
-                if (gridTile.isBlastAfterWordComplete)
-                {
-                    gridTile.ObjectStatus(false);
-                }
+                // if (gridTile.isBlastAfterWordComplete)
+                // {
+                //     gridTile.ObjectStatus(false);
+                // }
 
                 if (lockedGridList.Contains(gridTile) && !gridTile.isGridActive)
                 {
@@ -1340,9 +1349,9 @@ namespace YugantLoyaLibrary.FindWords
 
         public void ClearInGameList()
         {
-            foreach (GridTile gridTile in inputGridsList)
+            foreach (GridTile gridTile in unlockedGridList)
             {
-                StartCoroutine(gridTile.ResetData());
+                gridTile.ResetWholeData();
             }
 
             inputGridsList.Clear();

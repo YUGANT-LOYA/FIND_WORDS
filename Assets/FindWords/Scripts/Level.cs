@@ -106,7 +106,7 @@ namespace YugantLoyaLibrary.FindWords
                     break;
 
                 case 6:
-                    
+
                     _currQuesSize = 0.6f;
                     quesGridTrans.position = LevelHandler.instance.boxContainer.transform.position -
                                              new Vector3(1.9f, -3.3f, 0f);
@@ -159,7 +159,7 @@ namespace YugantLoyaLibrary.FindWords
                     Vector3 globalPos = gmObj.transform.TransformPoint(startPos);
                     gmObj.transform.localScale = new Vector3(_currGridSize, _currGridSize, _currGridSize / 2);
                     gridTileScript.DefaultGridData(startPos, gmObj.transform.rotation, globalPos);
-                    Debug.Log("Start Pos : " + startPos);
+                    //Debug.Log("Start Pos : " + startPos);
                     gmObj.transform.position = BottomOfScreenPoint();
                     gmObj.SetActive(false);
                     gmObj.name = $"Grid_{i}_{j}";
@@ -167,7 +167,21 @@ namespace YugantLoyaLibrary.FindWords
                     gridTileScript.GridID = new Vector2Int(i, j);
                     LevelHandler.instance.totalGridsList.Add(gridTileScript);
 
-                    gridTileScript.isBlastAfterWordComplete = gridScreenList.Count > index && gridScreenList[index];
+                    if (DataHandler.NewGridCreated == 0)
+                    {
+                        Debug.Log("New Grid Created And Blast Data Rest Done !");
+                        gridTileScript.isBlastAfterWordComplete = false;
+
+                        if (index == (gridSize.x * gridSize.y) - 1)
+                        {
+                            Debug.Log("New Data Created PlayerPref Set to 1 !");
+                            DataHandler.NewGridCreated = 1;
+                        }
+                    }
+                    else
+                    {
+                        gridTileScript.isBlastAfterWordComplete = gridScreenList.Count > index && gridScreenList[index];
+                    }
 
                     startPos.x += _currGridSize + gridXSpacing;
 

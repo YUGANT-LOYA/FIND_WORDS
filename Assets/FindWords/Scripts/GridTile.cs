@@ -19,7 +19,7 @@ namespace YugantLoyaLibrary.FindWords
         [HideInInspector] public Vector3 defaultLocalGridPos, defaultGlobalGridPos;
         [HideInInspector] public Quaternion defaultQuaternionRotation;
         public Vector3 blastPos;
-        public bool isGridActive = true, isSelected, isBlastAfterWordComplete;
+        public bool isGridActive = true, isSelected, isBlastAfterWordComplete, isFullLocked, isCurrLock;
         [SerializeField] private Vector2Int id;
         public QuesTile placedOnQuesTile;
 
@@ -34,7 +34,6 @@ namespace YugantLoyaLibrary.FindWords
         public Ease blastReturnEase = Ease.OutCirc;
 
         [Header("Lock Info")] public TextMeshPro amountToUnlockText;
-        public bool isFullLocked, isCurrLock;
         public Ease lockEase = Ease.InOutBounce;
         public float lockShakeTime = 0.5f, shakeStrength = 0.1f;
         public int vibrationStrength = 12;
@@ -99,6 +98,13 @@ namespace YugantLoyaLibrary.FindWords
         public void AssignInfo(Level currLevel)
         {
             _level = currLevel;
+        }
+
+        public void ResetWholeData()
+        {
+            isMoving = false;
+            isSelected = false;
+            isBlastAfterWordComplete = false;
         }
 
         public void OnMouseDown()
