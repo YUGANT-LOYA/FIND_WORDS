@@ -55,7 +55,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             Debug.Log("OnEnable Called !!");
         }
-        
+
         private void CreateSingleton()
         {
             if (instance == null)
@@ -117,7 +117,7 @@ namespace YugantLoyaLibrary.FindWords
             DataHandler.NewGridCreated = 0;
             DataHandler.PickDataIndex = 0;
             UIManager.instance.coinText.text = DataHandler.TotalCoin.ToString();
-            
+
             yield return new WaitForSeconds(time);
 
             StartGame();
@@ -192,8 +192,9 @@ namespace YugantLoyaLibrary.FindWords
             {
                 if (DataHandler.TotalCoin < shuffleUsingCoin)
                     return;
-                
+
                 Vibration.Vibrate(20);
+                LevelHandler.instance.currHint = null;
                 UIManager.SetCoinData(shuffleUsingCoin, -1);
                 StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, shuffleUsingCoin, 0.5f));
             }
@@ -218,7 +219,7 @@ namespace YugantLoyaLibrary.FindWords
             {
                 if (DataHandler.TotalCoin < dealUsingCoin)
                     return;
-                
+
                 Vibration.Vibrate(20);
                 UIManager.SetCoinData(dealUsingCoin, -1);
                 StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, dealUsingCoin, 0.5f));
@@ -235,10 +236,8 @@ namespace YugantLoyaLibrary.FindWords
 
         public void Hint(bool isCalledByPlayer = true)
         {
-            if (!LevelHandler.instance.GetLevelRunningBool())
+            if (!LevelHandler.instance.GetLevelRunningBool() || !string.IsNullOrEmpty(LevelHandler.instance.currHint))
                 return;
-
-            //LevelHandler.instance.SetLevelRunningBool(false);
 
             if (isCalledByPlayer)
             {
@@ -247,11 +246,22 @@ namespace YugantLoyaLibrary.FindWords
                     UIManager.instance.toastMessageScript.ShowHintToast();
                     return;
                 }
+
+                bool isHintAvail = LevelHandler.instance.CheckWordExistOrNot(out bool hintButtonStatus);
+
+                if (!isHintAvail)
+                {
+                    UIManager.instance.toastMessageScript.ShowNoWordFoundToast();
+                    return;
+                }
+
+                //UIManager.instance.HintStatus(false);
                 Vibration.Vibrate(20);
                 StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, hintUsingCoin, 0.5f));
             }
 
             SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
+
             LevelHandler.instance.ShowHint();
         }
 
@@ -393,8 +403,7 @@ namespace YugantLoyaLibrary.FindWords
             yield return new WaitForSeconds(time);
             LevelHandler.instance.LastQuesTile = null;
             LevelHandler.instance.SetLevelRunningBool(true);
-            bool isHintAvail = LevelHandler.instance.CheckHintStatus(out string finalStr);
-            UIManager.instance.HintStatus(isHintAvail);
+            LevelHandler.instance.CheckWordExistOrNot(out bool hintButtonStatus);
         }
 
         public List<MainDictionary.WordLengthDetailedInfo> GetWordListOfLength(int wordLength,

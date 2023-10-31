@@ -16,6 +16,7 @@ namespace YugantLoyaLibrary.FindWords
         [SerializeField] private TextMeshPro gridText;
         public Material gridMaterial;
         [HideInInspector] public Vector3 defaultGridSize, defaultGridPos;
+        [HideInInspector] public Quaternion defaultQuaternionRotation;
         public Vector3 blastPos;
         public bool isGridActive = true, isSelected, isBlastAfterWordComplete;
         [SerializeField] private Vector2Int id;
@@ -79,10 +80,11 @@ namespace YugantLoyaLibrary.FindWords
             amountToUnlockText.text = valToOpen.ToString();
         }
 
-        public void DefaultGridData(Vector3 pos)
+        public void DefaultGridData(Vector3 pos, Quaternion rot)
         {
             defaultGridSize = transform.localScale;
             defaultGridPos = pos;
+            defaultQuaternionRotation = rot;
         }
 
         public void ObjectStatus(bool isActive)
@@ -129,7 +131,7 @@ namespace YugantLoyaLibrary.FindWords
                 return;
 
             Vibration.Vibrate(20);
-            
+
             if (LevelHandler.instance.LastQuesTile == null)
             {
                 SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
@@ -183,8 +185,7 @@ namespace YugantLoyaLibrary.FindWords
 
                     if (!allGridBought)
                     {
-                        bool isHintAvail = LevelHandler.instance.CheckHintStatus(out string finalStr);
-                        UIManager.instance.HintStatus(isHintAvail);
+                        LevelHandler.instance.CheckWordExistOrNot(out bool hintButtonStatus);
                     }
                 });
         }
@@ -225,7 +226,7 @@ namespace YugantLoyaLibrary.FindWords
                     int id = placedOnQuesTile.id;
                     placedOnQuesTile.QuesTextData = LevelHandler.instance.currHint[id].ToString();
                     placedOnQuesTile.isAssigned = false;
-                    Invoke(nameof(ActivatePlacedQuesTile),0.2f);
+                    Invoke(nameof(ActivatePlacedQuesTile), 0.2f);
                 }
                 else
                 {
@@ -240,7 +241,7 @@ namespace YugantLoyaLibrary.FindWords
             transform.DORotate(
                     new Vector3(moveRotationTimes * 360f, moveRotationTimes * 360f, rotation.eulerAngles.z),
                     reachTime, RotateMode.FastBeyond360)
-                .SetEase(movingEase);
+                .SetEase(movingEase).OnComplete(() => { transform.rotation = defaultQuaternionRotation; });
 
             SetQuesTileStatus(quesTile, isMovingToQues, reachTime / 2);
 
@@ -259,7 +260,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             placedOnQuesTile.ActivateObject();
         }
-        
+
         public void SetQuesTileStatus(QuesTile quesTile, bool isMovingToQues, float time)
         {
             StartCoroutine(QuesStatus(quesTile, isMovingToQues, time));

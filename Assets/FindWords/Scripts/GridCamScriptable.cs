@@ -12,6 +12,7 @@ public class GridCamScriptable : ScriptableObject
     public struct CamGridSizeStruct
     {
         public Vector2Int screenSize;
+        public Vector3 gridPlacementContainerPos, gridPlacementContainerSize;
         public List<GridDataInfo> gridDataInfos;
     }
 
@@ -22,15 +23,13 @@ public class GridCamScriptable : ScriptableObject
         public float camOrthographicSize;
         public Vector3 camPos;
         public float gridScale;
-        public List<QuesDataInfo> queBlockInfoList;
+        public float quesBlockScale, quesSpacing;
+        public Vector3 queContainerPos;
     }
 
     [Serializable]
     public struct QuesDataInfo
     {
-        public int numOfQues;
-        public float quesBlockScale, quesSpacing;
-        public Vector3 queContainerPos;
     }
 
     public List<CamGridSizeStruct> camGridInfoList;

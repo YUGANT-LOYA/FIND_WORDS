@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace YugantLoyaLibrary.FindWords
@@ -14,8 +15,8 @@ namespace YugantLoyaLibrary.FindWords
 
         public NewLetterDelegate onNewLetterAddEvent, onRemoveLetterEvent;
 
+        public GameObject boxContainer;
         public EnglishDictWords englishDictWords;
-        private Renderer _touchEffectRenderer;
         [SerializeField] Level currLevel;
         public int coinPerWord = 10;
         [HideInInspector] public int coinToUnlockNextGrid;
@@ -771,7 +772,7 @@ namespace YugantLoyaLibrary.FindWords
 
             if (isCommonWord && doExist)
             {
-                Debug.LogError("Word UnCommon Found!");
+                Debug.Log("Word UnCommon Found!");
                 UIManager.instance.toastMessageScript.ShowNewWordFoundToast();
             }
 
@@ -896,7 +897,7 @@ namespace YugantLoyaLibrary.FindWords
             inputGridsList.Clear();
             LastQuesTile = null;
 
-            if (!isCalledByHint)
+            if (!isCalledByHint && string.IsNullOrEmpty(currHint))
             {
                 RevertQuesData();
             }
@@ -938,11 +939,22 @@ namespace YugantLoyaLibrary.FindWords
                 DataHandler.CurrDefinedLevel++;
                 mainStr = GetWholeGridData();
                 Debug.Log("Whole Grid Data Main Str : " + mainStr);
+
+                Debug.Log("Should Return To Grid Place Entered !");
+                StartCoroutine(ResetLevelHandlerData(timeToPlaceGrids + 0.3f));
             }
+
+            Invoke(nameof(RevertQuesData), timeToPlaceGrids - 0.1f);
 
             int index = 0, lockIndex = 0;
             float time = timeToPlaceGrids / gridLists.Count;
             List<GridTile> newUnlockGridList = new List<GridTile>();
+
+            // if (shouldReturnToGridPlace)
+            // {
+            //     
+            // }
+
 
             foreach (GridTile gridTile in gridLists)
             {
@@ -953,7 +965,6 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             string newUnlockString = GetDataAccordingToGrid(newUnlockGridList.Count);
-
 
             for (var i = 0; i < gridLists.Count; i++)
             {
@@ -983,14 +994,6 @@ namespace YugantLoyaLibrary.FindWords
                 index++;
             }
 
-            if (shouldReturnToGridPlace)
-            {
-                Debug.Log("Should Return To Grid Place Entered !");
-                StartCoroutine(ResetLevelHandlerData(timeToPlaceGrids));
-            }
-
-            Invoke(nameof(RevertQuesData), timeToPlaceGrids);
-
             yield return null;
         }
 
@@ -999,7 +1002,7 @@ namespace YugantLoyaLibrary.FindWords
             yield return new WaitForSeconds(time);
 
             Debug.Log("Do Check Grid Left : " + doCheckGridLeft);
-            
+
             if (doCheckGridLeft)
             {
                 Debug.Log("Checking Grid Left !");
@@ -1014,9 +1017,8 @@ namespace YugantLoyaLibrary.FindWords
                 else if (isGridLeft)
                 {
                     Debug.Log("GRID CHECK ELSE IF");
-                    bool isHintAvail = CheckHintStatus(out string finalStr);
-                    Debug.Log("IF Is Hint Avail : " + isHintAvail);
-                    UIManager.instance.HintStatus(isHintAvail);
+                    CheckWordExistOrNot(out bool hintButtonStatus);
+                    Debug.Log("IF Is Hint Avail : " + hintButtonStatus);
                 }
                 else
                 {
@@ -1027,9 +1029,8 @@ namespace YugantLoyaLibrary.FindWords
             else
             {
                 Debug.Log("Not Checking Grid Left !");
-                bool isHintAvail = CheckHintStatus(out string finalStr);
-                Debug.Log("ELSE Is Hint Avail : " + isHintAvail);
-                UIManager.instance.HintStatus(isHintAvail);
+                CheckWordExistOrNot(out bool hintButtonStatus);
+                Debug.Log("ELSE Is Hint Avail : " + hintButtonStatus);
             }
 
             LastQuesTile = null;
@@ -1093,6 +1094,19 @@ namespace YugantLoyaLibrary.FindWords
             {
                 currHint = finalStr;
             }
+        }
+
+        public bool CheckWordExistOrNot(out bool hintButtonStatus)
+        {
+            bool isHintAvail = CheckHintStatus(out string finalStr);
+            hintButtonStatus = UIManager.instance.HintStatus(isHintAvail);
+
+            if (!isHintAvail)
+            {
+                UIManager.instance.EnableHint();
+            }
+
+            return isHintAvail;
         }
 
         public void ShowHint()

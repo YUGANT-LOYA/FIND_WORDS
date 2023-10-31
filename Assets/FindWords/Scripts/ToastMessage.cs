@@ -1,35 +1,49 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
-public class ToastMessage : MonoBehaviour
+namespace YugantLoyaLibrary.FindWords
 {
-    [SerializeField] GameObject hintMessageGm, newWordFoundGm;
-    [SerializeField] GameObject toastMessageCanvasGm;
-    [SerializeField] string noHintMessage;
-    public float toastMsgTime = 0.5f;
-
-    public void ShowHintToast()
+    public class ToastMessage : MonoBehaviour
     {
-        StopCoroutine(nameof(ToastAnimation));
-        //toastMessage.SetActive(false);
-        hintMessageGm.SetActive(true);
-        StartCoroutine(ToastAnimation(hintMessageGm));
-    }
+        [SerializeField] GameObject toastMsgGm, newWordFoundGm;
+        [SerializeField] private TextMeshProUGUI toastMsgTxt;
+        [SerializeField] GameObject toastMessageCanvasGm;
+        [SerializeField] string noCoinForHintMsg, noWordFoundMsg;
+        public float toastMsgTime = 0.5f;
 
-    public void ShowNewWordFoundToast()
-    {
-        //toastMessage.SetActive(false);
-        StopCoroutine(nameof(ToastAnimation));
-        newWordFoundGm.SetActive(true);
-        StartCoroutine(ToastAnimation(newWordFoundGm));
-    }
+        public void ShowHintToast()
+        {
+            StopCoroutine(nameof(ToastAnimation));
+            toastMsgTxt.text = noCoinForHintMsg;
+            toastMsgGm.SetActive(true);
+            StartCoroutine(ToastAnimation(toastMsgGm));
+        }
 
-    IEnumerator ToastAnimation(GameObject messageGm)
-    {
-        yield return new WaitForSeconds(toastMsgTime);
-        messageGm.SetActive(false);
+        public void ShowNoWordFoundToast()
+        {
+            StopCoroutine(nameof(ToastAnimation));
+            toastMsgTxt.text = noWordFoundMsg;
+            toastMsgGm.SetActive(true);
+            StartCoroutine(ToastAnimation(toastMsgGm));
+        }
+
+        public void ShowNewWordFoundToast()
+        {
+            //toastMessage.SetActive(false);
+            StopCoroutine(nameof(ToastAnimation));
+            newWordFoundGm.SetActive(true);
+            StartCoroutine(ToastAnimation(newWordFoundGm));
+        }
+
+        IEnumerator ToastAnimation(GameObject messageGm)
+        {
+            yield return new WaitForSeconds(toastMsgTime);
+            messageGm.SetActive(false);
+        }
     }
 }

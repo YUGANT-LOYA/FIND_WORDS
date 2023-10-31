@@ -62,6 +62,11 @@ namespace YugantLoyaLibrary.FindWords
             SetAllButtonStatus(isActive);
         }
 
+        public void EnableHint()
+        {
+            hintButton.enabled = true;
+        }
+
         public bool HintStatus(bool isActive)
         {
             Debug.Log("Hint Button Status : " + hintButton.enabled);
@@ -71,7 +76,7 @@ namespace YugantLoyaLibrary.FindWords
             {
                 Debug.Log("Hint Disable Called !");
                 hintButton.GetComponent<Image>().color = disableButtonColor;
-                hintButton.enabled = false;
+                //hintButton.enabled = false;
             }
             else
             {
@@ -91,10 +96,9 @@ namespace YugantLoyaLibrary.FindWords
         {
             Debug.Log("Checking All Button Status !");
 
-            bool isHintAvail = LevelHandler.instance.CheckHintStatus(out string finalStr);
-            bool isButtonActive = HintStatus(isHintAvail);
+            bool isHintAvail = LevelHandler.instance.CheckWordExistOrNot(out bool isButtonAvail);
 
-            if (isButtonActive && DataHandler.TotalCoin >= GameController.instance.hintUsingCoin)
+            if (isButtonAvail && DataHandler.TotalCoin >= GameController.instance.hintUsingCoin)
             {
                 hintButton.enabled = true;
                 hintButton.GetComponent<Image>().color = Color.white;
@@ -157,12 +161,12 @@ namespace YugantLoyaLibrary.FindWords
 
             if (DataHandler.TotalCoin < GameController.instance.hintUsingCoin)
             {
-                hintButton.enabled = false;
+                hintButton.enabled = true;
                 hintImage.color = disableButtonColor;
             }
             else if (!LevelHandler.instance.isHintAvailInButton)
             {
-                hintButton.enabled = false;
+                hintButton.enabled = true;
                 hintImage.color = disableButtonColor;
             }
             else

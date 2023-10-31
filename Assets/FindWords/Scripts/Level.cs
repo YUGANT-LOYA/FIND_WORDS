@@ -54,15 +54,19 @@ namespace YugantLoyaLibrary.FindWords
         void SetCameraPos()
         {
             GridCamScriptable gridCamScriptable = GameController.instance.GetGridCamScriptable();
-
+            Transform boxTrans = LevelHandler.instance.boxContainer.transform;
             bool isNotMatching = true;
 
             foreach (GridCamScriptable.CamGridSizeStruct camInfo in gridCamScriptable.camGridInfoList)
             {
                 if (Screen.width == camInfo.screenSize.x && Screen.height == camInfo.screenSize.y)
                 {
+                    boxTrans.position = camInfo.gridPlacementContainerPos;
+                    boxTrans.localScale = camInfo.gridPlacementContainerSize;
+                    
                     foreach (GridCamScriptable.GridDataInfo gridInfo in camInfo.gridDataInfos)
                     {
+                        
                         if (gridInfo.gridSize.x == DataHandler.CurrGridSize)
                         {
                             _cam.orthographicSize = gridInfo.camOrthographicSize;
@@ -83,6 +87,9 @@ namespace YugantLoyaLibrary.FindWords
                 {
                     if (camInfo.screenSize.x == 0 && camInfo.screenSize.y == 0)
                     {
+                        boxTrans.position = camInfo.gridPlacementContainerPos;
+                        boxTrans.localScale = camInfo.gridPlacementContainerSize;
+                        
                         foreach (GridCamScriptable.GridDataInfo gridInfo in camInfo.gridDataInfos)
                         {
                             if (gridInfo.gridSize.x == DataHandler.CurrGridSize)
@@ -97,11 +104,11 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-            SetQuestionGrid();
+            SetQuestionGrid(boxTrans);
         }
 
 
-        void SetQuestionGrid()
+        void SetQuestionGrid(Transform boxTrans)
         {
             GridCamScriptable gridCamScriptable = GameController.instance.GetGridCamScriptable();
             GameObject quesPrefab = DataHandler.instance.quesPrefab;
@@ -114,22 +121,17 @@ namespace YugantLoyaLibrary.FindWords
             {
                 if (Screen.width == camInfo.screenSize.x && Screen.height == camInfo.screenSize.y)
                 {
+                    boxTrans.position = camInfo.gridPlacementContainerPos;
+                    boxTrans.localScale = camInfo.gridPlacementContainerSize;
+
                     foreach (GridCamScriptable.GridDataInfo gridInfo in camInfo.gridDataInfos)
                     {
-                        List<GridCamScriptable.QuesDataInfo> quesInfoList = gridInfo.queBlockInfoList;
-
-                        foreach (GridCamScriptable.QuesDataInfo quesInfo in quesInfoList)
-                        {
-                            if (quesInfo.numOfQues == numOfQues)
-                            {
-                                quesSpacing = quesInfo.quesSpacing;
-                                quesGridTrans.transform.position = quesInfo.queContainerPos;
-                                _currQuesSize = quesInfo.quesBlockScale;
-                                _camOrthographicSize = gridInfo.camOrthographicSize;
-                                isQuesNotMatching = false;
-                                break;
-                            }
-                        }
+                        quesSpacing = gridInfo.quesSpacing;
+                        quesGridTrans.transform.position = gridInfo.queContainerPos;
+                        _currQuesSize = gridInfo.quesBlockScale;
+                        _camOrthographicSize = gridInfo.camOrthographicSize;
+                        isQuesNotMatching = false;
+                        break;
                     }
                 }
             }
@@ -140,21 +142,15 @@ namespace YugantLoyaLibrary.FindWords
                 {
                     if (camInfo.screenSize.x == 0 && camInfo.screenSize.y == 0)
                     {
+                        boxTrans.position = camInfo.gridPlacementContainerPos;
+                        boxTrans.localScale = camInfo.gridPlacementContainerSize;
+                        
                         foreach (GridCamScriptable.GridDataInfo gridInfo in camInfo.gridDataInfos)
                         {
-                            List<GridCamScriptable.QuesDataInfo> quesInfoList = gridInfo.queBlockInfoList;
-
-                            foreach (GridCamScriptable.QuesDataInfo quesInfo in quesInfoList)
-                            {
-                                if (quesInfo.numOfQues == numOfQues)
-                                {
-                                    quesSpacing = quesInfo.quesSpacing;
-                                    quesGridTrans.transform.position = quesInfo.queContainerPos;
-                                    _currQuesSize = quesInfo.quesBlockScale;
-                                    _camOrthographicSize = gridInfo.camOrthographicSize;
-                                    break;
-                                }
-                            }
+                            quesSpacing = gridInfo.quesSpacing;
+                            quesGridTrans.transform.position = gridInfo.queContainerPos;
+                            _currQuesSize = gridInfo.quesBlockScale;
+                            _camOrthographicSize = gridInfo.camOrthographicSize;
                         }
                     }
                 }
@@ -263,7 +259,7 @@ namespace YugantLoyaLibrary.FindWords
                     //Assigning New Material to each grid.
                     Renderer gmRenderer = gridTileScript.cube.GetComponent<Renderer>();
                     gmObj.transform.localScale = new Vector3(_currGridSize, _currGridSize, _currGridSize / 2);
-                    gridTileScript.DefaultGridData(startPos);
+                    gridTileScript.DefaultGridData(startPos, gmObj.transform.rotation);
                     gmObj.transform.position = BottomOfScreenPoint();
                     gmObj.SetActive(false);
                     gmObj.name = $"Grid_{i}_{j}";
