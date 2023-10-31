@@ -96,7 +96,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             Debug.Log("Checking All Button Status !");
 
-            bool isHintAvail = LevelHandler.instance.CheckWordExistOrNot(out bool isButtonAvail);
+            bool isHintAvail = LevelHandler.instance.CheckWordExistOrNot(out bool isButtonAvail, out string hintStr);
 
             if (isButtonAvail && DataHandler.TotalCoin >= GameController.instance.hintUsingCoin)
             {

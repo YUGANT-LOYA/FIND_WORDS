@@ -187,7 +187,7 @@ namespace YugantLoyaLibrary.FindWords
 
                     if (!allGridBought)
                     {
-                        LevelHandler.instance.CheckWordExistOrNot(out bool hintButtonStatus);
+                        LevelHandler.instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
                     }
                 });
         }
@@ -350,7 +350,7 @@ namespace YugantLoyaLibrary.FindWords
         }
 
 
-        IEnumerator ResetData(float time)
+        public IEnumerator ResetData(float time = 0f)
         {
             yield return new WaitForSeconds(time);
             isSelected = false;

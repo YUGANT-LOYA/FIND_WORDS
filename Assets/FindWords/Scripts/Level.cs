@@ -71,9 +71,9 @@ namespace YugantLoyaLibrary.FindWords
                     break;
 
                 case 7:
-                    _currGridSize = 0.7f;
+                    _currGridSize = 0.72f;
                     gridContainer.transform.position = LevelHandler.instance.boxContainer.transform.position -
-                                                       new Vector3(2.25f, 0.1f, 0f);
+                                                       new Vector3(2.23f, -0.15f, 0f);
                     break;
             }
 
@@ -106,6 +106,11 @@ namespace YugantLoyaLibrary.FindWords
                     break;
 
                 case 6:
+                    
+                    _currQuesSize = 0.6f;
+                    quesGridTrans.position = LevelHandler.instance.boxContainer.transform.position -
+                                             new Vector3(1.9f, -3.3f, 0f);
+                    spacing = 0.15f;
 
                     break;
             }

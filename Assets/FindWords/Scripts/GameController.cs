@@ -89,7 +89,7 @@ namespace YugantLoyaLibrary.FindWords
                 DataHandler.FirstTimeGameOpen = 1;
                 GameStartInfo();
             }
-            
+
             UIManager.instance.iqLevelText.text = $" {DataHandler.IqLevel.ToString()}";
             Debug.Log("Loading Dict !!");
             LevelHandler.instance.englishDictWords.UpdateFullEnglishDict();
@@ -201,7 +201,7 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             LevelHandler.instance.SetLevelRunningBool(false);
-            
+
             SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
             LevelHandler.instance.ClearInGameList();
             float time = _currLevel.timeToWaitForEachGrid;
@@ -249,7 +249,10 @@ namespace YugantLoyaLibrary.FindWords
                     return;
                 }
 
-                bool isHintAvail = LevelHandler.instance.CheckWordExistOrNot(out bool hintButtonStatus);
+                bool isHintAvail =
+                    LevelHandler.instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
+
+                LevelHandler.instance.currHint = hintStr;
 
                 if (!isHintAvail)
                 {
@@ -405,7 +408,7 @@ namespace YugantLoyaLibrary.FindWords
             yield return new WaitForSeconds(time);
             LevelHandler.instance.LastQuesTile = null;
             LevelHandler.instance.SetLevelRunningBool(true);
-            LevelHandler.instance.CheckWordExistOrNot(out bool hintButtonStatus);
+            LevelHandler.instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
         }
 
         public List<MainDictionary.WordLengthDetailedInfo> GetWordListOfLength(int wordLength,
