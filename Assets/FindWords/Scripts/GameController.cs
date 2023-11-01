@@ -285,7 +285,7 @@ namespace YugantLoyaLibrary.FindWords
                 gridTile.MoveTowardsGrid();
                 index++;
             }
-
+            helper.canvasHelperHand.SetActive(false);
             Debug.Log("Helper Deal For Each Completed !");
             LevelHandler.instance.wordCompletedGridList.Clear();
             DataHandler.HelperIndex++;

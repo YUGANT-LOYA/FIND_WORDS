@@ -225,6 +225,11 @@ namespace YugantLoyaLibrary.FindWords
 
         public void MoveAfter(Vector3 pos, bool isMovingToQues, QuesTile quesTile, float time = 0f)
         {
+            if (DataHandler.HelperLevelCompleted == 0)
+            {
+                GameController.instance.helper.gridHelperHand.SetActive(false);
+            }
+            
             StartCoroutine(Move(pos, isMovingToQues, quesTile, time));
         }
 

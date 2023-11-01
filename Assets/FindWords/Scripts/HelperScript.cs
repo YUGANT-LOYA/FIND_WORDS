@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using YugantLoyaLibrary.FindWords;
 
 public class HelperScript : MonoBehaviour
 {
     public int clickDealIndex = 4;
+    public GameObject canvasHelperHand, gridHelperHand;
     public List<GridTile> clickingList;
     public List<int> gridIndexList;
     public List<GameObject> bgList;
+    public List<Vector3> helperHandPosList;
+    [SerializeField] private Canvas canvas;
 
     public void PlayHelper()
     {
@@ -53,15 +57,21 @@ public class HelperScript : MonoBehaviour
 
             if (DataHandler.HelperIndex < clickDealIndex)
             {
+                gridHelperHand.SetActive(true);
+                gridHelperHand.transform.position = helperHandPosList[DataHandler.HelperIndex];
                 UIManager.instance.CanTouch(false);
                 clickingList[DataHandler.HelperIndex].isHelperActivate = true;
             }
             else if (clickDealIndex == DataHandler.HelperIndex)
-            {
+            { 
+                gridHelperHand.SetActive(false);
+                canvasHelperHand.SetActive(true);
                 UIManager.instance.CanTouch(true);
             }
             else
             {
+                gridHelperHand.SetActive(true);
+                gridHelperHand.transform.position = helperHandPosList[DataHandler.HelperIndex];
                 UIManager.instance.CanTouch(false);
                 clickingList[DataHandler.HelperIndex - 1].isHelperActivate = true;
             }
