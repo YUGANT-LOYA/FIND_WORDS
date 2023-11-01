@@ -30,6 +30,7 @@ namespace YugantLoyaLibrary.FindWords
         [Header("References")] [SerializeField]
         private PickWordDataInfo pickWordDataInfo;
 
+        public HelperScript helper;
         [SerializeField] private DefinedLevelScriptable definedLevelScriptable;
         [SerializeField] private CoinHandlerScriptable coinHandlerScriptable;
         [SerializeField] private GridCamScriptable gridCamScriptable;
@@ -38,6 +39,7 @@ namespace YugantLoyaLibrary.FindWords
         public Transform coinContainerTran;
         public int coinPoolSize = 10, shuffleUsingCoin = 30, dealUsingCoin = 10, hintUsingCoin = 20;
         private Level _currLevel;
+        private bool isDealHelper, isShuffleHelper;
 
         private void Awake()
         {
@@ -196,6 +198,12 @@ namespace YugantLoyaLibrary.FindWords
             if (!LevelHandler.instance.GetLevelRunningBool())
                 return;
 
+            if (DataHandler.HelperLevelCompleted == 0)
+            {
+                Debug.Log("Shuffle HelperLevelCompleted is Not Completed!");
+                return;
+            }
+
             if (isCalledByPlayer)
             {
                 if (DataHandler.TotalCoin < shuffleUsingCoin)
@@ -222,8 +230,27 @@ namespace YugantLoyaLibrary.FindWords
 
         public void Deal(bool isCalledByPlayer = true)
         {
-            if (!LevelHandler.instance.GetLevelRunningBool() || LevelHandler.instance.wordCompletedGridList.Count <= 0)
+            if (!LevelHandler.instance.GetLevelRunningBool() ||
+                LevelHandler.instance.wordCompletedGridList.Count <= 0)
                 return;
+
+            if (DataHandler.HelperLevelCompleted == 0)
+            {
+                Debug.Log("Deal HelperLevelCompleted is Not Completed!");
+                if (DataHandler.HelperIndex != helper.clickDealIndex)
+                {
+                    Debug.Log("IF Helper Index Same in Deal And Function Returns !");
+                    return;
+                }
+                else
+                {
+                    Debug.Log("ELSE Helper Index Same in Deal And Function Returns !");
+                    UIManager.instance.DealButtonEffect();
+                    SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
+                    StartCoroutine(HelperDeal());
+                    return;
+                }
+            }
 
             if (isCalledByPlayer)
             {
@@ -244,10 +271,38 @@ namespace YugantLoyaLibrary.FindWords
             UIManager.instance.DealButtonEffect();
         }
 
+        IEnumerator HelperDeal()
+        {
+            Debug.Log("Helper Deal Called !");
+            int index = 0;
+            string randomPickedWord = "YOB";
+            foreach (GridTile gridTile in LevelHandler.instance.wordCompletedGridList)
+            {
+                yield return new WaitForSeconds(_currLevel.timeToWaitForEachGrid);
+                gridTile.isBlastAfterWordComplete = false;
+                gridTile.GridTextData = randomPickedWord[index].ToString();
+                LevelHandler.instance.gridAvailableOnScreenList.Add(gridTile);
+                gridTile.MoveTowardsGrid();
+                index++;
+            }
+
+            Debug.Log("Helper Deal For Each Completed !");
+            LevelHandler.instance.wordCompletedGridList.Clear();
+            DataHandler.HelperIndex++;
+            helper.ClickTile(0.6f);
+        }
+
         public void Hint(bool isCalledByPlayer = true)
         {
-            if (!LevelHandler.instance.GetLevelRunningBool() || !string.IsNullOrEmpty(LevelHandler.instance.currHint))
+            if (!LevelHandler.instance.GetLevelRunningBool() ||
+                !string.IsNullOrEmpty(LevelHandler.instance.currHint))
                 return;
+
+            if (DataHandler.HelperLevelCompleted == 0)
+            {
+                Debug.Log("Hint HelperLevelCompleted is Not Completed!");
+                return;
+            }
 
             if (isCalledByPlayer)
             {

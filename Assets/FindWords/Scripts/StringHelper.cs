@@ -12,7 +12,7 @@ namespace YugantLoyaLibrary.FindWords
         public static readonly string NEW_GRID_CREATED = "NEW_GRID_CREATED";
         public static readonly string GRID_GENERATING_FIRST_TIME = "GRID_GENERATING_FIRST_TIME";
         public static readonly string CURR_DEFINED_LEVEL = "CURR_DEFINED_LEVEL";
-        
+        public static readonly string HELPER_LEVEL_COMPLETED = "HELPER_LEVEL_COMPLETED";
         
         public static readonly string PICK_DATA_INDEX = "PICK_DATA_INDEX";
         public static readonly string PICK_DATA_SRTUCT_INDEX = "PICK_DATA_STRUCT_INDEX";

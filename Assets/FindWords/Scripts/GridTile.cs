@@ -19,7 +19,14 @@ namespace YugantLoyaLibrary.FindWords
         [HideInInspector] public Vector3 defaultLocalGridPos, defaultGlobalGridPos;
         [HideInInspector] public Quaternion defaultQuaternionRotation;
         public Vector3 blastPos;
-        public bool isGridActive = true, isSelected, isBlastAfterWordComplete, isFullLocked, isCurrLock;
+
+        public bool isHelperActivate = false,
+            isGridActive = true,
+            isSelected,
+            isBlastAfterWordComplete,
+            isFullLocked,
+            isCurrLock;
+
         [SerializeField] private Vector2Int id;
         public QuesTile placedOnQuesTile;
 
@@ -112,6 +119,12 @@ namespace YugantLoyaLibrary.FindWords
             if (!LevelHandler.instance.GetLevelRunningBool() || isMoving)
                 return;
 
+            if (DataHandler.HelperLevelCompleted == 0)
+            {
+                if (!isHelperActivate)
+                    return;
+            }
+
             if (isCurrLock && DataHandler.TotalCoin >= LevelHandler.instance.coinToUnlockNextGrid)
             {
                 Vibration.Vibrate(20);
@@ -185,7 +198,7 @@ namespace YugantLoyaLibrary.FindWords
                     DataHandler.CoinGridUnlockIndex++;
                     LevelHandler.instance.UnlockNextGridForCoins();
                     DeactivateLockStatus();
-                    cube.GetComponent<Renderer>().material = new Material(gridMaterial);
+                    //cube.GetComponent<Renderer>().material = new Material(gridMaterial);
                     gridText.gameObject.SetActive(true);
                     isMoving = false;
 
@@ -261,6 +274,13 @@ namespace YugantLoyaLibrary.FindWords
                 }
 
                 isMoving = false;
+
+                if (DataHandler.HelperLevelCompleted == 0)
+                {
+                    isHelperActivate = false;
+                    DataHandler.HelperIndex++;
+                    GameController.instance.helper.ClickTile(0.2f);
+                }
             });
         }
 
@@ -284,10 +304,6 @@ namespace YugantLoyaLibrary.FindWords
             {
                 placedOnQuesTile.AddData(GridTextData);
             }
-            // else
-            // {
-            //     placedOnQuesTile.RevertData();
-            // }
         }
 
         public void CallBlastAfterTime()

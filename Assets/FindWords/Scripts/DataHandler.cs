@@ -74,6 +74,12 @@ namespace YugantLoyaLibrary.FindWords
             set => PlayerPrefs.SetInt(StringHelper.FIRST_TIME_OPEN, value);
         } 
         
+        public static int HelperLevelCompleted
+        {
+            get => PlayerPrefs.GetInt(StringHelper.HELPER_LEVEL_COMPLETED, 0);
+            set => PlayerPrefs.SetInt(StringHelper.HELPER_LEVEL_COMPLETED, value);
+        } 
+        
         public static int FirstTimeGameClose
         {
             get => PlayerPrefs.GetInt(StringHelper.FIRST_TIME_GAME_CLOSE, 0);
@@ -116,15 +122,8 @@ namespace YugantLoyaLibrary.FindWords
             get => PlayerPrefs.GetInt(StringHelper.PICK_DATA_INDEX, 0);
             set => PlayerPrefs.SetInt(StringHelper.PICK_DATA_INDEX, value);
         }
-
-        //This is for traversing the Pick Data Struct List.
-        public static int PickDataStructIndex
-        {
-            get => PlayerPrefs.GetInt(StringHelper.PICK_DATA_SRTUCT_INDEX, 0);
-            set => PlayerPrefs.SetInt(StringHelper.PICK_DATA_SRTUCT_INDEX, value);
-        }
-
-        public static int HelperWordIndex
+        
+        public static int HelperIndex
         {
             get => PlayerPrefs.GetInt(StringHelper.HELPER_WORD_INDEX, 0);
             set => PlayerPrefs.SetInt(StringHelper.HELPER_WORD_INDEX, value);

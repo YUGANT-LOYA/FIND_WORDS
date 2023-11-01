@@ -180,13 +180,18 @@ MonoBehaviour:
   currlockGm: {fileID: 5404208774061186188}
   otherLockGm: {fileID: 160908412518281720}
   gridText: {fileID: 4584858875892991531}
-  gridMaterial: {fileID: 2100000, guid: 66e9ed285ea4b894d8e60f8479edcdec, type: 2}
+  gridMaterial: {fileID: 2100000, guid: aa8d74b1c698d654d9d9ca9cf0b5454d, type: 2}
   defaultGridSize: {x: 0, y: 0, z: 0}
-  defaultGridPos: {x: 0, y: 0, z: 0}
+  defaultLocalGridPos: {x: 0, y: 0, z: 0}
+  defaultGlobalGridPos: {x: 0, y: 0, z: 0}
+  defaultQuaternionRotation: {x: 0, y: 0, z: 0, w: 0}
   blastPos: {x: -4, y: 0, z: 0}
+  isHelperActivate: 0
   isGridActive: 1
   isSelected: 0
   isBlastAfterWordComplete: 0
+  isFullLocked: 0
+  isCurrLock: 0
   id: {x: 0, y: 0}
   placedOnQuesTile: {fileID: 0}
   isMoving: 0
@@ -199,8 +204,6 @@ MonoBehaviour:
   blastTime: 1.5
   blastReturnEase: 4
   amountToUnlockText: {fileID: 4439169905883863217}
-  isFullLocked: 0
-  isCurrLock: 0
   lockEase: 31
   lockShakeTime: 0.5
   shakeStrength: 0.1

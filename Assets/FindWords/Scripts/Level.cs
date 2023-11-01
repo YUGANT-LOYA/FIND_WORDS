@@ -29,7 +29,7 @@ namespace YugantLoyaLibrary.FindWords
         public Transform quesGridTrans;
         [SerializeField] private Transform gridContainer;
         private float _currGridWidth, _currGridHeight, _currGridSize, _currQuesSize;
-        [SerializeField] private float gridSpacing = 0.1f, quesSpacing = 0.2f, gridXSpacing = -0.2f;
+        [SerializeField] private float gridSpacing = 0.1f, gridXSpacing = -0.2f;
 
         private void Awake()
         {
@@ -200,8 +200,8 @@ namespace YugantLoyaLibrary.FindWords
                     {
                         LevelHandler.instance.unlockedGridList.Add(gridTileScript);
                         LevelHandler.instance.gridAvailableOnScreenList.Add(gridTileScript);
-                        gmRenderer.material = new Material(gridMaterial);
-                        gridTileScript.gridMaterial = gmRenderer.material;
+                        //gmRenderer.material = new Material(gridMaterial);
+                        //gridTileScript.gridMaterial = gmRenderer.material;
                     }
 
                     //Debug.Log("GRID CREATED INDEX : " + index);
@@ -351,6 +351,14 @@ namespace YugantLoyaLibrary.FindWords
 
             UIManager.instance.CheckAllButtonStatus();
             LevelHandler.instance.SetLevelRunningBool(true);
+
+            if (DataHandler.HelperLevelCompleted == 0)
+            {
+                LevelHandler.instance.SetLevelRunningBool(false);
+                GameController.instance.helper.PlayHelper();
+            }
+            
+           
         }
 
         private void AssignGridData(GridTile gridTileScript, int row, int column)
