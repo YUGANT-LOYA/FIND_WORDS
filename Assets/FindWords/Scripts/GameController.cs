@@ -217,7 +217,7 @@ namespace YugantLoyaLibrary.FindWords
 
             LevelHandler.instance.SetLevelRunningBool(false);
 
-            SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
+            SoundManager.instance.PlaySound(SoundManager.SoundType.Click);
 
             float time = _currLevel.timeToWaitForEachGrid;
             float timeToPlaceGrids = _currLevel.timeToPlaceGrid;
@@ -246,7 +246,7 @@ namespace YugantLoyaLibrary.FindWords
                 {
                     Debug.Log("ELSE Helper Index Same in Deal And Function Returns !");
                     UIManager.instance.DealButtonEffect();
-                    SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
+                    SoundManager.instance.PlaySound(SoundManager.SoundType.Click);
                     StartCoroutine(HelperDeal());
                     return;
                 }
@@ -263,7 +263,7 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             LevelHandler.instance.SetLevelRunningBool(false);
-            SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
+            SoundManager.instance.PlaySound(SoundManager.SoundType.Click);
             List<GridTile> list = new List<GridTile>(LevelHandler.instance.wordCompletedGridList);
             ShuffleList(list);
             StartCoroutine(BackToDeckAnim(list));
@@ -328,7 +328,7 @@ namespace YugantLoyaLibrary.FindWords
                 StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, hintUsingCoin, 0.5f));
             }
 
-            SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
+            SoundManager.instance.PlaySound(SoundManager.SoundType.Click);
 
             LevelHandler.instance.ShowHint();
         }
@@ -406,7 +406,7 @@ namespace YugantLoyaLibrary.FindWords
 
             int index = 0;
 
-            SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeckSound);
+            SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeck);
 
             foreach (GridTile gridTile in list)
             {

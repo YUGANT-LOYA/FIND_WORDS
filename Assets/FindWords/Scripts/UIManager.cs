@@ -199,6 +199,17 @@ namespace YugantLoyaLibrary.FindWords
             StartCoroutine(nameof(PlayCoinAnim), coinToAdd);
         }
 
+        private void Update()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector3 mousePos = Input.mousePosition;
+                Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+                Debug.Log("mouse Pos : " + mousePos);
+                Debug.Log("world Pos : " + worldPos);
+            }
+        }
+
         private IEnumerator PlayCoinAnim(int coinToBeAdded)
         {
             _coinTextUpdateTime = coinAnimTime / 2;
@@ -215,12 +226,19 @@ namespace YugantLoyaLibrary.FindWords
             StartCoroutine(UpdateAddedCoinText((coinMovementTime + _coinTextUpdateTime), coinToBeAdded,
                 (_coinTextUpdateTime / 2)));
 
+
+            RectTransform coinRecTrans = coinText.transform.parent.GetComponent<RectTransform>();
+            Vector2 coinTargetOffset = new Vector2(coinRecTrans.rect.x, coinRecTrans.rect.y);
+            Vector3 tempPos = new Vector3(Screen.width + (3 * (coinTargetOffset.x / 2)),
+                Screen.height + coinTargetOffset.y, -1f);
+            tempPos = Camera.main.ScreenToWorldPoint(tempPos);
+
             for (int i = 0; i < GameController.instance.coinPoolSize; i++)
             {
                 GameObject coin = DataHandler.instance.GetCoin();
                 coin.transform.localScale = Vector3.one * maxCoinScale;
                 coin.transform.rotation = Quaternion.identity;
-                coin.transform.position = new Vector3(xVal, yVal, -1f);
+                coin.transform.position = new Vector3(trans.position.x, trans.position.y, -1f);
                 coin.SetActive(true);
 
                 yield return new WaitForSeconds(coinMovementTime);
@@ -228,7 +246,7 @@ namespace YugantLoyaLibrary.FindWords
                 coin.transform.DORotate(new Vector3(coinRotateAngle, coinRotateAngle,
                     coinRotateAngle), _coinTextUpdateTime, RotateMode.FastBeyond360).SetEase(coinMovementEase);
 
-                coin.transform.DOMove(GameController.instance.coinContainerTran.position + new Vector3(1.5f, 2.5f, -1f),
+                coin.transform.DOMove(tempPos,
                         _coinTextUpdateTime)
                     .SetEase(coinMovementEase).OnComplete(
                         () =>

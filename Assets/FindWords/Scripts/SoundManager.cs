@@ -20,10 +20,12 @@ public class SoundManager : MonoBehaviour
     public enum SoundType
     {
         None,
-        ClickSound,
-        WrongSound,
-        CorrectSound,
-        CardDeckSound
+        Click,
+        Wrong,
+        Correct,
+        CardDeck,
+        NewGridUnlock,
+        LockGridClicked
     }
 
 

@@ -1109,6 +1109,10 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: a1eb2c4fd449fff468c555fe0dffd900, type: 3}
   - soundType: 4
     audioClip: {fileID: 8300000, guid: e650d5be8d59ab648a82065a9b4e4d49, type: 3}
+  - soundType: 5
+    audioClip: {fileID: 8300000, guid: 19b6a4ff2ce608446afc1d99f4750334, type: 3}
+  - soundType: 6
+    audioClip: {fileID: 8300000, guid: 612417a4e01574d4e90f3786e10349cb, type: 3}
 --- !u!4 &341999786
 Transform:
   m_ObjectHideFlags: 0
@@ -2322,7 +2326,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Word Found
+  m_text: 'New Word Found !   +5 Coins '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 136b0bd439a9ba24aa4430f1d3ac21f0, type: 2}
   m_sharedMaterial: {fileID: -2163439456717386793, guid: 136b0bd439a9ba24aa4430f1d3ac21f0,

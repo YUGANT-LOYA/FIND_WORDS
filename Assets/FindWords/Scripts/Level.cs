@@ -326,7 +326,7 @@ namespace YugantLoyaLibrary.FindWords
 
         private IEnumerator PlaceGrids()
         {
-            SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeckSound);
+            SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeck);
 
             if (LevelHandler.instance.totalGridsList.Count > 0)
             {

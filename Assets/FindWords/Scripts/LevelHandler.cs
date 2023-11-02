@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace YugantLoyaLibrary.FindWords
@@ -774,9 +772,9 @@ namespace YugantLoyaLibrary.FindWords
             //bool doWordExist = GameController.instance.Search(word);
 
             //bool doWordExistInFullDict = englishDictWords.SearchInFullDict(word);
-            bool isCommonWord = englishDictWords.CompareWordsInGame(word, out bool doExist);
+            bool isUnCommonWordFound = englishDictWords.CompareWordsInGame(word, out bool doExist);
 
-            if (isCommonWord && doExist)
+            if (isUnCommonWordFound && doExist)
             {
                 Debug.Log("Word UnCommon Found!");
                 UIManager.instance.toastMessageScript.ShowNewWordFoundToast();
@@ -801,27 +799,27 @@ namespace YugantLoyaLibrary.FindWords
                     hintAvailList.Remove(temp);
                 }
 
-                WordComplete();
+                WordComplete(isUnCommonWordFound);
                 currHint = null;
-                SoundManager.instance.PlaySound(SoundManager.SoundType.CorrectSound);
+                SoundManager.instance.PlaySound(SoundManager.SoundType.Correct);
             }
             else
             {
                 Vibration.Vibrate(25);
-                SoundManager.instance.PlaySound(SoundManager.SoundType.WrongSound);
+                SoundManager.instance.PlaySound(SoundManager.SoundType.Wrong);
                 GridsBackToPos();
                 UIManager.instance.ShakeCam();
                 UIManager.instance.WrongEffect();
             }
         }
 
-        private void AddCoin()
+        private void AddCoin(int extraCoin = 0)
         {
-            UIManager.instance.CoinCollectionAnimation(coinPerWord);
+            UIManager.instance.CoinCollectionAnimation(coinPerWord + extraCoin);
             Debug.Log("Coin Per Word To Add: " + coinPerWord);
         }
 
-        void WordComplete()
+        void WordComplete(bool isCommonWord)
         {
             float time = 0;
             for (int index = 0; index < inputGridsList.Count; index++)
@@ -831,7 +829,15 @@ namespace YugantLoyaLibrary.FindWords
                 if (index == 0)
                 {
                     time = gridTile.blastTime / 2 + gridTile.blastEffectAfterTime;
-                    AddCoin();
+
+                    if (isCommonWord)
+                    {
+                        AddCoin(5);
+                    }
+                    else
+                    {
+                        AddCoin();
+                    }
                 }
 
                 wordCompletedGridList.Add(gridTile);

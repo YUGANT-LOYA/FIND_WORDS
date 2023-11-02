@@ -124,10 +124,11 @@ namespace YugantLoyaLibrary.FindWords
                 if (!isHelperActivate)
                     return;
             }
-
+            
+            Vibration.Vibrate(20);
+            
             if (isCurrLock && DataHandler.TotalCoin >= LevelHandler.instance.coinToUnlockNextGrid)
             {
-                Vibration.Vibrate(20);
                 isFullLocked = false;
                 isGridActive = true;
                 isCurrLock = false;
@@ -136,6 +137,7 @@ namespace YugantLoyaLibrary.FindWords
                 LevelHandler.instance.totalBuyingGridList.Remove(this);
                 LevelHandler.instance.gridAvailableOnScreenList.Add(this);
                 UIManager.SetCoinData(LevelHandler.instance.coinToUnlockNextGrid, -1);
+                SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
                 StartCoroutine(
                     UIManager.instance.UpdateReducedCoinText(0f, LevelHandler.instance.coinToUnlockNextGrid, 0.5f));
                 NewGridUnlockAnimation(LevelHandler.instance.coinToUnlockNextGrid);
@@ -144,6 +146,7 @@ namespace YugantLoyaLibrary.FindWords
 
             if (isFullLocked || isCurrLock)
             {
+                SoundManager.instance.PlaySound(SoundManager.SoundType.LockGridClicked);
                 ShakeAnim();
                 return;
             }
@@ -151,11 +154,11 @@ namespace YugantLoyaLibrary.FindWords
             if (!isGridActive)
                 return;
 
-            Vibration.Vibrate(20);
+            
 
             if (LevelHandler.instance.LastQuesTile == null)
             {
-                SoundManager.instance.PlaySound(SoundManager.SoundType.ClickSound);
+                SoundManager.instance.PlaySound(SoundManager.SoundType.Click);
                 //Debug.Log($"Grid {gameObject.name} Clicked !");
                 isSelected = !isSelected;
                 //Debug.Log("Is Selected : " + isSelected);
@@ -229,7 +232,7 @@ namespace YugantLoyaLibrary.FindWords
             {
                 GameController.instance.helper.gridHelperHand.SetActive(false);
             }
-            
+
             StartCoroutine(Move(pos, isMovingToQues, quesTile, time));
         }
 
@@ -350,7 +353,7 @@ namespace YugantLoyaLibrary.FindWords
                 LevelHandler.instance.gridAvailableOnScreenList.Add(this);
             }
 
-            SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeckSound);
+            SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeck);
             blastPos = pos;
             transform.DOMove(blastPos, timeToPlaceGrids / 2).SetEase(movingEase);
             transform.DOScale(defaultGridSize, timeToPlaceGrids / 2).SetEase(movingEase);
