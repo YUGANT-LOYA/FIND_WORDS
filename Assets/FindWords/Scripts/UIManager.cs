@@ -3,10 +3,10 @@ using System.Collections;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
-using YugantLibrary.ParkingOrderGame;
+using YugantLibrary.Camera;
 using Random = UnityEngine.Random;
+using NaughtyAttributes;
 
 namespace YugantLoyaLibrary.FindWords
 {
@@ -14,8 +14,7 @@ namespace YugantLoyaLibrary.FindWords
     {
         public static UIManager instance;
         private Camera cam;
-        [SerializeField] GameObject touchPanelGm;
-        public GameObject gameBG;
+        [SerializeField] private GameObject touchPanelGm;
         private CameraShake camShakeScript;
         public ToastMessage toastMessageScript;
         public float coinAnimTime = 1.5f, coinRotateAngle = 810f, maxCoinScale = 45f;
@@ -199,16 +198,20 @@ namespace YugantLoyaLibrary.FindWords
             StartCoroutine(nameof(PlayCoinAnim), coinToAdd);
         }
 
-        private void Update()
+        [Button]
+        void PlayCoinDoTween()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Application.isPlaying)
             {
-                Vector3 mousePos = Input.mousePosition;
-                Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
-                Debug.Log("mouse Pos : " + mousePos);
-                Debug.Log("world Pos : " + worldPos);
+                StartCoroutine(nameof(PlayCoinAnim), 10);
             }
+            else
+            {
+                Debug.Log("Button will Not Work in This Mode !");
+            }
+            
         }
+
 
         private IEnumerator PlayCoinAnim(int coinToBeAdded)
         {
@@ -217,7 +220,7 @@ namespace YugantLoyaLibrary.FindWords
             float yVal = Random.Range(-0.5f, 0.5f);
             bool isCoinTextUpdating = false;
             int totalCoin = GameController.instance.coinPoolSize;
-            Transform trans = GameController.instance.coinContainerTran;
+            Vector3 coinContainerTransPos = GameController.instance.coinContainerTran.position;
             float coinSpawningTime = coinAnimTime / 2;
             float coinMovementTime = (coinSpawningTime) / totalCoin;
 
@@ -229,16 +232,18 @@ namespace YugantLoyaLibrary.FindWords
 
             RectTransform coinRecTrans = coinText.transform.parent.GetComponent<RectTransform>();
             Vector2 coinTargetOffset = new Vector2(coinRecTrans.rect.x, coinRecTrans.rect.y);
-            Vector3 tempPos = new Vector3(Screen.width + (3 * (coinTargetOffset.x / 2)),
-                Screen.height + coinTargetOffset.y, -1f);
-            tempPos = Camera.main.ScreenToWorldPoint(tempPos);
-
+            Vector3 coinTargetPos = new Vector3(Screen.width + (3 * (coinTargetOffset.x / 2)),
+                Screen.height + coinTargetOffset.y, -2f);
+            coinTargetPos = Camera.main.ScreenToWorldPoint(coinTargetPos);
+            Debug.Log("coin Target Pos : " + coinTargetPos);
             for (int i = 0; i < GameController.instance.coinPoolSize; i++)
             {
                 GameObject coin = DataHandler.instance.GetCoin();
                 coin.transform.localScale = Vector3.one * maxCoinScale;
                 coin.transform.rotation = Quaternion.identity;
-                coin.transform.position = new Vector3(trans.position.x, trans.position.y, -1f);
+                coin.transform.position = new Vector3(coinContainerTransPos.x + xVal,
+                    coinContainerTransPos.y + yVal, -1f);
+
                 coin.SetActive(true);
 
                 yield return new WaitForSeconds(coinMovementTime);
@@ -246,7 +251,7 @@ namespace YugantLoyaLibrary.FindWords
                 coin.transform.DORotate(new Vector3(coinRotateAngle, coinRotateAngle,
                     coinRotateAngle), _coinTextUpdateTime, RotateMode.FastBeyond360).SetEase(coinMovementEase);
 
-                coin.transform.DOMove(tempPos,
+                coin.transform.DOMove(coinTargetPos,
                         _coinTextUpdateTime)
                     .SetEase(coinMovementEase).OnComplete(
                         () =>

@@ -217,6 +217,11 @@ namespace YugantLoyaLibrary.FindWords
                 {
                     Debug.Log("Pick Index Val : " + DataHandler.PickDataIndex);
 
+                    if (wordsLeftList.Count <= 0)
+                    {
+                        FillNewWordInWordLeftList();
+                    }
+                    
                     tempStr += wordsLeftList[0];
 
                     if (i != unlockedGridWord - 1)
@@ -225,11 +230,6 @@ namespace YugantLoyaLibrary.FindWords
                         hintAvailList.Add(wordsLeftList[0]);
                         wordsLeftList.RemoveAt(0);
                         //DataHandler.PickDataIndex++;
-                    }
-
-                    if (wordsLeftList.Count <= 0)
-                    {
-                        FillNewWordInWordLeftList();
                     }
                 }
 
@@ -342,8 +342,14 @@ namespace YugantLoyaLibrary.FindWords
                 for (var i = 0; i < unlockedGridWord; i++)
                 {
                     Debug.Log("Pick Index Val : " + DataHandler.PickDataIndex);
-
+                    
+                    if (wordsLeftList.Count <= 0)
+                    {
+                        FillNewWordInWordLeftList();
+                    }
+                    
                     tempStr += wordsLeftList[0];
+                    
                     if (i != unlockedGridWord - 1)
                     {
                         //Will Not Enter for Last Word !
@@ -352,10 +358,7 @@ namespace YugantLoyaLibrary.FindWords
                         //DataHandler.PickDataIndex++;
                     }
 
-                    if (wordsLeftList.Count <= 0)
-                    {
-                        FillNewWordInWordLeftList();
-                    }
+                    
                 }
 
                 for (int i = 0; i < tempStr.Trim().Length; i++)
@@ -444,7 +447,12 @@ namespace YugantLoyaLibrary.FindWords
             for (var i = 0; i < unlockedGridWord; i++)
             {
                 Debug.Log("Pick Index Val : " + DataHandler.PickDataIndex);
-
+                
+                if (wordsLeftList.Count <= 0)
+                {
+                    FillNewWordInWordLeftList();
+                }
+                
                 tempStr += wordsLeftList[0];
 
                 if (i != unlockedGridWord - 1)
@@ -455,10 +463,7 @@ namespace YugantLoyaLibrary.FindWords
                     //DataHandler.PickDataIndex++;
                 }
 
-                if (wordsLeftList.Count <= 0)
-                {
-                    FillNewWordInWordLeftList();
-                }
+                
             }
 
             for (int i = 0; i < tempStr.Trim().Length; i++)
@@ -770,14 +775,13 @@ namespace YugantLoyaLibrary.FindWords
 
             Debug.Log("Word : " + word + " Word Length : " + word.Length);
             //bool doWordExist = GameController.instance.Search(word);
-
-            //bool doWordExistInFullDict = englishDictWords.SearchInFullDict(word);
             bool isUnCommonWordFound = englishDictWords.CompareWordsInGame(word, out bool doExist);
 
             if (isUnCommonWordFound && doExist)
             {
                 Debug.Log("Word UnCommon Found!");
                 UIManager.instance.toastMessageScript.ShowNewWordFoundToast();
+                SoundManager.instance.PlaySound(SoundManager.SoundType.NewWordFound);
             }
 
 
@@ -801,7 +805,11 @@ namespace YugantLoyaLibrary.FindWords
 
                 WordComplete(isUnCommonWordFound);
                 currHint = null;
-                SoundManager.instance.PlaySound(SoundManager.SoundType.Correct);
+                
+                if (!isUnCommonWordFound)
+                {
+                    SoundManager.instance.PlaySound(SoundManager.SoundType.Correct);
+                }
             }
             else
             {

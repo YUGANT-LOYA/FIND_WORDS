@@ -20,10 +20,6 @@ namespace YugantLoyaLibrary.FindWords
         };
 
         [Range(4, 7)] public int startingGridSize = 5;
-
-        [Tooltip("Level Without Shuffling the Letter and copy exact letters for keeping some level easy !")]
-        public int maxHelperIndex = 3;
-
         [HideInInspector] public int startingQuesSize = 3, maxGridSize = 7;
         public int defaultIq = 5;
 
@@ -209,6 +205,8 @@ namespace YugantLoyaLibrary.FindWords
                 if (DataHandler.TotalCoin < shuffleUsingCoin)
                     return;
 
+                UIManager.instance.toastMessageScript.ShowNoShuffleFoundToast();
+                SoundManager.instance.PlaySound(SoundManager.SoundType.ErrorMessage);
                 Vibration.Vibrate(20);
                 LevelHandler.instance.currHint = null;
                 UIManager.SetCoinData(shuffleUsingCoin, -1);
@@ -285,6 +283,7 @@ namespace YugantLoyaLibrary.FindWords
                 gridTile.MoveTowardsGrid();
                 index++;
             }
+
             helper.canvasHelperHand.SetActive(false);
             Debug.Log("Helper Deal For Each Completed !");
             LevelHandler.instance.wordCompletedGridList.Clear();
@@ -309,6 +308,7 @@ namespace YugantLoyaLibrary.FindWords
                 if (DataHandler.TotalCoin < hintUsingCoin)
                 {
                     UIManager.instance.toastMessageScript.ShowHintToast();
+                    SoundManager.instance.PlaySound(SoundManager.SoundType.ErrorMessage);
                     return;
                 }
 

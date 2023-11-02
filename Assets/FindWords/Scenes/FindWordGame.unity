@@ -983,7 +983,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -252}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 900, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &323856481
 GameObject:
@@ -1104,15 +1104,19 @@ MonoBehaviour:
   - soundType: 1
     audioClip: {fileID: 8300000, guid: d9250ee9e7c85ce4fa4653d30827982d, type: 3}
   - soundType: 2
-    audioClip: {fileID: 8300000, guid: ea8f5835c9f87504399e30ee5ed20a09, type: 3}
+    audioClip: {fileID: 8300000, guid: 75304fb573f63b74da63fc7f02f0c442, type: 3}
   - soundType: 3
-    audioClip: {fileID: 8300000, guid: a1eb2c4fd449fff468c555fe0dffd900, type: 3}
+    audioClip: {fileID: 8300000, guid: ea8f5835c9f87504399e30ee5ed20a09, type: 3}
   - soundType: 4
-    audioClip: {fileID: 8300000, guid: e650d5be8d59ab648a82065a9b4e4d49, type: 3}
+    audioClip: {fileID: 8300000, guid: a1eb2c4fd449fff468c555fe0dffd900, type: 3}
   - soundType: 5
-    audioClip: {fileID: 8300000, guid: 19b6a4ff2ce608446afc1d99f4750334, type: 3}
+    audioClip: {fileID: 8300000, guid: e650d5be8d59ab648a82065a9b4e4d49, type: 3}
   - soundType: 6
+    audioClip: {fileID: 8300000, guid: 19b6a4ff2ce608446afc1d99f4750334, type: 3}
+  - soundType: 7
     audioClip: {fileID: 8300000, guid: 612417a4e01574d4e90f3786e10349cb, type: 3}
+  - soundType: 8
+    audioClip: {fileID: 8300000, guid: 5d627b4277d321646af09266f476d148, type: 3}
 --- !u!4 &341999786
 Transform:
   m_ObjectHideFlags: 0
@@ -1342,8 +1346,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -258}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 0, y: -260}
+  m_SizeDelta: {x: 600, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &389480122
 GameObject:
@@ -2304,7 +2308,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -20, y: -20}
+  m_SizeDelta: {x: -40, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &689043859
 MonoBehaviour:
@@ -2354,12 +2358,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44.4
+  m_fontSize: 40
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 10
-  m_fontSizeMax: 44.4
+  m_fontSizeMax: 40
   m_fontStyle: 17
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -2641,7 +2645,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   touchPanelGm: {fileID: 1365435766}
-  gameBG: {fileID: 928607850}
   toastMessageScript: {fileID: 2113502229}
   coinAnimTime: 1.25
   coinRotateAngle: 810
@@ -3201,7 +3204,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingGridSize: 4
-  maxHelperIndex: 6
   startingQuesSize: 3
   maxGridSize: 7
   defaultIq: 5
@@ -4111,7 +4113,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 600, y: 100}
+  m_SizeDelta: {x: 550, y: 115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1497337762
 MonoBehaviour:
@@ -4931,9 +4933,9 @@ MonoBehaviour:
   toastMsgGm: {fileID: 308677743}
   newWordFoundGm: {fileID: 371795547}
   toastMsgTxt: {fileID: 875319663}
-  toastMessageCanvasGm: {fileID: 66677005}
   noCoinForHintMsg: Not Enough Coins For Hint !
   noWordFoundMsg: No Word Found !
+  noShuffleFoundMsg: Not Enough Coins For Shuffle !
   toastMsgTime: 1
 --- !u!1 &2129635016
 GameObject:

@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using NaughtyAttributes;
 
-namespace YugantLibrary.ParkingOrderGame
+namespace YugantLibrary.Camera
 {
     public class CameraShake : MonoBehaviour
     {

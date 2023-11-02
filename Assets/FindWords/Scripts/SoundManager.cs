@@ -21,11 +21,13 @@ public class SoundManager : MonoBehaviour
     {
         None,
         Click,
+        ErrorMessage,
         Wrong,
         Correct,
         CardDeck,
         NewGridUnlock,
-        LockGridClicked
+        LockGridClicked,
+        NewWordFound
     }
 
 
