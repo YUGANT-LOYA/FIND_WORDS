@@ -185,12 +185,23 @@ namespace YugantLoyaLibrary.FindWords
 
                     startPos.x += _currGridSize + gridXSpacing;
 
+                    // if (i == gridSize.x - 1 && j == gridSize.y - 1)
+                    // {
+                    //     LevelHandler.instance.totalBuyingGridList.Add(gridTileScript);
+                    //     gridTileScript.GetText().gameObject.SetActive(false);
+                    //     gridTileScript.isGridActive = false;
+                    //     gridTileScript.isGridOnRent = true;
+                    //     LevelHandler.instance.rentGridList.Add(gridTileScript);
+                    //     gridTileScript.SetRentStatus(true);
+                    //     gridTileScript.SetRentTextAmount(50);
+                    // }
+                    // else 
+                    
                     if ((i == gridSize.x - 1 || j == gridSize.y - 1) && DataHandler.IsMaxGridOpened == 0)
                     {
                         LevelHandler.instance.totalBuyingGridList.Add(gridTileScript);
                         gridTileScript.GetText().gameObject.SetActive(false);
                         gridTileScript.isGridActive = false;
-                        gmRenderer.material = new Material(gridTileScript.lockMaterial);
                         LevelHandler.instance.lockedGridList.Add(gridTileScript);
                         gridTileScript.SetCurrentLockStatus(false);
                         gridTileScript.SetLockTextAmount(LevelHandler.instance.coinToUnlockNextGrid);
@@ -200,8 +211,6 @@ namespace YugantLoyaLibrary.FindWords
                     {
                         LevelHandler.instance.unlockedGridList.Add(gridTileScript);
                         LevelHandler.instance.gridAvailableOnScreenList.Add(gridTileScript);
-                        //gmRenderer.material = new Material(gridMaterial);
-                        //gridTileScript.gridMaterial = gmRenderer.material;
                     }
 
                     //Debug.Log("GRID CREATED INDEX : " + index);
@@ -357,8 +366,6 @@ namespace YugantLoyaLibrary.FindWords
                 LevelHandler.instance.SetLevelRunningBool(false);
                 GameController.instance.helper.PlayHelper();
             }
-            
-           
         }
 
         private void AssignGridData(GridTile gridTileScript, int row, int column)

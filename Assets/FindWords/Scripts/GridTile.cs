@@ -12,8 +12,8 @@ namespace YugantLoyaLibrary.FindWords
         private Level _level;
         public GameObject cube;
         public Material lockMaterial;
-        [SerializeField] private GameObject currlockGm, otherLockGm;
-        [SerializeField] private TextMeshPro gridText;
+        [SerializeField] private GameObject currlockGm, otherLockGm, rentGm;
+        [SerializeField] private TextMeshPro gridText, rentTimeText;
         public Material gridMaterial;
         [HideInInspector] public Vector3 defaultGridSize;
         [HideInInspector] public Vector3 defaultLocalGridPos, defaultGlobalGridPos;
@@ -25,7 +25,8 @@ namespace YugantLoyaLibrary.FindWords
             isSelected,
             isBlastAfterWordComplete,
             isFullLocked,
-            isCurrLock;
+            isCurrLock,
+            isGridOnRent;
 
         [SerializeField] private Vector2Int id;
         public QuesTile placedOnQuesTile;
@@ -72,6 +73,13 @@ namespace YugantLoyaLibrary.FindWords
             otherLockGm.SetActive(!isActive);
         }
 
+        public void SetRentStatus(bool isActive)
+        {
+            currlockGm.SetActive(!isActive);
+            otherLockGm.SetActive(!isActive);
+            rentGm.SetActive(isActive);
+        }
+
         public void DeactivateLockStatus()
         {
             ObjectStatus(true);
@@ -85,6 +93,11 @@ namespace YugantLoyaLibrary.FindWords
         public void SetLockTextAmount(int valToOpen)
         {
             amountToUnlockText.text = valToOpen.ToString();
+        }
+
+        public void SetRentTextAmount(int valToOpen)
+        {
+            rentTimeText.text = valToOpen.ToString();
         }
 
         public void DefaultGridData(Vector3 pos, Quaternion rot, Vector3 globalPos)
@@ -124,24 +137,41 @@ namespace YugantLoyaLibrary.FindWords
                 if (!isHelperActivate)
                     return;
             }
-            
+
             Vibration.Vibrate(20);
-            
-            if (isCurrLock && DataHandler.TotalCoin >= LevelHandler.instance.coinToUnlockNextGrid)
+
+            if (DataHandler.TotalCoin >= LevelHandler.instance.coinToUnlockNextGrid)
             {
-                isFullLocked = false;
-                isGridActive = true;
-                isCurrLock = false;
-                DataHandler.UnlockGridIndex++;
-                LevelHandler.instance.unlockedGridList.Add(this);
-                LevelHandler.instance.totalBuyingGridList.Remove(this);
-                LevelHandler.instance.gridAvailableOnScreenList.Add(this);
-                UIManager.SetCoinData(LevelHandler.instance.coinToUnlockNextGrid, -1);
-                SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
-                StartCoroutine(
-                    UIManager.instance.UpdateReducedCoinText(0f, LevelHandler.instance.coinToUnlockNextGrid, 0.5f));
-                NewGridUnlockAnimation(LevelHandler.instance.coinToUnlockNextGrid);
-                return;
+                if (isCurrLock)
+                {
+                    isFullLocked = false;
+                    isGridActive = true;
+                    isCurrLock = false;
+                    DataHandler.UnlockGridIndex++;
+                    LevelHandler.instance.unlockedGridList.Add(this);
+                    LevelHandler.instance.totalBuyingGridList.Remove(this);
+                    LevelHandler.instance.gridAvailableOnScreenList.Add(this);
+                    UIManager.SetCoinData(LevelHandler.instance.coinToUnlockNextGrid, -1);
+                    SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
+                    StartCoroutine(
+                        UIManager.instance.UpdateReducedCoinText(0f, LevelHandler.instance.coinToUnlockNextGrid, 0.5f));
+                    NewGridUnlockAnimation(LevelHandler.instance.coinToUnlockNextGrid);
+                    return;
+                }
+                else if(isGridOnRent)
+                {
+                    isGridActive = true;
+                    DataHandler.UnlockGridIndex++;
+                    LevelHandler.instance.unlockedGridList.Add(this);
+                    LevelHandler.instance.totalBuyingGridList.Remove(this);
+                    LevelHandler.instance.gridAvailableOnScreenList.Add(this);
+                    UIManager.SetCoinData(LevelHandler.instance.coinToUnlockNextGrid, -1);
+                    SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
+                    StartCoroutine(
+                        UIManager.instance.UpdateReducedCoinText(0f, LevelHandler.instance.coinToUnlockNextGrid, 0.5f));
+                    NewGridUnlockAnimation(LevelHandler.instance.coinToUnlockNextGrid);
+                    return;
+                }
             }
 
             if (isFullLocked || isCurrLock)
@@ -154,7 +184,6 @@ namespace YugantLoyaLibrary.FindWords
             if (!isGridActive)
                 return;
 
-            
 
             if (LevelHandler.instance.LastQuesTile == null)
             {

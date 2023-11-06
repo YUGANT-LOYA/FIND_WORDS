@@ -26,11 +26,15 @@ namespace YugantLoyaLibrary.FindWords
             unlockedGridList = new List<GridTile>(),
             //This will not remove grids from it after unlocking also, becoz it is needed for unlocking next grid for coins.
             lockedGridList = new List<GridTile>(),
+            rentGridList = new List<GridTile>(),
             gridAvailableOnScreenList = new List<GridTile>(),
             totalBuyingGridList = new List<GridTile>();
 
         public List<QuesTile> quesTileList = new List<QuesTile>();
-        public List<string> selectedWords = new List<string>(), wordsLeftList = new List<string>();
+
+        public List<string> selectedWords = new List<string>(),
+            wordsLeftList = new List<string>();
+
         private bool _isLevelRunning = true;
         private int _colorIndex;
         private QuesTile _lastQuesTile;
@@ -221,7 +225,7 @@ namespace YugantLoyaLibrary.FindWords
                     {
                         FillNewWordInWordLeftList();
                     }
-                    
+
                     tempStr += wordsLeftList[0];
 
                     if (i != unlockedGridWord - 1)
@@ -342,14 +346,14 @@ namespace YugantLoyaLibrary.FindWords
                 for (var i = 0; i < unlockedGridWord; i++)
                 {
                     Debug.Log("Pick Index Val : " + DataHandler.PickDataIndex);
-                    
+
                     if (wordsLeftList.Count <= 0)
                     {
                         FillNewWordInWordLeftList();
                     }
-                    
+
                     tempStr += wordsLeftList[0];
-                    
+
                     if (i != unlockedGridWord - 1)
                     {
                         //Will Not Enter for Last Word !
@@ -357,8 +361,6 @@ namespace YugantLoyaLibrary.FindWords
                         wordsLeftList.RemoveAt(0);
                         //DataHandler.PickDataIndex++;
                     }
-
-                    
                 }
 
                 for (int i = 0; i < tempStr.Trim().Length; i++)
@@ -447,12 +449,12 @@ namespace YugantLoyaLibrary.FindWords
             for (var i = 0; i < unlockedGridWord; i++)
             {
                 Debug.Log("Pick Index Val : " + DataHandler.PickDataIndex);
-                
+
                 if (wordsLeftList.Count <= 0)
                 {
                     FillNewWordInWordLeftList();
                 }
-                
+
                 tempStr += wordsLeftList[0];
 
                 if (i != unlockedGridWord - 1)
@@ -462,8 +464,6 @@ namespace YugantLoyaLibrary.FindWords
                     wordsLeftList.RemoveAt(0);
                     //DataHandler.PickDataIndex++;
                 }
-
-                
             }
 
             for (int i = 0; i < tempStr.Trim().Length; i++)
@@ -805,7 +805,7 @@ namespace YugantLoyaLibrary.FindWords
 
                 WordComplete(isUnCommonWordFound);
                 currHint = null;
-                
+
                 if (!isUnCommonWordFound)
                 {
                     SoundManager.instance.PlaySound(SoundManager.SoundType.Correct);
@@ -1359,6 +1359,7 @@ namespace YugantLoyaLibrary.FindWords
             hintAvailList.Clear();
             wordsLeftList.Clear();
             lockedGridList.Clear();
+            rentGridList.Clear();
         }
 
         public void ClearInGameList()
