@@ -37,7 +37,7 @@ namespace YugantLoyaLibrary.FindWords
         public float reachTime = 1f;
 
         [Header("Blasting Info")] public Ease blastEase = Ease.InCirc;
-        public int blasRotationTime = 1;
+        public int blastRotationTime = 1;
         public float blastEffectAfterTime = 0.5f, blastTime = 1f;
         public Ease blastReturnEase = Ease.OutCirc;
 
@@ -218,9 +218,7 @@ namespace YugantLoyaLibrary.FindWords
             isMoving = true;
 
             FillData();
-
-            float time = UIManager.instance.coinAnimTime;
-            //StartCoroutine(UIManager.instance.UpdateReducedCoinText(0f, coinToSubtract, time));
+            
             transform.DORotate(
                     new Vector3(unlockRotationTime * 360f, transform.rotation.eulerAngles.y,
                         transform.rotation.eulerAngles.z),
@@ -354,7 +352,7 @@ namespace YugantLoyaLibrary.FindWords
             blastPos = _level.GetRandomPointOutOfScreen();
             transform.DOMove(blastPos, blastTime / 2).SetEase(blastEase);
             transform.DOScale(defaultGridSize, blastTime / 2).SetEase(movingEase);
-            transform.DORotate(new Vector3(blasRotationTime * -360f, 0f, -360f * blasRotationTime), blastTime / 2,
+            transform.DORotate(new Vector3(blastRotationTime * -360f, 0f, -360f * blastRotationTime), blastTime / 2,
                 RotateMode.FastBeyond360).SetEase(blastEase).OnComplete(() =>
             {
                 isBlastAfterWordComplete = true;
@@ -366,7 +364,7 @@ namespace YugantLoyaLibrary.FindWords
         public void MoveTowardsGrid()
         {
             transform.position = _level.BottomOfScreenPoint();
-            transform.DORotate(new Vector3(360f * blasRotationTime, 0f, 360f * blasRotationTime), blastTime / 2,
+            transform.DORotate(new Vector3(360f * blastRotationTime, 0f, 360f * blastRotationTime), blastTime / 2,
                 RotateMode.FastBeyond360).SetEase(blastReturnEase);
 
             transform.DOMove(defaultGlobalGridPos, blastTime / 2).SetEase(blastReturnEase).OnComplete(() => { });

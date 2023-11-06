@@ -41,6 +41,8 @@ namespace YugantLoyaLibrary.FindWords
         public List<string> hintAvailList = new List<string>();
         [HideInInspector] public bool isHintAvailInButton;
         public string currHint;
+        private int correctWordCompleteInLine, wrongClickCount;
+
 
         private void OnEnable()
         {
@@ -810,6 +812,15 @@ namespace YugantLoyaLibrary.FindWords
                 {
                     SoundManager.instance.PlaySound(SoundManager.SoundType.Correct);
                 }
+
+                wrongClickCount = 0;
+                correctWordCompleteInLine++;
+
+                if (correctWordCompleteInLine >= 3)
+                {
+                    GameController.instance.wordCommentScript.PickRandomCommentForWordComplete(
+                        correctWordCompleteInLine);
+                }
             }
             else
             {
@@ -818,6 +829,8 @@ namespace YugantLoyaLibrary.FindWords
                 GridsBackToPos();
                 UIManager.instance.ShakeCam();
                 UIManager.instance.WrongEffect();
+                correctWordCompleteInLine = 0;
+                wrongClickCount++;
             }
         }
 
@@ -858,7 +871,6 @@ namespace YugantLoyaLibrary.FindWords
             DataHandler.IqLevel++;
             UIManager.instance.iqLevelText.text = $" {DataHandler.IqLevel.ToString()}";
             StartCoroutine(ResetLevelHandlerData(time, true));
-            //RevertQuesData();
             StartCoroutine(DataResetAfterGridAnimation(time));
         }
 
@@ -1083,6 +1095,7 @@ namespace YugantLoyaLibrary.FindWords
                     if (hintStr.Length == DataHandler.UnlockedQuesLetter && LettersExistInWord(hintStr, gridString))
                     {
                         passingStr = hintStr;
+                        //currHint = hintStr;
                         Debug.Log("Hint In Hint Avail List : " + passingStr);
                         return true;
                     }
@@ -1091,9 +1104,11 @@ namespace YugantLoyaLibrary.FindWords
 
 
             passingStr = AnyWordExists();
+            
             if (passingStr.Length > 0)
             {
                 Debug.Log("Hint Found In Hint Avail List !");
+                //currHint = passingStr;
                 return true;
             }
 

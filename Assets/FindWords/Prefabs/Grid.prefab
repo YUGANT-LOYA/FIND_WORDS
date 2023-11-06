@@ -751,7 +751,7 @@ MonoBehaviour:
   blastEase: 4
   blasRotationTime: 1
   blastEffectAfterTime: 0.5
-  blastTime: 1.5
+  blastTime: 1.25
   blastReturnEase: 4
   amountToUnlockText: {fileID: 4439169905883863217}
   lockEase: 31

@@ -19,7 +19,8 @@ namespace YugantLoyaLibrary.FindWords
         public ToastMessage toastMessageScript;
         public float coinAnimTime = 1.5f, coinRotateAngle = 810f, maxCoinScale = 45f;
         public TextMeshProUGUI iqLevelText;
-        public TextMeshProUGUI coinText;
+        public TextMeshProUGUI coinText, coinAnimText;
+        private Vector3 coinAnimTextDefaultPos;
         public Button shuffleButton, dealButton, hintButton;
         public Sprite pressedDealButton, normalDealButton;
         public Ease coinMovementEase;
@@ -28,7 +29,9 @@ namespace YugantLoyaLibrary.FindWords
         [SerializeField] float wrongEffectTime = 0.2f;
         [SerializeField] Image wrongEffectImg;
         public Color defaultWrongEffectColor, redWrongEffectColor;
-        public GameObject loadingScreen;
+        private Color defaultCoinAnimTextColor, coinTextTargetColor;
+        private bool isFading;
+        float startCoinTextFadeTime = 0f;
 
         private void Awake()
         {
@@ -37,6 +40,11 @@ namespace YugantLoyaLibrary.FindWords
             cam = Camera.main;
             if (cam != null) camShakeScript = cam.GetComponent<CameraShake>();
 
+            coinAnimTextDefaultPos = coinAnimText.transform.position;
+            defaultCoinAnimTextColor =
+                new Color(coinAnimText.color.r, coinAnimText.color.g, coinAnimText.color.b, 255f);
+            coinTextTargetColor = new Color(defaultCoinAnimTextColor.r, defaultCoinAnimTextColor.g,
+                defaultCoinAnimTextColor.b, 0f);
             shuffleButton.onClick.AddListener(() => { GameController.instance.ShuffleGrid(); });
             dealButton.onClick.AddListener(() => { GameController.instance.Deal(); });
             hintButton.onClick.AddListener(() => { GameController.instance.Hint(); });
@@ -196,20 +204,62 @@ namespace YugantLoyaLibrary.FindWords
         public void CoinCollectionAnimation(int coinToAdd)
         {
             StartCoroutine(nameof(PlayCoinAnim), coinToAdd);
+            PlayCoinAnimText(coinToAdd);
         }
+
+        void PlayCoinAnimText(int coinToAdd)
+        {
+            coinAnimText.gameObject.SetActive(true);
+            coinAnimText.transform.position = coinAnimTextDefaultPos;
+            coinAnimText.color = defaultCoinAnimTextColor;
+            coinAnimText.text = $"+{coinToAdd}";
+            coinAnimText.transform.DOMoveY(coinAnimTextDefaultPos.y + 300f, coinAnimTime).SetEase(Ease.Linear);
+
+
+            float val = 40f;
+            int numLoop = (int)(255f / 40f);
+            float time = coinAnimTime / numLoop;
+            Debug.Log("Time : " + time);
+            FadeText();
+        }
+
+        private void FadeText()
+        {
+            isFading = true;
+            startCoinTextFadeTime = Time.time;
+        }
+
+        private void Update()
+        {
+            if (isFading)
+            {
+                float elapsedTime = Time.time - startCoinTextFadeTime;
+                float t = Mathf.Clamp01(coinAnimTime - elapsedTime / coinAnimTime);
+
+                coinAnimText.color = Color.Lerp(defaultCoinAnimTextColor, coinTextTargetColor, t);
+                //Debug.Log("T : " + t);
+                if (t <= 0f)
+                {
+                    coinAnimText.gameObject.SetActive(false);
+                    isFading = false;
+                    startCoinTextFadeTime = 0;
+                }
+            }
+        }
+
 
         [Button]
         void PlayCoinDoTween()
         {
             if (Application.isPlaying)
             {
-                StartCoroutine(nameof(PlayCoinAnim), 10);
+                StartCoroutine(nameof(PlayCoinAnim), 20);
+                PlayCoinAnimText(20);
             }
             else
             {
                 Debug.Log("Button will Not Work in This Mode !");
             }
-            
         }
 
 

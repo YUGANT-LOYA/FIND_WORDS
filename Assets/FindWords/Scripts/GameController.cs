@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using YugantLoyaLibrary.FindWord;
 
 namespace YugantLoyaLibrary.FindWords
 {
@@ -25,7 +26,7 @@ namespace YugantLoyaLibrary.FindWords
 
         [Header("References")] [SerializeField]
         private PickWordDataInfo pickWordDataInfo;
-
+        public WordCompleteComments wordCommentScript;
         public HelperScript helper;
         [SerializeField] private DefinedLevelScriptable definedLevelScriptable;
         [SerializeField] private CoinHandlerScriptable coinHandlerScriptable;
