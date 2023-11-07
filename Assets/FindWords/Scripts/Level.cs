@@ -184,18 +184,6 @@ namespace YugantLoyaLibrary.FindWords
                     }
 
                     startPos.x += _currGridSize + gridXSpacing;
-
-                    // if (i == gridSize.x - 1 && j == gridSize.y - 1)
-                    // {
-                    //     LevelHandler.instance.totalBuyingGridList.Add(gridTileScript);
-                    //     gridTileScript.GetText().gameObject.SetActive(false);
-                    //     gridTileScript.isGridActive = false;
-                    //     gridTileScript.isGridOnRent = true;
-                    //     LevelHandler.instance.rentGridList.Add(gridTileScript);
-                    //     gridTileScript.SetRentStatus(true);
-                    //     gridTileScript.SetRentTextAmount(50);
-                    // }
-                    // else 
                     
                     if ((i == gridSize.x - 1 || j == gridSize.y - 1) && DataHandler.IsMaxGridOpened == 0)
                     {
@@ -358,7 +346,7 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-            UIManager.instance.CheckAllButtonStatus();
+            UIManager.Instance.CheckAllButtonStatus();
             LevelHandler.instance.SetLevelRunningBool(true);
 
             if (DataHandler.HelperLevelCompleted == 0)

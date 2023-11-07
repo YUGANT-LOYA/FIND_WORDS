@@ -7,21 +7,25 @@ using UnityEngine.UI;
 using YugantLibrary.Camera;
 using Random = UnityEngine.Random;
 using NaughtyAttributes;
+using UnityEngine.Serialization;
 
 namespace YugantLoyaLibrary.FindWords
 {
     public class UIManager : MonoBehaviour
     {
-        public static UIManager instance;
-        private Camera cam;
-        [SerializeField] private GameObject touchPanelGm;
-        private CameraShake camShakeScript;
+        public static UIManager Instance;
+        private Camera _cam;
+        public GameObject gameBg;
+        public GameObject touchPanelGm, smokeTransitionGm;
+        private CameraShake _camShakeScript;
         public ToastMessage toastMessageScript;
         public float coinAnimTime = 1.5f, coinRotateAngle = 810f, maxCoinScale = 45f;
         public TextMeshProUGUI iqLevelText;
         public TextMeshProUGUI coinText, coinAnimText;
-        private Vector3 coinAnimTextDefaultPos;
+        public CanvasGroup coinAnimCanvasGroup;
+        private Vector3 _coinAnimTextDefaultPos;
         public Button shuffleButton, dealButton, hintButton;
+        private Vector3 _defaultHintButtonSize, _defaultShuffleButtonSize, _defaultDealButtonSize;
         public Sprite pressedDealButton, normalDealButton;
         public Ease coinMovementEase;
         private float _coinTextUpdateTime;
@@ -29,22 +33,26 @@ namespace YugantLoyaLibrary.FindWords
         [SerializeField] float wrongEffectTime = 0.2f;
         [SerializeField] Image wrongEffectImg;
         public Color defaultWrongEffectColor, redWrongEffectColor;
-        private Color defaultCoinAnimTextColor, coinTextTargetColor;
-        private bool isFading;
-        float startCoinTextFadeTime = 0f;
+        private Color _defaultCoinAnimTextColor, _coinTextTargetColor;
+        private bool _isFading;
+        float _startCoinTextFadeTime;
 
         private void Awake()
         {
             CreateSingleton();
 
-            cam = Camera.main;
-            if (cam != null) camShakeScript = cam.GetComponent<CameraShake>();
+            _cam = Camera.main;
+            if (_cam != null) _camShakeScript = _cam.GetComponent<CameraShake>();
 
-            coinAnimTextDefaultPos = coinAnimText.transform.position;
-            defaultCoinAnimTextColor =
+            _coinAnimTextDefaultPos = coinAnimText.transform.position;
+            _defaultCoinAnimTextColor =
                 new Color(coinAnimText.color.r, coinAnimText.color.g, coinAnimText.color.b, 255f);
-            coinTextTargetColor = new Color(defaultCoinAnimTextColor.r, defaultCoinAnimTextColor.g,
-                defaultCoinAnimTextColor.b, 0f);
+            _coinTextTargetColor = new Color(_defaultCoinAnimTextColor.r, _defaultCoinAnimTextColor.g,
+                _defaultCoinAnimTextColor.b, 0f);
+            _defaultHintButtonSize = hintButton.transform.localScale;
+            _defaultShuffleButtonSize = shuffleButton.transform.localScale;
+            _defaultDealButtonSize = dealButton.transform.localScale;
+
             shuffleButton.onClick.AddListener(() => { GameController.instance.ShuffleGrid(); });
             dealButton.onClick.AddListener(() => { GameController.instance.Deal(); });
             hintButton.onClick.AddListener(() => { GameController.instance.Hint(); });
@@ -52,11 +60,11 @@ namespace YugantLoyaLibrary.FindWords
 
         private void CreateSingleton()
         {
-            if (instance == null)
+            if (Instance == null)
             {
-                instance = this;
+                Instance = this;
             }
-            else if (instance != this)
+            else if (Instance != this)
             {
                 Destroy(gameObject);
             }
@@ -103,9 +111,10 @@ namespace YugantLoyaLibrary.FindWords
         {
             Debug.Log("Checking All Button Status !");
 
-            bool isHintAvail = LevelHandler.instance.CheckWordExistOrNot(out bool isButtonAvail, out string hintStr);
+            bool isHintAvail = LevelHandler.instance.CheckHintStatus(out string finalStr);
+            HintStatus(isHintAvail);
 
-            if (isButtonAvail && DataHandler.TotalCoin >= GameController.instance.hintUsingCoin)
+            if (isHintAvail && DataHandler.TotalCoin >= GameController.instance.hintUsingCoin)
             {
                 hintButton.enabled = true;
                 hintButton.GetComponent<Image>().color = Color.white;
@@ -209,44 +218,15 @@ namespace YugantLoyaLibrary.FindWords
 
         void PlayCoinAnimText(int coinToAdd)
         {
-            coinAnimText.gameObject.SetActive(true);
-            coinAnimText.transform.position = coinAnimTextDefaultPos;
-            coinAnimText.color = defaultCoinAnimTextColor;
+            coinAnimCanvasGroup.alpha = 1f;
+            coinAnimText.transform.position = _coinAnimTextDefaultPos;
+            coinAnimText.color = _defaultCoinAnimTextColor;
             coinAnimText.text = $"+{coinToAdd}";
-            coinAnimText.transform.DOMoveY(coinAnimTextDefaultPos.y + 300f, coinAnimTime).SetEase(Ease.Linear);
+            coinAnimText.transform.DOMoveY(_coinAnimTextDefaultPos.y + 500f, (3 * coinAnimTime / 2))
+                .SetEase(Ease.Linear);
 
-
-            float val = 40f;
-            int numLoop = (int)(255f / 40f);
-            float time = coinAnimTime / numLoop;
-            Debug.Log("Time : " + time);
-            FadeText();
+            coinAnimCanvasGroup.DOFade(0f, (3 * coinAnimTime / 2));
         }
-
-        private void FadeText()
-        {
-            isFading = true;
-            startCoinTextFadeTime = Time.time;
-        }
-
-        private void Update()
-        {
-            if (isFading)
-            {
-                float elapsedTime = Time.time - startCoinTextFadeTime;
-                float t = Mathf.Clamp01(coinAnimTime - elapsedTime / coinAnimTime);
-
-                coinAnimText.color = Color.Lerp(defaultCoinAnimTextColor, coinTextTargetColor, t);
-                //Debug.Log("T : " + t);
-                if (t <= 0f)
-                {
-                    coinAnimText.gameObject.SetActive(false);
-                    isFading = false;
-                    startCoinTextFadeTime = 0;
-                }
-            }
-        }
-
 
         [Button]
         void PlayCoinDoTween()
@@ -366,7 +346,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public void ShakeCam()
         {
-            camShakeScript.ShakeCamera(cam.transform.position);
+            _camShakeScript.ShakeCamera(_cam.transform.position);
         }
 
         public void DealButtonEffect()
@@ -377,8 +357,55 @@ namespace YugantLoyaLibrary.FindWords
         IEnumerator DealButtonClicked()
         {
             dealButton.gameObject.GetComponent<Image>().sprite = pressedDealButton;
-            yield return new WaitForSeconds(0.2f);
+            dealButton.transform.localScale = _defaultDealButtonSize;
+            Vector3 finalScale = dealButton.transform.localScale - Vector3.one * 0.1f;
+            dealButton.gameObject.transform.DOScale(finalScale, 0.25f).OnComplete(() =>
+            {
+                dealButton.gameObject.transform.DOScale(_defaultDealButtonSize, 0.25f);
+            });
+            yield return new WaitForSeconds(0.25f);
             dealButton.gameObject.GetComponent<Image>().sprite = normalDealButton;
+        }
+
+        public void HintButtonClicked()
+        {
+            hintButton.transform.localScale = _defaultHintButtonSize;
+            Vector3 finalScale = hintButton.transform.localScale - Vector3.one * 0.1f;
+            hintButton.gameObject.transform.DOScale(finalScale, 0.25f).OnComplete(() =>
+            {
+                hintButton.gameObject.transform.DOScale(_defaultHintButtonSize, 0.25f);
+            });
+        }
+
+        public void ShuffleButtonClicked()
+        {
+            shuffleButton.transform.localScale = _defaultShuffleButtonSize;
+            Vector3 finalScale = shuffleButton.transform.localScale - Vector3.one * 0.1f;
+            shuffleButton.gameObject.transform.DOScale(finalScale, 0.25f).OnComplete(() =>
+            {
+                shuffleButton.gameObject.transform.DOScale(_defaultShuffleButtonSize, 0.25f);
+            });
+        }
+
+        public void SmokeTransition()
+        {
+            StartCoroutine(nameof(SmokeAnim));
+        }
+
+        IEnumerator SmokeAnim()
+        {
+            DataHandler.BgIndex++;
+            smokeTransitionGm.SetActive(true);
+            LevelHandler.instance.SetLevelRunningBool(false);
+
+            yield return new WaitForSeconds(1.25f / 2);
+
+            DataHandler.instance.SetBg();
+
+            yield return new WaitForSeconds(1.25f / 2);
+
+            smokeTransitionGm.SetActive(false);
+            LevelHandler.instance.SetLevelRunningBool(true);
         }
     }
 }

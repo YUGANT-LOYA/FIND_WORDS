@@ -31,7 +31,7 @@ public class HelperScript : MonoBehaviour
         }
 
         LevelHandler.instance.SetLevelRunningBool(true);
-        UIManager.instance.CanTouch(false);
+        UIManager.Instance.CanTouch(false);
         ClickTile(0.2f);
     }
 
@@ -59,20 +59,20 @@ public class HelperScript : MonoBehaviour
             {
                 gridHelperHand.SetActive(true);
                 gridHelperHand.transform.position = helperHandPosList[DataHandler.HelperIndex];
-                UIManager.instance.CanTouch(false);
+                UIManager.Instance.CanTouch(false);
                 clickingList[DataHandler.HelperIndex].isHelperActivate = true;
             }
             else if (clickDealIndex == DataHandler.HelperIndex)
             { 
                 gridHelperHand.SetActive(false);
                 canvasHelperHand.SetActive(true);
-                UIManager.instance.CanTouch(true);
+                UIManager.Instance.CanTouch(true);
             }
             else
             {
                 gridHelperHand.SetActive(true);
                 gridHelperHand.transform.position = helperHandPosList[DataHandler.HelperIndex];
-                UIManager.instance.CanTouch(false);
+                UIManager.Instance.CanTouch(false);
                 clickingList[DataHandler.HelperIndex - 1].isHelperActivate = true;
             }
         }

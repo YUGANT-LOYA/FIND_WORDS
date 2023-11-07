@@ -154,21 +154,7 @@ namespace YugantLoyaLibrary.FindWords
                     UIManager.SetCoinData(LevelHandler.instance.coinToUnlockNextGrid, -1);
                     SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
                     StartCoroutine(
-                        UIManager.instance.UpdateReducedCoinText(0f, LevelHandler.instance.coinToUnlockNextGrid, 0.5f));
-                    NewGridUnlockAnimation(LevelHandler.instance.coinToUnlockNextGrid);
-                    return;
-                }
-                else if(isGridOnRent)
-                {
-                    isGridActive = true;
-                    DataHandler.UnlockGridIndex++;
-                    LevelHandler.instance.unlockedGridList.Add(this);
-                    LevelHandler.instance.totalBuyingGridList.Remove(this);
-                    LevelHandler.instance.gridAvailableOnScreenList.Add(this);
-                    UIManager.SetCoinData(LevelHandler.instance.coinToUnlockNextGrid, -1);
-                    SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
-                    StartCoroutine(
-                        UIManager.instance.UpdateReducedCoinText(0f, LevelHandler.instance.coinToUnlockNextGrid, 0.5f));
+                        UIManager.Instance.UpdateReducedCoinText(0f, LevelHandler.instance.coinToUnlockNextGrid, 0.5f));
                     NewGridUnlockAnimation(LevelHandler.instance.coinToUnlockNextGrid);
                     return;
                 }
@@ -218,7 +204,7 @@ namespace YugantLoyaLibrary.FindWords
             isMoving = true;
 
             FillData();
-            
+
             transform.DORotate(
                     new Vector3(unlockRotationTime * 360f, transform.rotation.eulerAngles.y,
                         transform.rotation.eulerAngles.z),
@@ -228,9 +214,13 @@ namespace YugantLoyaLibrary.FindWords
                     DataHandler.CoinGridUnlockIndex++;
                     LevelHandler.instance.UnlockNextGridForCoins();
                     DeactivateLockStatus();
-                    //cube.GetComponent<Renderer>().material = new Material(gridMaterial);
                     gridText.gameObject.SetActive(true);
                     isMoving = false;
+
+                    if (DataHandler.CoinGridUnlockIndex % GameController.instance.changeBgAfter == 0)
+                    {
+                        UIManager.Instance.SmokeTransition();
+                    }
 
                     bool allGridBought = LevelHandler.instance.CheckAllGridBought();
 
@@ -276,11 +266,11 @@ namespace YugantLoyaLibrary.FindWords
             }
             else
             {
-                if (!string.IsNullOrEmpty(LevelHandler.instance.currHint) &&
-                    !string.IsNullOrWhiteSpace(LevelHandler.instance.currHint))
+                if (!string.IsNullOrEmpty(LevelHandler.instance.quesHintStr) &&
+                    !string.IsNullOrWhiteSpace(LevelHandler.instance.quesHintStr))
                 {
                     int id = placedOnQuesTile.id;
-                    placedOnQuesTile.QuesTextData = LevelHandler.instance.currHint[id].ToString();
+                    placedOnQuesTile.QuesTextData = LevelHandler.instance.quesHintStr[id].ToString();
                     placedOnQuesTile.isAssigned = false;
                     Invoke(nameof(ActivatePlacedQuesTile), 0.2f);
                 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace YugantLoyaLibrary.FindWords
@@ -40,7 +41,7 @@ namespace YugantLoyaLibrary.FindWords
         private QuesTile _lastQuesTile;
         public List<string> hintAvailList = new List<string>();
         [HideInInspector] public bool isHintAvailInButton;
-        public string currHint;
+        public string quesHintStr;
         private int correctWordCompleteInLine, wrongClickCount;
 
 
@@ -756,7 +757,7 @@ namespace YugantLoyaLibrary.FindWords
         public void CheckAnswer()
         {
             _isLevelRunning = false;
-            UIManager.instance.CanTouch(false);
+            UIManager.Instance.CanTouch(false);
 
             bool isBlocksUsed = true;
 
@@ -782,7 +783,7 @@ namespace YugantLoyaLibrary.FindWords
             if (isUnCommonWordFound && doExist)
             {
                 Debug.Log("Word UnCommon Found!");
-                UIManager.instance.toastMessageScript.ShowNewWordFoundToast();
+                UIManager.Instance.toastMessageScript.ShowNewWordFoundToast();
                 SoundManager.instance.PlaySound(SoundManager.SoundType.NewWordFound);
             }
 
@@ -806,7 +807,7 @@ namespace YugantLoyaLibrary.FindWords
                 }
 
                 WordComplete(isUnCommonWordFound);
-                currHint = null;
+                quesHintStr = null;
 
                 if (!isUnCommonWordFound)
                 {
@@ -827,8 +828,8 @@ namespace YugantLoyaLibrary.FindWords
                 Vibration.Vibrate(25);
                 SoundManager.instance.PlaySound(SoundManager.SoundType.Wrong);
                 GridsBackToPos();
-                UIManager.instance.ShakeCam();
-                UIManager.instance.WrongEffect();
+                UIManager.Instance.ShakeCam();
+                UIManager.Instance.WrongEffect();
                 correctWordCompleteInLine = 0;
                 wrongClickCount++;
             }
@@ -836,7 +837,7 @@ namespace YugantLoyaLibrary.FindWords
 
         private void AddCoin(int extraCoin = 0)
         {
-            UIManager.instance.CoinCollectionAnimation(coinPerWord + extraCoin);
+            UIManager.Instance.CoinCollectionAnimation(coinPerWord + extraCoin);
             Debug.Log("Coin Per Word To Add: " + coinPerWord);
         }
 
@@ -869,7 +870,7 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             DataHandler.IqLevel++;
-            UIManager.instance.iqLevelText.text = $" {DataHandler.IqLevel.ToString()}";
+            UIManager.Instance.iqLevelText.text = $" {DataHandler.IqLevel.ToString()}";
             StartCoroutine(ResetLevelHandlerData(time, true));
             StartCoroutine(DataResetAfterGridAnimation(time));
         }
@@ -922,13 +923,13 @@ namespace YugantLoyaLibrary.FindWords
         IEnumerator DataResetAfterGridAnimation(float time, bool isCalledByHint = false)
         {
             yield return new WaitForSeconds(time);
-            UIManager.instance.CanTouch(true);
+            UIManager.Instance.CanTouch(true);
             Debug.Log("Data Reset After Grid Animation !");
 
             inputGridsList.Clear();
             LastQuesTile = null;
 
-            if (!isCalledByHint && string.IsNullOrEmpty(currHint))
+            if (!isCalledByHint && string.IsNullOrEmpty(quesHintStr))
             {
                 RevertQuesData();
             }
@@ -1095,7 +1096,6 @@ namespace YugantLoyaLibrary.FindWords
                     if (hintStr.Length == DataHandler.UnlockedQuesLetter && LettersExistInWord(hintStr, gridString))
                     {
                         passingStr = hintStr;
-                        //currHint = hintStr;
                         Debug.Log("Hint In Hint Avail List : " + passingStr);
                         return true;
                     }
@@ -1104,11 +1104,12 @@ namespace YugantLoyaLibrary.FindWords
 
 
             passingStr = AnyWordExists();
-            
+
             if (passingStr.Length > 0)
             {
                 Debug.Log("Hint Found In Hint Avail List !");
-                //currHint = passingStr;
+                Debug.Log("Data Handler Curr Hint : " + passingStr);
+                DataHandler.CurrHint = passingStr;
                 return true;
             }
 
@@ -1116,6 +1117,34 @@ namespace YugantLoyaLibrary.FindWords
             passingStr = "";
             return false;
         }
+
+        bool CheckAllLetterInGrid()
+        {
+            List<GridTile> list = new List<GridTile>(gridAvailableOnScreenList);
+            bool isHintWordThere = true;
+            foreach (char c in DataHandler.CurrHint)
+            {
+                bool isCThere = false;
+                foreach (GridTile tile in list)
+                {
+                    if (tile.GridTextData == c.ToString())
+                    {
+                        isCThere = true;
+                        list.Remove(tile);
+                    }
+                }
+
+                if (!isCThere)
+                {
+                    isHintWordThere = false;
+                    break;
+                }
+            }
+
+            Debug.Log("Is Hint is Avail is Grids : " + isHintWordThere);
+            return isHintWordThere;
+        }
+
 
         private void FindHint()
         {
@@ -1128,19 +1157,28 @@ namespace YugantLoyaLibrary.FindWords
 
             if (finalStr.Length == count)
             {
-                currHint = finalStr;
+                quesHintStr = finalStr;
             }
         }
 
         public bool CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr)
         {
+            // if (CheckAllLetterInGrid())
+            // {
+            //     Debug.Log("Hint Already Exists !!");
+            //     hintButtonStatus = UIManager.instance.HintStatus(true);
+            //     hintStr = DataHandler.CurrHint;
+            //     return true;
+            // }
+
+
             bool isHintAvail = CheckHintStatus(out string finalStr);
-            hintButtonStatus = UIManager.instance.HintStatus(isHintAvail);
+            hintButtonStatus = UIManager.Instance.HintStatus(isHintAvail);
             hintStr = finalStr;
 
             if (!isHintAvail)
             {
-                UIManager.instance.EnableHint();
+                UIManager.Instance.EnableHint();
             }
 
             return isHintAvail;
@@ -1155,7 +1193,7 @@ namespace YugantLoyaLibrary.FindWords
                 SetLevelRunningBool(false);
             }
 
-            if (!string.IsNullOrEmpty(currHint))
+            if (!string.IsNullOrEmpty(quesHintStr) /*|| !string.IsNullOrEmpty(DataHandler.CurrHint)*/)
             {
                 FindHint();
             }
@@ -1165,7 +1203,7 @@ namespace YugantLoyaLibrary.FindWords
             {
                 if (quesTile.isUnlocked)
                 {
-                    quesTile.QuesTextData = currHint[index].ToString().ToUpper();
+                    quesTile.QuesTextData = quesHintStr[index].ToString().ToUpper();
                     index++;
                 }
             }
@@ -1391,7 +1429,7 @@ namespace YugantLoyaLibrary.FindWords
 
         private void SaveGridLockSystem()
         {
-            Debug.Log("Save Grid Lock System Called !");
+            //Debug.Log("Save Grid Lock System Called !");
             List<GridTile> totalList = new List<GridTile>(totalGridsList);
             List<char> gridLockStatusList = new List<char>();
 
@@ -1417,12 +1455,12 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-            Debug.Log("Save Grid Lock System ForEach Completed !");
+            // Debug.Log("Save Grid Lock System ForEach Completed !");
             SaveManager.Instance.state.gridDataList = new List<char>(gridLockStatusList);
-            Debug.Log("Save Grid Lock System ForEach Completed GAP!");
+            // Debug.Log("Save Grid Lock System ForEach Completed GAP!");
             SaveManager.Instance.UpdateState();
             //SaveManager.Instance.Save();
-            Debug.Log("Save Grid Lock System Saved Successfully !");
+            //Debug.Log("Save Grid Lock System Saved Successfully !");
         }
 
         private void SaveGridOnScreenSystem()
@@ -1438,43 +1476,43 @@ namespace YugantLoyaLibrary.FindWords
                 gridScreenList.Add(gridTile.isBlastAfterWordComplete);
             }
 
-            Debug.Log("Save Grid On Screen System ForEach Completed !");
+            //Debug.Log("Save Grid On Screen System ForEach Completed !");
             SaveManager.Instance.state.gridOnScreenList = new List<bool>(gridScreenList);
             SaveManager.Instance.UpdateState();
             //SaveManager.Instance.Save();
-            Debug.Log("Save Grid On Screen System Saved Successfully !");
+            //Debug.Log("Save Grid On Screen System Saved Successfully !");
         }
 
         private void SaveHintList()
         {
-            Debug.Log("Save Hint List Called !");
+            //Debug.Log("Save Hint List Called !");
             List<string> hintList = new List<string>(hintAvailList);
             SaveManager.Instance.state.hintList = new List<string>(hintList);
-            Debug.Log("Save Hint List Assignment Completed !");
+            //Debug.Log("Save Hint List Assignment Completed !");
             SaveManager.Instance.UpdateState();
             //SaveManager.Instance.Save();
-            Debug.Log("Save Hint List System Saved !");
+            //Debug.Log("Save Hint List System Saved !");
         }
 
         private void SaveWordLeftList()
         {
-            Debug.Log("Save Word Left List Called !");
+            //Debug.Log("Save Word Left List Called !");
             List<string> wordList = new List<string>(wordsLeftList);
             SaveManager.Instance.state.wordLeftList = new List<string>(wordList);
-            Debug.Log("Save Word Left List Assignment Completed !");
+            //Debug.Log("Save Word Left List Assignment Completed !");
             SaveManager.Instance.UpdateState();
             //SaveManager.Instance.Save();
-            Debug.Log("Save Word Left List System Saved !");
+            //Debug.Log("Save Word Left List System Saved !");
         }
 
         public void SaveSystem()
         {
-            Debug.Log("Save System Function Called !");
+            //Debug.Log("Save System Function Called !");
             SaveGridLockSystem();
             SaveGridOnScreenSystem();
             SaveHintList();
             SaveWordLeftList();
-            Debug.Log("Save System Function Completed !");
+            //Debug.Log("Save System Function Completed !");
         }
     }
 }

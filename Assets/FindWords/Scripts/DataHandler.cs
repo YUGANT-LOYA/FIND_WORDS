@@ -7,6 +7,8 @@ namespace YugantLoyaLibrary.FindWords
     public class DataHandler : MonoBehaviour
     {
         public static DataHandler instance;
+        public List<Material> gameBgMaterialList;
+
         [Header("Prefab Holders")] public GameObject coinPrefab;
         public GameObject levelPrefab, gridPrefab, quesPrefab;
 
@@ -46,6 +48,16 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
+        public void SetBg()
+        {
+            if (BgIndex >= gameBgMaterialList.Count)
+            {
+                BgIndex = 0;
+            }
+
+            UIManager.Instance.gameBg.GetComponent<MeshRenderer>().material = gameBgMaterialList[BgIndex];
+        }
+
         public GameObject GetCoin()
         {
             Transform tran = GameController.instance.coinContainerTran;
@@ -65,39 +77,45 @@ namespace YugantLoyaLibrary.FindWords
         {
             coin.gameObject.SetActive(false);
             coin.transform.SetParent(GameController.instance.coinContainerTran);
-            coin.transform.localScale = Vector3.one * (UIManager.instance.maxCoinScale / 2f);
+            coin.transform.localScale = Vector3.one * (UIManager.Instance.maxCoinScale / 2f);
         }
 
         public static int FirstTimeGameOpen
         {
             get => PlayerPrefs.GetInt(StringHelper.FIRST_TIME_OPEN, 0);
             set => PlayerPrefs.SetInt(StringHelper.FIRST_TIME_OPEN, value);
-        } 
-        
+        }
+
         public static int HelperLevelCompleted
         {
             get => PlayerPrefs.GetInt(StringHelper.HELPER_LEVEL_COMPLETED, 0);
             set => PlayerPrefs.SetInt(StringHelper.HELPER_LEVEL_COMPLETED, value);
-        } 
-        
+        }
+
         public static int FirstTimeGameClose
         {
             get => PlayerPrefs.GetInt(StringHelper.FIRST_TIME_GAME_CLOSE, 0);
             set => PlayerPrefs.SetInt(StringHelper.FIRST_TIME_GAME_CLOSE, value);
         }
-        
+
+        public static string CurrHint
+        {
+            get => PlayerPrefs.GetString(StringHelper.CURR_HINT, "");
+            set => PlayerPrefs.SetString(StringHelper.CURR_HINT, value);
+        }
+
         public static int NewGridCreated
         {
             get => PlayerPrefs.GetInt(StringHelper.NEW_GRID_CREATED, 0);
             set => PlayerPrefs.SetInt(StringHelper.NEW_GRID_CREATED, value);
         }
-        
+
         public static int CoinGridUnlockIndex
         {
             get => PlayerPrefs.GetInt(StringHelper.COIN_GRID_UNLOCK_INDEX, 0);
             set => PlayerPrefs.SetInt(StringHelper.COIN_GRID_UNLOCK_INDEX, value);
         }
-        
+
         public static int UnlockGridIndex
         {
             get => PlayerPrefs.GetInt(StringHelper.UNLOCK_GRID_INDEX, 0);
@@ -108,6 +126,12 @@ namespace YugantLoyaLibrary.FindWords
         {
             get => PlayerPrefs.GetInt(StringHelper.CURR_DEFINED_LEVEL, 0);
             set => PlayerPrefs.SetInt(StringHelper.CURR_DEFINED_LEVEL, value);
+        }
+
+        public static int BgIndex
+        {
+            get => PlayerPrefs.GetInt(StringHelper.BG_INDEX, 0);
+            set => PlayerPrefs.SetInt(StringHelper.BG_INDEX, value);
         }
 
         public static int IqLevel
@@ -122,7 +146,7 @@ namespace YugantLoyaLibrary.FindWords
             get => PlayerPrefs.GetInt(StringHelper.PICK_DATA_INDEX, 0);
             set => PlayerPrefs.SetInt(StringHelper.PICK_DATA_INDEX, value);
         }
-        
+
         public static int HelperIndex
         {
             get => PlayerPrefs.GetInt(StringHelper.HELPER_WORD_INDEX, 0);
