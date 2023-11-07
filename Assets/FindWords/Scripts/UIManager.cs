@@ -16,6 +16,7 @@ namespace YugantLoyaLibrary.FindWords
         public static UIManager Instance;
         private Camera _cam;
         public GameObject gameBg;
+        public Animator catIdleAnimator;
         public GameObject touchPanelGm, smokeTransitionGm;
         private CameraShake _camShakeScript;
         public ToastMessage toastMessageScript;
@@ -69,6 +70,7 @@ namespace YugantLoyaLibrary.FindWords
                 Destroy(gameObject);
             }
         }
+        
 
         public void CanTouch(bool isActive)
         {

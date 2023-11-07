@@ -184,7 +184,7 @@ namespace YugantLoyaLibrary.FindWords
                     }
 
                     startPos.x += _currGridSize + gridXSpacing;
-                    
+
                     if ((i == gridSize.x - 1 || j == gridSize.y - 1) && DataHandler.IsMaxGridOpened == 0)
                     {
                         LevelHandler.instance.totalBuyingGridList.Add(gridTileScript);
@@ -324,7 +324,7 @@ namespace YugantLoyaLibrary.FindWords
         private IEnumerator PlaceGrids()
         {
             SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeck);
-
+            UIManager.Instance.catIdleAnimator.Play("Empty");
             if (LevelHandler.instance.totalGridsList.Count > 0)
             {
                 foreach (GridTile gmObj in LevelHandler.instance.totalGridsList)
