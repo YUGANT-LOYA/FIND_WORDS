@@ -19,7 +19,7 @@ public class HelperScript : MonoBehaviour
         for (var index = 0; index < gridIndexList.Count; index++)
         {
             int val = gridIndexList[index];
-            List<GridTile> totalGridList = new List<GridTile>(LevelHandler.instance.totalGridsList);
+            List<GridTile> totalGridList = new List<GridTile>(LevelHandler.Instance.totalGridsList);
             for (var i = 0; i < totalGridList.Count; i++)
             {
                 var gridTile = totalGridList[i];
@@ -30,7 +30,7 @@ public class HelperScript : MonoBehaviour
             }
         }
 
-        LevelHandler.instance.SetLevelRunningBool(true);
+        LevelHandler.Instance.SetLevelRunningBool(true);
         UIManager.Instance.CanTouch(false);
         ClickTile(0.2f);
     }

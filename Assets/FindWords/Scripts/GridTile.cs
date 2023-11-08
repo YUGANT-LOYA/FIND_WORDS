@@ -11,10 +11,8 @@ namespace YugantLoyaLibrary.FindWords
     {
         private Level _level;
         public GameObject cube;
-        public Material lockMaterial;
-        [SerializeField] private GameObject currlockGm, otherLockGm, rentGm;
+        [SerializeField] private GameObject currlockGm, otherLockGm;
         [SerializeField] private TextMeshPro gridText, rentTimeText;
-        public Material gridMaterial;
         [HideInInspector] public Vector3 defaultGridSize;
         [HideInInspector] public Vector3 defaultLocalGridPos, defaultGlobalGridPos;
         [HideInInspector] public Quaternion defaultQuaternionRotation;
@@ -73,13 +71,6 @@ namespace YugantLoyaLibrary.FindWords
             otherLockGm.SetActive(!isActive);
         }
 
-        public void SetRentStatus(bool isActive)
-        {
-            currlockGm.SetActive(!isActive);
-            otherLockGm.SetActive(!isActive);
-            rentGm.SetActive(isActive);
-        }
-
         public void DeactivateLockStatus()
         {
             ObjectStatus(true);
@@ -93,11 +84,6 @@ namespace YugantLoyaLibrary.FindWords
         public void SetLockTextAmount(int valToOpen)
         {
             amountToUnlockText.text = valToOpen.ToString();
-        }
-
-        public void SetRentTextAmount(int valToOpen)
-        {
-            rentTimeText.text = valToOpen.ToString();
         }
 
         public void DefaultGridData(Vector3 pos, Quaternion rot, Vector3 globalPos)
@@ -129,7 +115,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public void OnMouseDown()
         {
-            if (!LevelHandler.instance.GetLevelRunningBool() || isMoving)
+            if (!LevelHandler.Instance.GetLevelRunningBool() || isMoving)
                 return;
 
             if (DataHandler.HelperLevelCompleted == 0)
@@ -140,7 +126,7 @@ namespace YugantLoyaLibrary.FindWords
 
             Vibration.Vibrate(20);
 
-            if (DataHandler.TotalCoin >= LevelHandler.instance.coinToUnlockNextGrid)
+            if (DataHandler.TotalCoin >= LevelHandler.Instance.coinToUnlockNextGrid)
             {
                 if (isCurrLock)
                 {
@@ -148,14 +134,14 @@ namespace YugantLoyaLibrary.FindWords
                     isGridActive = true;
                     isCurrLock = false;
                     DataHandler.UnlockGridIndex++;
-                    LevelHandler.instance.unlockedGridList.Add(this);
-                    LevelHandler.instance.totalBuyingGridList.Remove(this);
-                    LevelHandler.instance.gridAvailableOnScreenList.Add(this);
-                    UIManager.SetCoinData(LevelHandler.instance.coinToUnlockNextGrid, -1);
+                    LevelHandler.Instance.unlockedGridList.Add(this);
+                    LevelHandler.Instance.totalBuyingGridList.Remove(this);
+                    LevelHandler.Instance.gridAvailableOnScreenList.Add(this);
+                    UIManager.SetCoinData(LevelHandler.Instance.coinToUnlockNextGrid, -1);
                     SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
                     StartCoroutine(
-                        UIManager.Instance.UpdateReducedCoinText(0f, LevelHandler.instance.coinToUnlockNextGrid, 0.5f));
-                    NewGridUnlockAnimation(LevelHandler.instance.coinToUnlockNextGrid);
+                        UIManager.Instance.UpdateReducedCoinText(0f, LevelHandler.Instance.coinToUnlockNextGrid, 0.5f));
+                    NewGridUnlockAnimation(LevelHandler.Instance.coinToUnlockNextGrid);
                     return;
                 }
             }
@@ -171,7 +157,7 @@ namespace YugantLoyaLibrary.FindWords
                 return;
 
 
-            if (LevelHandler.instance.LastQuesTile == null)
+            if (LevelHandler.Instance.LastQuesTile == null)
             {
                 SoundManager.instance.PlaySound(SoundManager.SoundType.Click);
                 //Debug.Log($"Grid {gameObject.name} Clicked !");
@@ -180,12 +166,12 @@ namespace YugantLoyaLibrary.FindWords
 
                 if (isSelected)
                 {
-                    LevelHandler.instance.onNewLetterAddEvent?.Invoke(this);
+                    LevelHandler.Instance.OnNewLetterAddEvent?.Invoke(this);
                     isSelected = true;
                 }
                 else
                 {
-                    LevelHandler.instance.onRemoveLetterEvent?.Invoke(this);
+                    LevelHandler.Instance.OnRemoveLetterEvent?.Invoke(this);
                     isSelected = false;
                 }
             }
@@ -212,7 +198,7 @@ namespace YugantLoyaLibrary.FindWords
                 .SetEase(movingEase).OnComplete(() =>
                 {
                     DataHandler.CoinGridUnlockIndex++;
-                    LevelHandler.instance.UnlockNextGridForCoins();
+                    LevelHandler.Instance.UnlockNextGridForCoins();
                     DeactivateLockStatus();
                     gridText.gameObject.SetActive(true);
                     isMoving = false;
@@ -222,11 +208,11 @@ namespace YugantLoyaLibrary.FindWords
                         UIManager.Instance.SmokeTransition();
                     }
 
-                    bool allGridBought = LevelHandler.instance.CheckAllGridBought();
+                    bool allGridBought = LevelHandler.Instance.CheckAllGridBought();
 
                     if (!allGridBought)
                     {
-                        LevelHandler.instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
+                        LevelHandler.Instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
                     }
                 });
         }
@@ -235,7 +221,7 @@ namespace YugantLoyaLibrary.FindWords
         //Filling Letter According to the word in WordLeftList.
         void FillData()
         {
-            char letterToFill = LevelHandler.instance.GetUnAvailableLetterInRandomWord();
+            char letterToFill = LevelHandler.Instance.GetUnAvailableLetterInRandomWord();
 
             if (letterToFill != ' ')
             {
@@ -266,11 +252,11 @@ namespace YugantLoyaLibrary.FindWords
             }
             else
             {
-                if (!string.IsNullOrEmpty(LevelHandler.instance.quesHintStr) &&
-                    !string.IsNullOrWhiteSpace(LevelHandler.instance.quesHintStr))
+                if (!string.IsNullOrEmpty(LevelHandler.Instance.quesHintStr) &&
+                    !string.IsNullOrWhiteSpace(LevelHandler.Instance.quesHintStr))
                 {
                     int id = placedOnQuesTile.id;
-                    placedOnQuesTile.QuesTextData = LevelHandler.instance.quesHintStr[id].ToString();
+                    placedOnQuesTile.QuesTextData = LevelHandler.Instance.quesHintStr[id].ToString();
                     placedOnQuesTile.isAssigned = false;
                     Invoke(nameof(ActivatePlacedQuesTile), 0.2f);
                 }
@@ -293,9 +279,9 @@ namespace YugantLoyaLibrary.FindWords
 
             transform.DOMove(pos, reachTime).SetEase(movingEase).OnComplete(() =>
             {
-                if (LevelHandler.instance.LastQuesTile == quesTile)
+                if (LevelHandler.Instance.LastQuesTile == quesTile)
                 {
-                    LevelHandler.instance.CheckAnswer();
+                    LevelHandler.Instance.CheckAnswer();
                 }
 
                 isMoving = false;
@@ -365,9 +351,9 @@ namespace YugantLoyaLibrary.FindWords
 
         public void DeckAnimation(float timeToPlaceGrids, Vector2 pos, string gridData, bool shouldReturn = true)
         {
-            if (!LevelHandler.instance.gridAvailableOnScreenList.Contains(this))
+            if (!LevelHandler.Instance.gridAvailableOnScreenList.Contains(this))
             {
-                LevelHandler.instance.gridAvailableOnScreenList.Add(this);
+                LevelHandler.Instance.gridAvailableOnScreenList.Add(this);
             }
 
             SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeck);
