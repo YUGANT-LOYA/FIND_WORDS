@@ -11,7 +11,7 @@ namespace YugantLoyaLibrary.FindWords
     public class GameController : MonoBehaviour
     {
         public static GameController instance;
-
+        public static int LevelAttempts;
         private static readonly char[] Vowels = { 'a', 'e', 'i', 'o', 'u' };
 
         private static readonly char[] Consonants =
@@ -74,7 +74,7 @@ namespace YugantLoyaLibrary.FindWords
             DataHandler.instance.SetBg();
             Init();
         }
-        
+
 
         void GameStartInfo()
         {
@@ -91,7 +91,7 @@ namespace YugantLoyaLibrary.FindWords
                 DataHandler.FirstTimeGameOpen = 1;
                 GameStartInfo();
             }
-
+            
             UIManager.Instance.iqLevelText.text = $" {DataHandler.IqLevel.ToString()}";
             Debug.Log("Loading Dict !!");
             LevelHandler.Instance.englishDictWords.UpdateFullEnglishDict();
@@ -106,6 +106,9 @@ namespace YugantLoyaLibrary.FindWords
 
             StartGame();
             Debug.Log("Game Created !");
+            
+            LionStudiosManager.LevelStart(DataHandler.LevelNum, LevelAttempts, 0);
+            GAScript.LevelStart(DataHandler.LevelNum.ToString());
         }
 
         public IEnumerator StartGameAfterCertainTime(float time)

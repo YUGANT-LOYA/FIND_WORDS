@@ -214,6 +214,14 @@ namespace YugantLoyaLibrary.FindWords
                     {
                         LevelHandler.Instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
                     }
+
+                    LionStudiosManager.LevelComplete(DataHandler.LevelNum, GameController.LevelAttempts, 0);
+                    GAScript.LevelEnd(true,DataHandler.LevelNum.ToString());
+                    GameController.LevelAttempts = 0;
+                    DataHandler.LevelNum++;
+                    
+                    LionStudiosManager.LevelStart(DataHandler.LevelNum, GameController.LevelAttempts, 0);
+                    GAScript.LevelStart(DataHandler.LevelNum.ToString());
                 });
         }
 

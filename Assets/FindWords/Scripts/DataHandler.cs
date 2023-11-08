@@ -8,7 +8,7 @@ namespace YugantLoyaLibrary.FindWords
     {
         public static DataHandler instance;
         public List<Material> gameBgMaterialList;
-
+        
         [Header("Prefab Holders")] public GameObject coinPrefab;
         public GameObject levelPrefab, gridPrefab, quesPrefab;
 
@@ -85,7 +85,13 @@ namespace YugantLoyaLibrary.FindWords
             get => PlayerPrefs.GetInt(StringHelper.FIRST_TIME_OPEN, 0);
             set => PlayerPrefs.SetInt(StringHelper.FIRST_TIME_OPEN, value);
         }
-
+        
+        public static int LevelNum
+        {
+            get => PlayerPrefs.GetInt(StringHelper.LEVEL_NUM, 1);
+            set => PlayerPrefs.SetInt(StringHelper.LEVEL_NUM, value);
+        }
+        
         public static int HelperLevelCompleted
         {
             get => PlayerPrefs.GetInt(StringHelper.HELPER_LEVEL_COMPLETED, 0);

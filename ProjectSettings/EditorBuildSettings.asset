@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/FindWords/Scenes/LoadScene.unity
+    guid: b3df0cb082c5f1c4a89069b1f6018226
+  - enabled: 1
     path: Assets/FindWords/Scenes/FindWordGame.unity
     guid: 3ab07411ecc352849b243a0bb4bd9426
   m_configObjects: {}
