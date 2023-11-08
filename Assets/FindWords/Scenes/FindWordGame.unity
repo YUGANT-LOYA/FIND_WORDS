@@ -6428,7 +6428,7 @@ MonoBehaviour:
   noWordFoundMsg: No Word Found !
   noShuffleFoundMsg: Not Enough Coins For Shuffle !
   noDealFoundMsg: No Empty Slot To Fill !
-  toastMsgTime: 2
+  toastMsgTime: 1.5
 --- !u!1 &3132064099953264816
 GameObject:
   m_ObjectHideFlags: 0

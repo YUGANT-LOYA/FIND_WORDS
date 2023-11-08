@@ -93,19 +93,20 @@ namespace YugantLoyaLibrary.FindWords
             {
                 //Debug.Log("Hint Disable Called !");
                 hintButton.GetComponent<Image>().color = disableButtonColor;
+                LevelHandler.Instance.isHintAvailInButton = false;
                 //hintButton.enabled = false;
             }
             else
             {
                 //Debug.Log("Hint Enable Called !");
                 hintButton.enabled = true;
+                LevelHandler.Instance.isHintAvailInButton = true;
                 hintButton.GetComponent<Image>().color = Color.white;
             }
 
             //Debug.Log("Hint Button Status : " + hintButton.enabled);
             CheckOtherButtonStatus();
-            LevelHandler.Instance.isHintAvailInButton = hintButton.enabled;
-
+            
             return hintButton.enabled;
         }
 
