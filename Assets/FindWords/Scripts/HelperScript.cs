@@ -43,15 +43,15 @@ public class HelperScript : MonoBehaviour
     IEnumerator ClickTileAnim(float time)
     {
         yield return new WaitForSeconds(time);
-        Debug.Log("Tile Clicked !");
+        //Debug.Log("Tile Clicked !");
         if (DataHandler.HelperIndex < bgList.Count)
         {
-            Debug.Log("IF Helper  Index : " + DataHandler.HelperIndex);
+            //Debug.Log("IF Helper  Index : " + DataHandler.HelperIndex);
             bgList[DataHandler.HelperIndex].SetActive(true);
 
             if (DataHandler.HelperIndex >= 1)
             {
-                Debug.Log("Last Bg DeActivating !");
+                //Debug.Log("Last Bg DeActivating !");
                 bgList[DataHandler.HelperIndex - 1].SetActive(false);
             }
 
@@ -79,7 +79,7 @@ public class HelperScript : MonoBehaviour
         else
         {
             //Reset Game for Original Game !
-            Debug.Log("ELSE Helper  Index : " + DataHandler.HelperIndex);
+            //Debug.Log("ELSE Helper  Index : " + DataHandler.HelperIndex);
             bgList[DataHandler.HelperIndex - 1].SetActive(false);
             DataHandler.HelperLevelCompleted = 1;
         }

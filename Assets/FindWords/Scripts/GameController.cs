@@ -46,14 +46,14 @@ namespace YugantLoyaLibrary.FindWords
 
         public void MakeInstance()
         {
-            Debug.Log("Make Instance Called !!");
+            //Debug.Log("Make Instance Called !!");
             Application.targetFrameRate = 120;
             Vibration.Init();
         }
 
         private void OnEnable()
         {
-            Debug.Log("OnEnable Called !!");
+            //Debug.Log("OnEnable Called !!");
         }
 
         private void CreateSingleton()
@@ -78,7 +78,7 @@ namespace YugantLoyaLibrary.FindWords
 
         void GameStartInfo()
         {
-            Debug.Log("First Time Game Start Info Called !!");
+            //Debug.Log("First Time Game Start Info Called !!");
             DataHandler.CurrGridSize = startingGridSize;
             UIManager.Instance.iqLevelText.text = $" {DataHandler.IqLevel.ToString()}";
             LevelHandler.Instance.SaveSystem();
@@ -93,19 +93,19 @@ namespace YugantLoyaLibrary.FindWords
             }
             
             UIManager.Instance.iqLevelText.text = $" {DataHandler.IqLevel.ToString()}";
-            Debug.Log("Loading Dict !!");
+            //Debug.Log("Loading Dict !!");
             LevelHandler.Instance.englishDictWords.UpdateFullEnglishDict();
             LevelHandler.Instance.englishDictWords.UpdateFilteredEnglishDict();
-            Debug.Log("Dict Loaded !!");
+            //Debug.Log("Dict Loaded !!");
 
-            Debug.Log("Save Manager (Word Left List) Count : " + SaveManager.Instance.state.wordLeftList.Count);
-            Debug.Log("Save Manager (Hint List) Count : " + SaveManager.Instance.state.hintList.Count);
-            Debug.Log("Save Manager (Grid On Screen List) Count : " +
-                      SaveManager.Instance.state.gridOnScreenList.Count);
-            Debug.Log("Save Manager (Grid Data List) Count : " + SaveManager.Instance.state.gridDataList.Count);
+            //Debug.Log("Save Manager (Word Left List) Count : " + SaveManager.Instance.state.wordLeftList.Count);
+            //Debug.Log("Save Manager (Hint List) Count : " + SaveManager.Instance.state.hintList.Count);
+            // Debug.Log("Save Manager (Grid On Screen List) Count : " +
+            //           SaveManager.Instance.state.gridOnScreenList.Count);
+            //Debug.Log("Save Manager (Grid Data List) Count : " + SaveManager.Instance.state.gridDataList.Count);
 
             StartGame();
-            Debug.Log("Game Created !");
+            //Debug.Log("Game Created !");
             
             LionStudiosManager.LevelStart(DataHandler.LevelNum, LevelAttempts, 0);
             GAScript.LevelStart(DataHandler.LevelNum.ToString());
@@ -113,12 +113,12 @@ namespace YugantLoyaLibrary.FindWords
 
         public IEnumerator StartGameAfterCertainTime(float time)
         {
-            Debug.Log($"Game Restarting After {time}");
+            //Debug.Log($"Game Restarting After {time}");
 
             DataHandler.CurrTotalQuesSize = DataHandler.CurrGridSize;
             DataHandler.UnlockedQuesLetter = DataHandler.CurrTotalQuesSize;
             DataHandler.CurrGridSize++;
-            Debug.Log("Curr Grid Size : " + DataHandler.CurrGridSize);
+            //Debug.Log("Curr Grid Size : " + DataHandler.CurrGridSize);
             DataHandler.UnlockGridIndex = 0;
             DataHandler.NewGridCreated = 0;
             DataHandler.PickDataIndex = 0;
@@ -203,7 +203,7 @@ namespace YugantLoyaLibrary.FindWords
 
             if (DataHandler.HelperLevelCompleted == 0)
             {
-                Debug.Log("Shuffle HelperLevelCompleted is Not Completed!");
+                //Debug.Log("Shuffle HelperLevelCompleted is Not Completed!");
                 return;
             }
 
@@ -242,15 +242,15 @@ namespace YugantLoyaLibrary.FindWords
 
             if (DataHandler.HelperLevelCompleted == 0)
             {
-                Debug.Log("Deal HelperLevelCompleted is Not Completed!");
+                //Debug.Log("Deal HelperLevelCompleted is Not Completed!");
                 if (DataHandler.HelperIndex != helper.clickDealIndex)
                 {
-                    Debug.Log("IF Helper Index Same in Deal And Function Returns !");
+                    //Debug.Log("IF Helper Index Same in Deal And Function Returns !");
                     return;
                 }
                 else
                 {
-                    Debug.Log("ELSE Helper Index Same in Deal And Function Returns !");
+                    //Debug.Log("ELSE Helper Index Same in Deal And Function Returns !");
                     UIManager.Instance.DealButtonEffect();
                     SoundManager.instance.PlaySound(SoundManager.SoundType.Click);
                     StartCoroutine(HelperDeal());
@@ -283,7 +283,7 @@ namespace YugantLoyaLibrary.FindWords
 
         IEnumerator HelperDeal()
         {
-            Debug.Log("Helper Deal Called !");
+            //Debug.Log("Helper Deal Called !");
             int index = 0;
             string randomPickedWord = "YOB";
             foreach (GridTile gridTile in LevelHandler.Instance.wordCompletedGridList)
@@ -297,7 +297,7 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             helper.canvasHelperHand.SetActive(false);
-            Debug.Log("Helper Deal For Each Completed !");
+            //Debug.Log("Helper Deal For Each Completed !");
             LevelHandler.Instance.wordCompletedGridList.Clear();
             DataHandler.HelperIndex++;
             helper.ClickTile(0.6f);
@@ -311,7 +311,7 @@ namespace YugantLoyaLibrary.FindWords
 
             if (DataHandler.HelperLevelCompleted == 0)
             {
-                Debug.Log("Hint HelperLevelCompleted is Not Completed!");
+                //Debug.Log("Hint HelperLevelCompleted is Not Completed!");
                 return;
             }
 
@@ -357,7 +357,7 @@ namespace YugantLoyaLibrary.FindWords
 
             while (total > 0)
             {
-                Debug.Log("Forming Word From Screen Letters");
+                //Debug.Log("Forming Word From Screen Letters");
                 string tempStr =
                     LevelHandler.Instance.PickRandomWordFormingLetters(tempList, 2, out string gridExistingString);
 
@@ -369,27 +369,27 @@ namespace YugantLoyaLibrary.FindWords
 
                     foreach (char repeatedChar in gridExistingString)
                     {
-                        Debug.Log("Repeated Char" + repeatedChar);
+                        //Debug.Log("Repeated Char" + repeatedChar);
                         remainingLetter = RemoveCharFromString(remainingLetter, repeatedChar);
-                        Debug.Log("Remaining Letter : " + remainingLetter);
+                        //Debug.Log("Remaining Letter : " + remainingLetter);
 
 
                         foreach (GridTile tile in tempList)
                         {
                             if (tile.GridTextData != repeatedChar.ToString()) continue;
 
-                            Debug.Log("Removed Tile : " + tile.name);
+                            //Debug.Log("Removed Tile : " + tile.name);
                             tempList.Remove(tile);
                             break;
                         }
                     }
 
-                    Debug.Log("Temp List Count : " + tempList.Count);
+                    //Debug.Log("Temp List Count : " + tempList.Count);
 
-                    foreach (GridTile tile in tempList)
-                    {
-                        Debug.Log("Temp Element : " + tile);
-                    }
+                    // foreach (GridTile tile in tempList)
+                    // {
+                    //     Debug.Log("Temp Element : " + tile);
+                    // }
 
                     hintFitStringList.Add(tempStr);
                     randomPickedWord += remainingLetter.Trim();
@@ -397,24 +397,24 @@ namespace YugantLoyaLibrary.FindWords
                 else
                 {
                     hintFitStringList.Clear();
-                    Debug.Log("Printing Data From Word Left List ");
+                    //Debug.Log("Printing Data From Word Left List ");
                     randomPickedWord = LevelHandler.Instance.GetDataAccordingToGrid(list.Count);
                     total -= randomPickedWord.Length;
                 }
 
                 total -= remainingLetter.Length;
-                Debug.Log("Total : " + total);
+                //Debug.Log("Total : " + total);
                 //Debug.Log("RANDOM Pick Letter : " + randomPickedWord);
             }
 
             foreach (string s in hintFitStringList)
             {
                 LevelHandler.Instance.hintAvailList.Add(s);
-                Debug.Log("Hint Added : " + s);
+                //Debug.Log("Hint Added : " + s);
             }
 
-            Debug.Log("Remaining Letter : " + remainingLetter);
-            Debug.Log("RANDOM Pick Letter : " + randomPickedWord);
+            //Debug.Log("Remaining Letter : " + remainingLetter);
+            //Debug.Log("RANDOM Pick Letter : " + randomPickedWord);
             //Debug.Log("Temp STR Count : " + tempList.Count);
             //Debug.Log("RANDOM PICK VAL : " + randomPickedWord);
 
@@ -425,7 +425,7 @@ namespace YugantLoyaLibrary.FindWords
             foreach (GridTile gridTile in list)
             {
                 yield return new WaitForSeconds(_currLevel.timeToWaitForEachGrid);
-                Debug.Log("Moving To Grid Place Again !");
+                //Debug.Log("Moving To Grid Place Again !");
                 gridTile.isBlastAfterWordComplete = false;
                 gridTile.GridTextData = randomPickedWord[index].ToString();
                 LevelHandler.Instance.gridAvailableOnScreenList.Add(gridTile);
@@ -520,7 +520,7 @@ namespace YugantLoyaLibrary.FindWords
         public bool Search(string word)
         {
             List<MainDictionary.MainDictionaryInfo> dictInfoList = mainDictionary.dictInfoList;
-            Debug.Log("DictInfo List Count : " + dictInfoList.Count);
+            //Debug.Log("DictInfo List Count : " + dictInfoList.Count);
             bool isWordThere = IsWordAvailable(word, dictInfoList);
 
             if (isWordThere)
@@ -542,7 +542,7 @@ namespace YugantLoyaLibrary.FindWords
                 {
                     if (wordInfoList[j].wordStartChar == word[0])
                     {
-                        Debug.Log("First Char of Word : " + word[0]);
+                        //Debug.Log("First Char of Word : " + word[0]);
                         List<string> wordList = wordInfoList[j].wordList;
 
                         foreach (string str in wordList)
@@ -572,11 +572,11 @@ namespace YugantLoyaLibrary.FindWords
 
             if (word[index] == textWord[index])
             {
-                Debug.Log($"{word} Word Same !! ");
+                //Debug.Log($"{word} Word Same !! ");
 
                 if (word.Length - 1 == index)
                 {
-                    Debug.Log($"{word} Word Detected !! ");
+                    //Debug.Log($"{word} Word Detected !! ");
                     return true;
                 }
 
@@ -584,7 +584,7 @@ namespace YugantLoyaLibrary.FindWords
                 return IsWordSame(index, word, textWord);
             }
 
-            Debug.Log($"Letter Not Same {word} , {textWord} , {index} ");
+            //Debug.Log($"Letter Not Same {word} , {textWord} , {index} ");
             return false;
         }
 
@@ -594,24 +594,24 @@ namespace YugantLoyaLibrary.FindWords
 
             if (isGameActive) return;
 
-            Debug.Log("Game Pause Called !");
+            //Debug.Log("Game Pause Called !");
             LevelHandler.Instance.SaveSystem();
-            Debug.Log("Game Pause (Word Left List) Count : " + SaveManager.Instance.state.wordLeftList.Count);
-            Debug.Log("Game Pause (Hint List) Count : " + SaveManager.Instance.state.hintList.Count);
-            Debug.Log("Game Pause (Grid On Screen List) Count : " +
-                      SaveManager.Instance.state.gridOnScreenList.Count);
-            Debug.Log("Game Pause (Grid Data List) Count : " + SaveManager.Instance.state.gridDataList.Count);
+            //Debug.Log("Game Pause (Word Left List) Count : " + SaveManager.Instance.state.wordLeftList.Count);
+            //Debug.Log("Game Pause (Hint List) Count : " + SaveManager.Instance.state.hintList.Count);
+            // Debug.Log("Game Pause (Grid On Screen List) Count : " +
+            //           SaveManager.Instance.state.gridOnScreenList.Count);
+            //Debug.Log("Game Pause (Grid Data List) Count : " + SaveManager.Instance.state.gridDataList.Count);
         }
 
         private void OnApplicationQuit()
         {
-            Debug.Log("Application Quit Called !");
+            //Debug.Log("Application Quit Called !");
             LevelHandler.Instance.SaveSystem();
-            Debug.Log("Game Quit (Word Left List) Count : " + SaveManager.Instance.state.wordLeftList.Count);
-            Debug.Log("Game Quit (Hint List) Count : " + SaveManager.Instance.state.hintList.Count);
-            Debug.Log("Game Quit (Grid On Screen List) Count : " +
-                      SaveManager.Instance.state.gridOnScreenList.Count);
-            Debug.Log("Game Quit (Grid Data List) Count : " + SaveManager.Instance.state.gridDataList.Count);
+            //Debug.Log("Game Quit (Word Left List) Count : " + SaveManager.Instance.state.wordLeftList.Count);
+            //Debug.Log("Game Quit (Hint List) Count : " + SaveManager.Instance.state.hintList.Count);
+            // Debug.Log("Game Quit (Grid On Screen List) Count : " +
+            //           SaveManager.Instance.state.gridOnScreenList.Count);
+            //Debug.Log("Game Quit (Grid Data List) Count : " + SaveManager.Instance.state.gridDataList.Count);
         }
     }
 }

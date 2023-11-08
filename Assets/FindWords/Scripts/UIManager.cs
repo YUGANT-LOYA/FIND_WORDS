@@ -74,7 +74,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public void CanTouch(bool isActive)
         {
-            Debug.Log("Touch is " + isActive);
+            //Debug.Log("Touch is " + isActive);
             touchPanelGm.SetActive(!isActive);
             SetAllButtonStatus(isActive);
         }
@@ -86,23 +86,23 @@ namespace YugantLoyaLibrary.FindWords
 
         public bool HintStatus(bool isActive)
         {
-            Debug.Log("Hint Button Status : " + hintButton.enabled);
+            //Debug.Log("Hint Button Status : " + hintButton.enabled);
 
             if (isActive == false ||
                 DataHandler.CurrTotalQuesSize > LevelHandler.Instance.gridAvailableOnScreenList.Count)
             {
-                Debug.Log("Hint Disable Called !");
+                //Debug.Log("Hint Disable Called !");
                 hintButton.GetComponent<Image>().color = disableButtonColor;
                 //hintButton.enabled = false;
             }
             else
             {
-                Debug.Log("Hint Enable Called !");
+                //Debug.Log("Hint Enable Called !");
                 hintButton.enabled = true;
                 hintButton.GetComponent<Image>().color = Color.white;
             }
 
-            Debug.Log("Hint Button Status : " + hintButton.enabled);
+            //Debug.Log("Hint Button Status : " + hintButton.enabled);
             CheckOtherButtonStatus();
             LevelHandler.Instance.isHintAvailInButton = hintButton.enabled;
 
@@ -111,7 +111,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public void CheckAllButtonStatus()
         {
-            Debug.Log("Checking All Button Status !");
+            //Debug.Log("Checking All Button Status !");
 
             bool isHintAvail = LevelHandler.Instance.CheckHintStatus(out string finalStr);
             HintStatus(isHintAvail);
@@ -240,7 +240,7 @@ namespace YugantLoyaLibrary.FindWords
             }
             else
             {
-                Debug.Log("Button will Not Work in This Mode !");
+                //Debug.Log("Button will Not Work in This Mode !");
             }
         }
 
@@ -307,7 +307,7 @@ namespace YugantLoyaLibrary.FindWords
             Action callback = null)
         {
             yield return new WaitForSeconds(waitTime);
-            Debug.Log("Coin Adding : " + coinToBeAdded);
+            //Debug.Log("Coin Adding : " + coinToBeAdded);
 
             int startVal = int.Parse(coinText.text);
             float time = coinMoveTime / (float)coinToBeAdded;
@@ -324,7 +324,7 @@ namespace YugantLoyaLibrary.FindWords
         public IEnumerator UpdateReducedCoinText(float waitTime, int coinToSubtract, float coinMoveTime,
             Action callback = null)
         {
-            Debug.Log("Reduced Coin Text Called !");
+            //Debug.Log("Reduced Coin Text Called !");
             yield return new WaitForSeconds(waitTime);
 
             int startVal = int.Parse(coinText.text);
@@ -343,7 +343,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             int totalCoins = DataHandler.TotalCoin + coinToBeAdded * sign;
             DataHandler.TotalCoin = totalCoins;
-            Debug.Log("Total Coin Left : " + DataHandler.TotalCoin);
+            //Debug.Log("Total Coin Left : " + DataHandler.TotalCoin);
         }
 
         public void ShakeCam()

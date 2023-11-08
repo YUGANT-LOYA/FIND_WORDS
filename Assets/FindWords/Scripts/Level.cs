@@ -40,12 +40,12 @@ namespace YugantLoyaLibrary.FindWords
         public void StartInit()
         {
             //Debug.Log("Level StartInit Called !");
-            Debug.Log($"Aspect Ratio : {_cam.aspect} , Width : {Screen.width} , Height  : {Screen.height}");
+            //Debug.Log($"Aspect Ratio : {_cam.aspect} , Width : {Screen.width} , Height  : {Screen.height}");
             //SetCameraPos();
             SetGridContainerPos();
             CreateGrid();
             LevelHandler.Instance.SetCoinPerWord();
-            Debug.Log("Level Init Completed !!");
+            //Debug.Log("Level Init Completed !!");
         }
 
         private void SetGridContainerPos()
@@ -137,7 +137,7 @@ namespace YugantLoyaLibrary.FindWords
             Transform boxTrans = gridContainer.transform;
             _defaultStartPos.y = boxTrans.localScale.y * 2;
             _defaultStartPos.x = _currGridSize / 2;
-            Debug.Log("Default Pos : " + _defaultStartPos.x);
+            //Debug.Log("Default Pos : " + _defaultStartPos.x);
             Vector3 startPos = new Vector3(_defaultStartPos.x, _defaultStartPos.y, _defaultStartPos.z);
 
             if (GameController.instance.maxGridSize < DataHandler.CurrGridSize)
@@ -169,12 +169,12 @@ namespace YugantLoyaLibrary.FindWords
 
                     if (DataHandler.NewGridCreated == 0)
                     {
-                        Debug.Log("New Grid Created And Blast Data Rest Done !");
+                        //Debug.Log("New Grid Created And Blast Data Rest Done !");
                         gridTileScript.isBlastAfterWordComplete = false;
 
                         if (index == (gridSize.x * gridSize.y) - 1)
                         {
-                            Debug.Log("New Data Created PlayerPref Set to 1 !");
+                            //Debug.Log("New Data Created PlayerPref Set to 1 !");
                             DataHandler.NewGridCreated = 1;
                         }
                     }
@@ -310,7 +310,7 @@ namespace YugantLoyaLibrary.FindWords
                     continue;
                 }
 
-                Debug.Log("Tile Unlocked : " + tile + " at : " + i);
+                //Debug.Log("Tile Unlocked : " + tile + " at : " + i);
                 LevelHandler.Instance.UnlockNextGridForCoins();
                 break;
             }
