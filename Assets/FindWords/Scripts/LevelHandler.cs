@@ -9,7 +9,9 @@ namespace YugantLoyaLibrary.FindWords
     public class LevelHandler : MonoBehaviour
     {
         public static LevelHandler Instance;
+
         public delegate void NewLetterDelegate(GridTile gridTile);
+
         public NewLetterDelegate OnNewLetterAddEvent, OnRemoveLetterEvent;
 
         public GameObject boxContainer;
@@ -40,7 +42,7 @@ namespace YugantLoyaLibrary.FindWords
         public List<string> hintAvailList = new List<string>();
         [HideInInspector] public bool isHintAvailInButton;
         public string quesHintStr;
-        private int _correctWordCompleteInLine, _wrongClickCount;
+        private int _correctWordCompleteInLine, _nextCommentAfter, _wrongClickCount;
 
 
         private void OnEnable()
@@ -208,7 +210,7 @@ namespace YugantLoyaLibrary.FindWords
                 }
                 else
                 {
-                   // Debug.LogError("Defined Data Empty !");
+                    // Debug.LogError("Defined Data Empty !");
                 }
             }
 
@@ -241,7 +243,7 @@ namespace YugantLoyaLibrary.FindWords
                         totalLetter--;
                     }
                 }
-                
+
                 unlockStr = ShuffleString(unlockStr);
             }
 
@@ -523,7 +525,7 @@ namespace YugantLoyaLibrary.FindWords
                 foreach (GridTile tile in gridAvailableOnScreenList)
                 {
                     //Debug.Log("CH : " + ch);
-                   // Debug.Log("Tile Data : " + tile.GridTextData);
+                    // Debug.Log("Tile Data : " + tile.GridTextData);
 
                     if (ch.ToString() == tile.GridTextData)
                     {
@@ -779,7 +781,7 @@ namespace YugantLoyaLibrary.FindWords
 
                 if (wordsLeftList.Contains(temp))
                 {
-                   // Debug.Log("Word Removed From Word Left List !");
+                    // Debug.Log("Word Removed From Word Left List !");
                     wordsLeftList.Remove(temp);
                 }
 
@@ -798,9 +800,11 @@ namespace YugantLoyaLibrary.FindWords
 
                 _wrongClickCount = 0;
                 _correctWordCompleteInLine++;
-
-                if (_correctWordCompleteInLine >= 3)
+                _nextCommentAfter--;
+                
+                if (_correctWordCompleteInLine >= 3 && _nextCommentAfter <= 0)
                 {
+                    _nextCommentAfter = Random.Range(2, 4);
                     GameController.instance.wordCommentScript.PickRandomCommentForWordComplete(
                         _correctWordCompleteInLine);
                 }
