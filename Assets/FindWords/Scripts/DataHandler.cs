@@ -140,12 +140,18 @@ namespace YugantLoyaLibrary.FindWords
             set => PlayerPrefs.SetInt(StringHelper.BG_INDEX, value);
         }
 
-        public static int IqLevel
+        public static int IqExpLevel
         {
-            get => PlayerPrefs.GetInt(StringHelper.IQ_LEVEL, GameController.instance.defaultIq);
-            set => PlayerPrefs.SetInt(StringHelper.IQ_LEVEL, value);
+            get => PlayerPrefs.GetInt(StringHelper.IQ_EXP_LEVEL, GameController.instance.defaultIq);
+            set => PlayerPrefs.SetInt(StringHelper.IQ_EXP_LEVEL, value);
         }
-
+        
+        public static int WordCompleteNum
+        {
+            get => PlayerPrefs.GetInt(StringHelper.WORD_COMPLETE_NUM, GameController.instance.defaultIq);
+            set => PlayerPrefs.SetInt(StringHelper.WORD_COMPLETE_NUM, value);
+        }
+        
         //This is for traversing the Pick Data Info Word List
         public static int PickDataIndex
         {

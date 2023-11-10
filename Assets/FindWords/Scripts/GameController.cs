@@ -22,7 +22,7 @@ namespace YugantLoyaLibrary.FindWords
 
         [Range(4, 7)] public int startingGridSize = 5;
         [HideInInspector] public int startingQuesSize = 3, maxGridSize = 7;
-        public int defaultIq = 5, changeBgAfter = 3;
+        public int defaultIq, changeBgAfter = 3;
 
         [Header("References")] [SerializeField]
         private PickWordDataInfo pickWordDataInfo;
@@ -80,7 +80,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             //Debug.Log("First Time Game Start Info Called !!");
             DataHandler.CurrGridSize = startingGridSize;
-            UIManager.Instance.iqLevelText.text = $" {DataHandler.IqLevel.ToString()}";
+            UIManager.Instance.iqExperienceText.text = $" {DataHandler.IqExpLevel.ToString()}";
             LevelHandler.Instance.SaveSystem();
         }
 
@@ -92,7 +92,7 @@ namespace YugantLoyaLibrary.FindWords
                 GameStartInfo();
             }
             
-            UIManager.Instance.iqLevelText.text = $" {DataHandler.IqLevel.ToString()}";
+            UIManager.Instance.iqExperienceText.text = $" {DataHandler.IqExpLevel.ToString()}";
             //Debug.Log("Loading Dict !!");
             LevelHandler.Instance.englishDictWords.UpdateFullEnglishDict();
             LevelHandler.Instance.englishDictWords.UpdateFilteredEnglishDict();

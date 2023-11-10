@@ -21,7 +21,8 @@ namespace YugantLoyaLibrary.FindWords
         private CameraShake _camShakeScript;
         public ToastMessage toastMessageScript;
         public float coinAnimTime = 1.5f, coinRotateAngle = 810f, maxCoinScale = 45f;
-        public TextMeshProUGUI iqLevelText;
+        public TextMeshProUGUI iqExperienceText;
+        public Slider iqSlider;
         public TextMeshProUGUI coinText, coinAnimText;
         public CanvasGroup coinAnimCanvasGroup;
         private Vector3 _coinAnimTextDefaultPos;
@@ -70,7 +71,7 @@ namespace YugantLoyaLibrary.FindWords
                 Destroy(gameObject);
             }
         }
-        
+
 
         public void CanTouch(bool isActive)
         {
@@ -106,7 +107,7 @@ namespace YugantLoyaLibrary.FindWords
 
             //Debug.Log("Hint Button Status : " + hintButton.enabled);
             CheckOtherButtonStatus();
-            
+
             return hintButton.enabled;
         }
 
@@ -148,7 +149,7 @@ namespace YugantLoyaLibrary.FindWords
                 dealButton.GetComponent<Image>().color = Color.white;
             }
         }
-        
+
         private void SetAllButtonStatus(bool isActive)
         {
             Image hintImage = hintButton.GetComponent<Image>();

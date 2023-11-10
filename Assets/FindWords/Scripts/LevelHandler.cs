@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace YugantLoyaLibrary.FindWords
@@ -801,7 +803,7 @@ namespace YugantLoyaLibrary.FindWords
                 _wrongClickCount = 0;
                 _correctWordCompleteInLine++;
                 _nextCommentAfter--;
-                
+
                 if (_correctWordCompleteInLine >= 3 && _nextCommentAfter <= 0)
                 {
                     _nextCommentAfter = Random.Range(2, 4);
@@ -855,10 +857,31 @@ namespace YugantLoyaLibrary.FindWords
                     time);
             }
 
-            DataHandler.IqLevel++;
-            UIManager.Instance.iqLevelText.text = $" {DataHandler.IqLevel.ToString()}";
+            CheckIqExpLevel();
+
             StartCoroutine(ResetLevelHandlerData(time, true));
             StartCoroutine(DataResetAfterGridAnimation(time));
+        }
+
+        private void CheckIqExpLevel()
+        {
+            DataHandler.WordCompleteNum++;
+            int unlockNextIqExp = 5;
+            float oneWordBarVal = 1f / unlockNextIqExp;
+            Slider iqSlider = UIManager.Instance.iqSlider;
+            iqSlider.DOValue(iqSlider.value + oneWordBarVal, 0.5f).OnComplete(
+                () =>
+                {
+                    float wordLeft = DataHandler.WordCompleteNum % unlockNextIqExp;
+                    iqSlider.value = wordLeft / unlockNextIqExp;
+
+                    if (wordLeft == 0)
+                    {
+                        DataHandler.IqExpLevel++;
+                        UIManager.Instance.iqExperienceText.text = $" {DataHandler.IqExpLevel.ToString()}";
+                        UIManager.Instance.iqSlider.value = 0f;
+                    }
+                });
         }
 
         private bool CheckGridLeft()
