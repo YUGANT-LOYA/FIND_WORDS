@@ -22,7 +22,7 @@ namespace YugantLoyaLibrary.FindWords
 
         [Range(4, 7)] public int startingGridSize = 5;
         [HideInInspector] public int startingQuesSize = 3, maxGridSize = 7;
-        public int defaultIq, changeBgAfter = 3;
+        public int defaultIq = 1, changeBgAfter = 3;
 
         [Header("References")] [SerializeField]
         private PickWordDataInfo pickWordDataInfo;

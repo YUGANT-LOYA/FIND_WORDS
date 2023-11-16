@@ -3967,7 +3967,7 @@ MonoBehaviour:
   startingGridSize: 4
   startingQuesSize: 3
   maxGridSize: 7
-  defaultIq: 0
+  defaultIq: 1
   changeBgAfter: 3
   pickWordDataInfo: {fileID: 11400000, guid: 705e50367ef97c646ab4c1cd1b227194, type: 2}
   wordCommentScript: {fileID: 48317005}
@@ -7042,7 +7042,7 @@ MonoBehaviour:
     type: 3}
   quesPrefab: {fileID: 6876171383429484901, guid: 2b60b11f0918330469795326020309c3,
     type: 3}
-  initialCoins: 20000
+  initialCoins: 100
 --- !u!1 &5704458314791691809
 GameObject:
   m_ObjectHideFlags: 0
