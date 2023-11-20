@@ -140,8 +140,10 @@ namespace YugantLoyaLibrary.FindWords
             //Debug.Log("Default Pos : " + _defaultStartPos.x);
             Vector3 startPos = new Vector3(_defaultStartPos.x, _defaultStartPos.y, _defaultStartPos.z);
 
-            if (GameController.instance.maxGridSize < DataHandler.CurrGridSize)
+            if (GameController.instance.maxGridSize < DataHandler.CurrGridSize &&
+            DataHandler.UnlockGridIndex >= LevelHandler.Instance.lockedGridList.Count - 1)
             {
+                Debug.Log("Before Max Grid Unlocked !!");
                 DataHandler.IsMaxGridOpened = 1;
             }
 
@@ -212,8 +214,10 @@ namespace YugantLoyaLibrary.FindWords
                     _defaultStartPos.z);
             }
 
-            if (DataHandler.CurrGridSize == GameController.instance.maxGridSize)
+            if (DataHandler.CurrGridSize == GameController.instance.maxGridSize &&
+                DataHandler.UnlockGridIndex >= LevelHandler.Instance.lockedGridList.Count - 1)
             {
+                Debug.Log("After Max Grid Unlocked !!");
                 DataHandler.IsMaxGridOpened = 1;
             }
 

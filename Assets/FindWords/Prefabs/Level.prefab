@@ -109,7 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridSize: {x: 0, y: 0}
-  gridMaterial: {fileID: 2100000, guid: 66e9ed285ea4b894d8e60f8479edcdec, type: 2}
+  gridMaterial: {fileID: 2100000, guid: aa8d74b1c698d654d9d9ca9cf0b5454d, type: 2}
   gridPlacementEase: 21
   defaultStartYPos: 2
   camGridOffset: 0
@@ -119,5 +119,4 @@ MonoBehaviour:
   quesGridTrans: {fileID: 379044332734406932}
   gridContainer: {fileID: 2675200230521095590}
   gridSpacing: 0
-  quesSpacing: 0.4
   gridXSpacing: -0.1

@@ -1751,7 +1751,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 27, y: 61.4}
+  m_AnchoredPosition: {x: 27, y: 55}
   m_SizeDelta: {x: 70, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &499214000
@@ -1936,7 +1936,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 350, y: 0}
+  m_AnchoredPosition: {x: 324, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &522775779
@@ -2961,7 +2961,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 228, y: -118}
+  m_AnchoredPosition: {x: 214, y: -118}
   m_SizeDelta: {x: 400, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &805590169
@@ -3460,7 +3460,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -32, y: 61.4}
+  m_AnchoredPosition: {x: -32, y: 54.999977}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &888276222
@@ -3976,8 +3976,7 @@ MonoBehaviour:
     type: 2}
   coinHandlerScriptable: {fileID: 11400000, guid: 52e5a38d84809d4419f4f0ef5539c0d1,
     type: 2}
-  gridCamScriptable: {fileID: 11400000, guid: 7bf22db1e57398e46a45160ed1db8855, type: 2}
-  mainDictionary: {fileID: 11400000, guid: 6b4f292976b38254db73e94443d02645, type: 2}
+  mainDictionary: {fileID: 11400000, guid: 060ba8d9e48d28e45b4cd6b6a8c42760, type: 2}
   levelContainer: {fileID: 399063913}
   coinContainerTran: {fileID: 1738746827}
   coinPoolSize: 10
@@ -5202,7 +5201,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -451122853, guid: 53064bb50b96e79468c818511e4b0156, type: 3}
+  m_Sprite: {fileID: 792504627, guid: 02286b22508238146a0d793697a263c3, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -5690,7 +5689,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -673558181, guid: e509d2d7301c60c4c89b0d2904da3d37, type: 3}
+  m_Sprite: {fileID: -1967628351, guid: 482c529ebdb352a4bb47feaf568c705a, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -5998,8 +5997,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 198, y: 0}
-  m_SizeDelta: {x: 200, y: 150}
+  m_AnchoredPosition: {x: 177, y: 0}
+  m_SizeDelta: {x: 175, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1748337890
 MonoBehaviour:
@@ -6383,7 +6382,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 32, y: 61.39}
+  m_AnchoredPosition: {x: 32, y: 53}
   m_SizeDelta: {x: 70, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1910563714
@@ -6667,7 +6666,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -28.716616, y: 61.39}
+  m_AnchoredPosition: {x: -28.716616, y: 52.999985}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1951983274
@@ -6990,14 +6989,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb679a1a50f257d4e80a5c79428b077c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fullWordTextFile: {fileID: 4900000, guid: ab1c40ef23335ff49900be6d0f098734, type: 3}
-  filteredWordTextFile: {fileID: 4900000, guid: 364274cbacaf66042b6da3688278ae3f,
+  fullWordTextFile: {fileID: 4900000, guid: 364274cbacaf66042b6da3688278ae3f, type: 3}
+  filteredWordTextFile: {fileID: 4900000, guid: 6ddb95fe757d8704587fce845380bdf4,
     type: 3}
   compareWord: car
   wordInFullDict: 
   wordInFilteredDict: 
-  fullDictData: {fileID: 11400000, guid: 1976171d896577248ad1f396139fdedf, type: 2}
-  filteredDictData: {fileID: 11400000, guid: 531c9dab607b833428888917c0261e6c, type: 2}
+  fullDictData: {fileID: 11400000, guid: 531c9dab607b833428888917c0261e6c, type: 2}
+  filteredDictData: {fileID: 11400000, guid: c255ee4dfe5fe094fa1f0dc42772ebd0, type: 2}
 --- !u!4 &3132064099953264830
 Transform:
   m_ObjectHideFlags: 0
@@ -7042,7 +7041,7 @@ MonoBehaviour:
     type: 3}
   quesPrefab: {fileID: 6876171383429484901, guid: 2b60b11f0918330469795326020309c3,
     type: 3}
-  initialCoins: 100
+  initialCoins: 50000
 --- !u!1 &5704458314791691809
 GameObject:
   m_ObjectHideFlags: 0

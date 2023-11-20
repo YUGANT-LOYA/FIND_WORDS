@@ -11,8 +11,7 @@ using UnityEditor;
 
 public class FillDataIntoScriptable : MonoBehaviour
 {
-    public int wordLength = 3, minLength = 3, maxLength = 8;
-    public TextAsset fullDictTextFile,filteredDictTextFile;
+    public int wordLength = 3;
     public TextAsset wordLengthTextFile;
     public MainDictionary fullDictData,filteredDictData;
     public PickWordDataInfo pickWordDataInfo;

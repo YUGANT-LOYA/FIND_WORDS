@@ -10,12 +10,8 @@ using UnityEditor;
 public class WordLengthFinder : MonoBehaviour
 {
     public int wordLength = 3, minLength = 3, maxLength = 8;
-    public TextAsset oxfordDictTextFile,filteredDictTextFile, wordLengthTextFile;
-    public MainDictionary mainDict;
-
-    [Tooltip("Minimum and Maximum Folder or word Length of which you have to add all data !")]
-    public Vector2Int minMaxScriptableWordLength;
-
+    public TextAsset oxfordDictTextFile,filteredDictTextFile;
+    
     [Button]
     public void FindWordLengthForFullDictData()
     {

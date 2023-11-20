@@ -31,7 +31,6 @@ namespace YugantLoyaLibrary.FindWords
         public HelperScript helper;
         [SerializeField] private DefinedLevelScriptable definedLevelScriptable;
         [SerializeField] private CoinHandlerScriptable coinHandlerScriptable;
-        [SerializeField] private GridCamScriptable gridCamScriptable;
         [SerializeField] private MainDictionary mainDictionary;
         [SerializeField] private Transform levelContainer;
         public Transform coinContainerTran;
@@ -91,8 +90,9 @@ namespace YugantLoyaLibrary.FindWords
                 DataHandler.FirstTimeGameOpen = 1;
                 GameStartInfo();
             }
-            
+
             UIManager.Instance.iqExperienceText.text = $" {DataHandler.IqExpLevel.ToString()}";
+            UIManager.Instance.iqSlider.value = DataHandler.IqBarVal;
             //Debug.Log("Loading Dict !!");
             LevelHandler.Instance.englishDictWords.UpdateFullEnglishDict();
             LevelHandler.Instance.englishDictWords.UpdateFilteredEnglishDict();
@@ -106,7 +106,7 @@ namespace YugantLoyaLibrary.FindWords
 
             StartGame();
             //Debug.Log("Game Created !");
-            
+
             LionStudiosManager.LevelStart(DataHandler.LevelNum, LevelAttempts, 0);
             GAScript.LevelStart(DataHandler.LevelNum.ToString());
         }
@@ -158,11 +158,6 @@ namespace YugantLoyaLibrary.FindWords
             LevelHandler.Instance.AssignLevel(_currLevel);
             _currLevel.gridSize = new Vector2Int(DataHandler.CurrGridSize, DataHandler.CurrGridSize);
             LevelHandler.Instance.AssignGridData();
-        }
-
-        public GridCamScriptable GetGridCamScriptable()
-        {
-            return gridCamScriptable;
         }
 
         public DefinedLevelScriptable GetDefinedLevelScriptable()

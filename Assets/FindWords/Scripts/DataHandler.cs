@@ -146,6 +146,11 @@ namespace YugantLoyaLibrary.FindWords
             set => PlayerPrefs.SetInt(StringHelper.IQ_EXP_LEVEL, value);
         }
         
+        public static float IqBarVal
+        {
+            get => PlayerPrefs.GetFloat(StringHelper.IQ_BAR_VAL, 0);
+            set => PlayerPrefs.SetFloat(StringHelper.IQ_BAR_VAL, value);
+        }
         public static int WordCompleteNum
         {
             get => PlayerPrefs.GetInt(StringHelper.WORD_COMPLETE_NUM, GameController.instance.defaultIq);

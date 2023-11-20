@@ -23,6 +23,7 @@ namespace YugantLoyaLibrary.FindWords
         public static readonly string UNLOCK_QUES_LETTER = "UNLOCK_QUES_LETTER";
         public static readonly string UNLOCK_GRID_INDEX = "UNLOCK_GRID_INDEX";
         public static readonly string IQ_EXP_LEVEL = "IQ_EXP_LEVEL";
+        public static readonly string IQ_BAR_VAL = "IQ_BAR_VAL";
         public static readonly string WORD_COMPLETE_NUM = "WORD_COMPLETE_NUM";
         public static readonly string HELPER_WORD_INDEX = "HELPER_WORD_INDEX";
         public static readonly string MAX_GRID_OPENED = "MAX_GRID_OPENED";
