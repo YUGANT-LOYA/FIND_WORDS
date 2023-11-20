@@ -203,10 +203,10 @@ namespace YugantLoyaLibrary.FindWords
                     gridText.gameObject.SetActive(true);
                     isMoving = false;
 
-                    if (DataHandler.CoinGridUnlockIndex % GameController.instance.changeBgAfter == 0)
-                    {
-                        UIManager.Instance.SmokeTransition();
-                    }
+                    // if (DataHandler.CoinGridUnlockIndex % GameController.instance.changeBgAfter == 0)
+                    // {
+                    //     UIManager.Instance.SmokeTransition();
+                    // }
 
                     bool allGridBought = LevelHandler.Instance.CheckAllGridBought();
 
@@ -214,7 +214,11 @@ namespace YugantLoyaLibrary.FindWords
                     {
                         LevelHandler.Instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
                     }
-
+                    // else
+                    // {
+                    //     UIManager.Instance.SmokeTransition();
+                    // }
+                    
                     LionStudiosManager.LevelComplete(DataHandler.LevelNum, GameController.LevelAttempts, 0);
                     GAScript.LevelEnd(true,DataHandler.LevelNum.ToString());
                     GameController.LevelAttempts = 0;

@@ -36,7 +36,7 @@ namespace YugantLoyaLibrary.FindWords
         [SerializeField] Image wrongEffectImg;
         public Color defaultWrongEffectColor, redWrongEffectColor;
         private Color _defaultCoinAnimTextColor, _coinTextTargetColor;
-        private bool _isFading;
+        public bool isSmokeTransitionOn;
         float _startCoinTextFadeTime;
 
         private void Awake()
@@ -393,6 +393,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public void SmokeTransition()
         {
+            isSmokeTransitionOn = true;
             StartCoroutine(nameof(SmokeAnim));
         }
 
@@ -407,9 +408,26 @@ namespace YugantLoyaLibrary.FindWords
             DataHandler.instance.SetBg();
 
             yield return new WaitForSeconds(1.25f / 2);
-
             smokeTransitionGm.SetActive(false);
-            LevelHandler.Instance.SetLevelRunningBool(true);
+            LevelHandler.Instance.SetLevelRunningBool(true); 
+            //StartCoroutine(DeactivateSmokeTransition());
+        }
+
+        IEnumerator DeactivateSmokeTransition()
+        {
+            if (!isSmokeTransitionOn)
+            {
+                yield return new WaitForSeconds(0.3f);
+                Debug.Log("Smoke Transition Deactivated !!");
+                smokeTransitionGm.SetActive(false);
+                LevelHandler.Instance.SetLevelRunningBool(true);
+            }
+            else
+            {
+                yield return new WaitForSeconds(0.3f);
+                Debug.Log("Deactivating Smoke Transition Checking !!");
+                StartCoroutine(DeactivateSmokeTransition());
+            }
         }
     }
 }

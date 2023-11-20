@@ -114,7 +114,7 @@ namespace YugantLoyaLibrary.FindWords
         public IEnumerator StartGameAfterCertainTime(float time)
         {
             //Debug.Log($"Game Restarting After {time}");
-
+           
             DataHandler.CurrTotalQuesSize = DataHandler.CurrGridSize;
             DataHandler.UnlockedQuesLetter = DataHandler.CurrTotalQuesSize;
             DataHandler.CurrGridSize++;
@@ -131,9 +131,17 @@ namespace YugantLoyaLibrary.FindWords
 
             LevelHandler.Instance.ClearInGameList();
 
-            yield return new WaitForSeconds(time);
-
+            yield return new WaitForSeconds(2 * time/4);
+            
+            UIManager.Instance.SmokeTransition();
+            
+            yield return new WaitForSeconds(time/4);
+            
             StartGame();
+            
+            yield return new WaitForSeconds(time/4);
+           
+            UIManager.Instance.isSmokeTransitionOn = false;
             _currLevel.GridPlacement();
         }
 

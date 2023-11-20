@@ -350,9 +350,11 @@ namespace YugantLoyaLibrary.FindWords
                     }
 
                     tempStr += wordsLeftList[0];
-
+                    Debug.Log("Temp Str : " + tempStr);
+                    
                     if (i != unlockedGridWord - 1)
                     {
+                        Debug.Log("Hint Added To List !" );
                         //Will Not Enter for Last Word !
                         hintAvailList.Add(wordsLeftList[0]);
                         wordsLeftList.RemoveAt(0);
@@ -878,7 +880,7 @@ namespace YugantLoyaLibrary.FindWords
                     iqSlider.value = wordLeft / unlockNextIqExp;
 
                     if (wordLeft != 0) return;
-                    
+
                     DataHandler.IqExpLevel++;
                     UIManager.Instance.iqExperienceText.text = $"{DataHandler.IqExpLevel.ToString()}";
                     UIManager.Instance.iqSlider.value = 0f;
@@ -1071,12 +1073,13 @@ namespace YugantLoyaLibrary.FindWords
                     GameController.instance.ShuffleGrid(false);
                 }
             }
-            else
-            {
-                //Debug.Log("Not Checking Grid Left !");
-                CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
-                //Debug.Log("ELSE Is Hint Avail : " + hintButtonStatus);
-            }
+            
+            // else
+            // {
+            //     //Debug.Log("Not Checking Grid Left !");
+            //     CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
+            //     //Debug.Log("ELSE Is Hint Avail : " + hintButtonStatus);
+            // }
 
             LastQuesTile = null;
             inputGridsList.Clear();
@@ -1333,11 +1336,11 @@ namespace YugantLoyaLibrary.FindWords
                         }
                     }
                 }
-                
+
                 //Debug.Log("Word Append Letter : " + wordList[index]);
                 hintTiles.Clear();
             }
-            
+
             Debug.Log("Hint Does Not Exists !");
 
             return finalStr.ToString();
@@ -1356,7 +1359,7 @@ namespace YugantLoyaLibrary.FindWords
                 //Debug.Log("GRID NAME : " + gridTile.gameObject.name, gridTile.gameObject);
                 StringBuilder tempWord = new StringBuilder(formedWord + gridTile.GridTextData);
                 StringBuilder subStringWord = new StringBuilder(word.Substring(0, index + 1));
-               Debug.Log("Sub String : " + subStringWord + "  " + subStringWord.Length);
+                Debug.Log("Sub String : " + subStringWord + "  " + subStringWord.Length);
                 Debug.Log("Temp String : " + tempWord + "  " + tempWord.Length);
 
                 if (tempWord.ToString() != subStringWord.ToString()) continue;
@@ -1364,7 +1367,8 @@ namespace YugantLoyaLibrary.FindWords
 
                 Debug.Log("Word Formed : " + tempWord);
 
-                if (tempWord.ToString() == subStringWord.ToString() && tempWord.Length == DataHandler.UnlockedQuesLetter)
+                if (tempWord.ToString() == subStringWord.ToString() &&
+                    tempWord.Length == DataHandler.UnlockedQuesLetter)
                 {
                     hintTileList.Add(gridTile);
                     Debug.Log($"Matching Word {tempWord}!!");

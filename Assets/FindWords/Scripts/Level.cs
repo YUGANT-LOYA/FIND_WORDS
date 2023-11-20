@@ -61,7 +61,7 @@ namespace YugantLoyaLibrary.FindWords
                 case 5:
                     _currGridSize = 1f;
                     gridContainer.transform.position = LevelHandler.Instance.boxContainer.transform.position -
-                                                       new Vector3(2.25f, 0.1f, 0f);
+                                                       new Vector3(2.15f, 0.1f, 0f);
                     break;
 
                 case 6:
