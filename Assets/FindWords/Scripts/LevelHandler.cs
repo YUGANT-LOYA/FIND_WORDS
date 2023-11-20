@@ -877,13 +877,12 @@ namespace YugantLoyaLibrary.FindWords
                     float wordLeft = DataHandler.WordCompleteNum % unlockNextIqExp;
                     iqSlider.value = wordLeft / unlockNextIqExp;
 
-                    if (wordLeft == 0)
-                    {
-                        DataHandler.IqExpLevel++;
-                        UIManager.Instance.iqExperienceText.text = $" {DataHandler.IqExpLevel.ToString()}";
-                        UIManager.Instance.iqSlider.value = 0f;
-                        DataHandler.IqBarVal = 0;
-                    }
+                    if (wordLeft != 0) return;
+                    
+                    DataHandler.IqExpLevel++;
+                    UIManager.Instance.iqExperienceText.text = $"{DataHandler.IqExpLevel.ToString()}";
+                    UIManager.Instance.iqSlider.value = 0f;
+                    DataHandler.IqBarVal = 0;
                 });
         }
 

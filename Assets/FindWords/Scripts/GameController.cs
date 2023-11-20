@@ -91,7 +91,7 @@ namespace YugantLoyaLibrary.FindWords
                 GameStartInfo();
             }
 
-            UIManager.Instance.iqExperienceText.text = $" {DataHandler.IqExpLevel.ToString()}";
+            UIManager.Instance.iqExperienceText.text = $"{DataHandler.IqExpLevel.ToString()}";
             UIManager.Instance.iqSlider.value = DataHandler.IqBarVal;
             //Debug.Log("Loading Dict !!");
             LevelHandler.Instance.englishDictWords.UpdateFullEnglishDict();
