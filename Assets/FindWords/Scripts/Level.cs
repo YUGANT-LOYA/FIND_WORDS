@@ -40,7 +40,7 @@ namespace YugantLoyaLibrary.FindWords
         public void StartInit()
         {
             //Debug.Log("Level StartInit Called !");
-            //Debug.Log($"Aspect Ratio : {_cam.aspect} , Width : {Screen.width} , Height  : {Screen.height}");
+            Debug.Log($"Aspect Ratio : {_cam.aspect} , Width : {Screen.width} , Height  : {Screen.height}");
             //SetCameraPos();
             SetGridContainerPos();
             CreateGrid();
@@ -61,7 +61,7 @@ namespace YugantLoyaLibrary.FindWords
                 case 5:
                     _currGridSize = 1f;
                     gridContainer.transform.position = LevelHandler.Instance.boxContainer.transform.position -
-                                                       new Vector3(2.15f, 0.1f, 0f);
+                                                       new Vector3(2.3f, 0.1f, 0f);
                     break;
 
                 case 6:
@@ -88,29 +88,29 @@ namespace YugantLoyaLibrary.FindWords
                     _currQuesSize = 1.1f;
                     quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
                                              new Vector3(1.2f, -3.3f, 0f);
-                    spacing = 0.15f;
+                    spacing = 0.05f;
                     break;
 
                 case 4:
-                    _currQuesSize = 0.9f;
+                    _currQuesSize = 1f;
                     quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
-                                             new Vector3(1.55f, -3.5f, 0f);
-                    spacing = 0.15f;
+                                             new Vector3(1.6f, -3.5f, 0f);
+                    spacing = 0.05f;
                     break;
 
                 case 5:
-                    _currQuesSize = 0.7f;
+                    _currQuesSize = 0.85f;
                     quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
-                                             new Vector3(1.7f, -3.3f, 0f);
-                    spacing = 0.15f;
+                                             new Vector3(1.8f, -3.3f, 0f);
+                    spacing = 0.05f;
                     break;
 
                 case 6:
 
-                    _currQuesSize = 0.6f;
+                    _currQuesSize = 0.71f;
                     quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
                                              new Vector3(1.9f, -3.3f, 0f);
-                    spacing = 0.15f;
+                    spacing = 0.05f;
 
                     break;
             }

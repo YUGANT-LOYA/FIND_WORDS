@@ -6373,6 +6373,7 @@ MonoBehaviour:
   toastMsgGm: {fileID: 308677743}
   newWordFoundGm: {fileID: 371795547}
   toastMsgTxt: {fileID: 875319663}
+  notEnoughCoinsMsg: Not Enough Coins !!
   noCoinForHintMsg: Not Enough Coins For Hint !
   noWordFoundMsg: No Word Found !
   noShuffleFoundMsg: Not Enough Coins For Shuffle !
@@ -6459,7 +6460,7 @@ MonoBehaviour:
     type: 3}
   quesPrefab: {fileID: 6876171383429484901, guid: 2b60b11f0918330469795326020309c3,
     type: 3}
-  initialCoins: 50000
+  initialCoins: 100
 --- !u!1 &5704458314791691809
 GameObject:
   m_ObjectHideFlags: 0

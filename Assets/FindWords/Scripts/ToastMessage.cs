@@ -12,13 +12,13 @@ namespace YugantLoyaLibrary.FindWords
     {
         [SerializeField] GameObject toastMsgGm, newWordFoundGm;
         [SerializeField] private TextMeshProUGUI toastMsgTxt;
-        [SerializeField] string noCoinForHintMsg, noWordFoundMsg, noShuffleFoundMsg,noDealFoundMsg;
+        [SerializeField] string notEnoughCoinsMsg, noWordFoundMsg, noDealFoundMsg;
         public float toastMsgTime = 0.5f;
 
-        public void ShowHintToast()
+        public void ShowNotEnoughCoinsToast()
         {
             StopCoroutine(nameof(ToastAnimation));
-            toastMsgTxt.text = noCoinForHintMsg;
+            toastMsgTxt.text = notEnoughCoinsMsg;
             toastMsgGm.SetActive(true);
             StartCoroutine(ToastAnimation(toastMsgGm));
         }
@@ -31,14 +31,6 @@ namespace YugantLoyaLibrary.FindWords
             StartCoroutine(ToastAnimation(toastMsgGm));
         }
 
-        public void ShowNoShuffleFoundToast()
-        {
-            StopCoroutine(nameof(ToastAnimation));
-            toastMsgTxt.text = noShuffleFoundMsg;
-            toastMsgGm.SetActive(true);
-            StartCoroutine(ToastAnimation(toastMsgGm));
-        }
-        
         public void ShowNoDealFoundToast()
         {
             StopCoroutine(nameof(ToastAnimation));
@@ -46,7 +38,7 @@ namespace YugantLoyaLibrary.FindWords
             toastMsgGm.SetActive(true);
             StartCoroutine(ToastAnimation(toastMsgGm));
         }
-        
+
         public void ShowNewWordFoundToast()
         {
             //toastMessage.SetActive(false);

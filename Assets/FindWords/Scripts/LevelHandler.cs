@@ -351,10 +351,10 @@ namespace YugantLoyaLibrary.FindWords
 
                     tempStr += wordsLeftList[0];
                     Debug.Log("Temp Str : " + tempStr);
-                    
+
                     if (i != unlockedGridWord - 1)
                     {
-                        Debug.Log("Hint Added To List !" );
+                        Debug.Log("Hint Added To List !");
                         //Will Not Enter for Last Word !
                         hintAvailList.Add(wordsLeftList[0]);
                         wordsLeftList.RemoveAt(0);
@@ -1073,7 +1073,7 @@ namespace YugantLoyaLibrary.FindWords
                     GameController.instance.ShuffleGrid(false);
                 }
             }
-            
+
             // else
             // {
             //     //Debug.Log("Not Checking Grid Left !");
@@ -1089,6 +1089,13 @@ namespace YugantLoyaLibrary.FindWords
         public bool CheckHintStatus(out string passingStr)
         {
             //Debug.Log("Check Hint Status Called !");
+
+            if (!string.IsNullOrWhiteSpace(DataHandler.CurrHint) && CheckAllLetterInGrid())
+            {
+                Debug.Log("Hint Already Exists !!");
+                passingStr = DataHandler.CurrHint;
+                return true;
+            }
 
             List<GridTile> tileList = new List<GridTile>(gridAvailableOnScreenList);
 
@@ -1125,7 +1132,6 @@ namespace YugantLoyaLibrary.FindWords
             {
                 //Debug.Log("Hint Found In Hint Avail List !");
                 //Debug.Log("Data Handler Curr Hint : " + passingStr);
-                DataHandler.CurrHint = passingStr;
                 return true;
             }
 
@@ -1147,6 +1153,7 @@ namespace YugantLoyaLibrary.FindWords
                     {
                         isCThere = true;
                         list.Remove(tile);
+                        break;
                     }
                 }
 
@@ -1179,15 +1186,6 @@ namespace YugantLoyaLibrary.FindWords
 
         public bool CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr)
         {
-            // if (CheckAllLetterInGrid())
-            // {
-            //     Debug.Log("Hint Already Exists !!");
-            //     hintButtonStatus = UIManager.instance.HintStatus(true);
-            //     hintStr = DataHandler.CurrHint;
-            //     return true;
-            // }
-
-
             bool isHintAvail = CheckHintStatus(out string finalStr);
             hintButtonStatus = UIManager.Instance.HintStatus(isHintAvail);
             hintStr = finalStr;
@@ -1195,6 +1193,11 @@ namespace YugantLoyaLibrary.FindWords
             if (!isHintAvail)
             {
                 UIManager.Instance.EnableHint();
+            }
+            else
+            {
+                DataHandler.CurrHint = finalStr;
+                Debug.Log("HINTTTT : " + DataHandler.CurrHint);
             }
 
             return isHintAvail;
@@ -1209,8 +1212,9 @@ namespace YugantLoyaLibrary.FindWords
                 SetLevelRunningBool(false);
             }
 
-            if (!string.IsNullOrEmpty(quesHintStr) /*|| !string.IsNullOrEmpty(DataHandler.CurrHint)*/)
+            if (!string.IsNullOrEmpty(quesHintStr) || !string.IsNullOrEmpty(DataHandler.CurrHint))
             {
+                Debug.Log("Finding HINTTTT !");
                 FindHint();
             }
 
@@ -1373,6 +1377,7 @@ namespace YugantLoyaLibrary.FindWords
                     hintTileList.Add(gridTile);
                     Debug.Log($"Matching Word {tempWord}!!");
                     finalStr = tempWord;
+                    DataHandler.CurrHint = tempWord.ToString();
                     //Debug.Log("Hint List Count : " + hintTileList.Count);
 
                     // foreach (GridTile tile in hintTileList)

@@ -114,7 +114,7 @@ namespace YugantLoyaLibrary.FindWords
         public IEnumerator StartGameAfterCertainTime(float time)
         {
             //Debug.Log($"Game Restarting After {time}");
-           
+
             DataHandler.CurrTotalQuesSize = DataHandler.CurrGridSize;
             DataHandler.UnlockedQuesLetter = DataHandler.CurrTotalQuesSize;
             DataHandler.CurrGridSize++;
@@ -131,16 +131,16 @@ namespace YugantLoyaLibrary.FindWords
 
             LevelHandler.Instance.ClearInGameList();
 
-            yield return new WaitForSeconds(2 * time/4);
-            
+            yield return new WaitForSeconds(2 * time / 4);
+
             UIManager.Instance.SmokeTransition();
-            
-            yield return new WaitForSeconds(time/4);
-            
+
+            yield return new WaitForSeconds(time / 4);
+
             StartGame();
-            
-            yield return new WaitForSeconds(time/4);
-           
+
+            yield return new WaitForSeconds(time / 4);
+
             UIManager.Instance.isSmokeTransitionOn = false;
             _currLevel.GridPlacement();
         }
@@ -214,12 +214,12 @@ namespace YugantLoyaLibrary.FindWords
             {
                 if (DataHandler.TotalCoin < shuffleUsingCoin)
                 {
-                    UIManager.Instance.toastMessageScript.ShowNoShuffleFoundToast();
+                    UIManager.Instance.toastMessageScript.ShowNotEnoughCoinsToast();
                     SoundManager.instance.PlaySound(SoundManager.SoundType.ErrorMessage);
                     return;
                 }
 
-
+                Debug.Log("Shuffle Called !!");
                 Vibration.Vibrate(20);
                 LevelHandler.Instance.quesHintStr = null;
                 UIManager.SetCoinData(shuffleUsingCoin, -1);
@@ -263,13 +263,21 @@ namespace YugantLoyaLibrary.FindWords
 
             if (isCalledByPlayer)
             {
-                if (DataHandler.TotalCoin < dealUsingCoin || LevelHandler.Instance.wordCompletedGridList.Count <= 0)
+                if (LevelHandler.Instance.wordCompletedGridList.Count <= 0)
                 {
                     SoundManager.instance.PlaySound(SoundManager.SoundType.ErrorMessage);
                     UIManager.Instance.toastMessageScript.ShowNoDealFoundToast();
                     return;
                 }
-
+                
+                if (DataHandler.TotalCoin < dealUsingCoin)
+                {
+                    SoundManager.instance.PlaySound(SoundManager.SoundType.ErrorMessage);
+                    UIManager.Instance.toastMessageScript.ShowNotEnoughCoinsToast();
+                    return;
+                }
+                
+                Debug.Log("Deal Called !!");
                 Vibration.Vibrate(20);
                 UIManager.SetCoinData(dealUsingCoin, -1);
                 StartCoroutine(UIManager.Instance.UpdateReducedCoinText(0f, dealUsingCoin, 0.5f));
@@ -323,7 +331,7 @@ namespace YugantLoyaLibrary.FindWords
                 if (DataHandler.TotalCoin < hintUsingCoin)
                 {
                     SoundManager.instance.PlaySound(SoundManager.SoundType.ErrorMessage);
-                    UIManager.Instance.toastMessageScript.ShowHintToast();
+                    UIManager.Instance.toastMessageScript.ShowNotEnoughCoinsToast();
                     return;
                 }
 
@@ -331,7 +339,8 @@ namespace YugantLoyaLibrary.FindWords
                     LevelHandler.Instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
 
                 LevelHandler.Instance.quesHintStr = hintStr;
-
+                Debug.Log("Ques Hint Str : " + hintStr);
+                
                 if (!isHintAvail)
                 {
                     SoundManager.instance.PlaySound(SoundManager.SoundType.ErrorMessage);
@@ -339,6 +348,7 @@ namespace YugantLoyaLibrary.FindWords
                     return;
                 }
 
+                Debug.Log("Hint Called !!");
                 UIManager.Instance.HintButtonClicked();
                 //UIManager.instance.HintStatus(false);
                 Vibration.Vibrate(20);
