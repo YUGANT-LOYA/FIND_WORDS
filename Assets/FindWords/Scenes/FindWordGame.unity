@@ -1499,6 +1499,7 @@ MonoBehaviour:
   quesTileList: []
   selectedWords: []
   wordsLeftList: []
+  noHintExist: 0
   hintAvailList: []
   isHintAvailInButton: 0
   quesHintStr: 
@@ -1760,7 +1761,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1
+  m_text: '1
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 136b0bd439a9ba24aa4430f1d3ac21f0, type: 2}
   m_sharedMaterial: {fileID: -2163439456717386793, guid: 136b0bd439a9ba24aa4430f1d3ac21f0,
@@ -1788,12 +1791,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 50
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 50
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -3938,6 +3941,7 @@ GameObject:
   - component: {fileID: 1103984179}
   - component: {fileID: 1103984181}
   - component: {fileID: 1103984180}
+  - component: {fileID: 1103984182}
   m_Layer: 5
   m_Name: IQVal
   m_TagString: Untagged
@@ -4004,6 +4008,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1103984178}
   m_CullTransparentMesh: 1
+--- !u!114 &1103984182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103984178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.78431374}
+  m_EffectDistance: {x: 2, y: 2}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1152217913
 GameObject:
   m_ObjectHideFlags: 0
@@ -6374,11 +6393,10 @@ MonoBehaviour:
   newWordFoundGm: {fileID: 371795547}
   toastMsgTxt: {fileID: 875319663}
   notEnoughCoinsMsg: Not Enough Coins !!
-  noCoinForHintMsg: Not Enough Coins For Hint !
   noWordFoundMsg: No Word Found !
-  noShuffleFoundMsg: Not Enough Coins For Shuffle !
   noDealFoundMsg: No Empty Slot To Fill !
   toastMsgTime: 1.5
+  isToastActive: 0
 --- !u!1 &3132064099953264816
 GameObject:
   m_ObjectHideFlags: 0
