@@ -202,7 +202,7 @@ namespace YugantLoyaLibrary.FindWords
                     DeactivateLockStatus();
                     gridText.gameObject.SetActive(true);
                     isMoving = false;
-
+                    LevelHandler.Instance.noHintExist = false;
                     // if (DataHandler.CoinGridUnlockIndex % GameController.instance.changeBgAfter == 0)
                     // {
                     //     UIManager.Instance.SmokeTransition();

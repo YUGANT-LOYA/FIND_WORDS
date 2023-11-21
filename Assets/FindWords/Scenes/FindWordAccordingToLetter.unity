@@ -255,7 +255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wordLength: 3
-  wordLengthTextFile: {fileID: 4900000, guid: 2adaef4904154bd4d83d24fc5a1e9f86, type: 3}
+  wordLengthTextFile: {fileID: 4900000, guid: 60b9df4117a15794f833c1e804782ee0, type: 3}
   fullDictData: {fileID: 11400000, guid: 060ba8d9e48d28e45b4cd6b6a8c42760, type: 2}
   filteredDictData: {fileID: 11400000, guid: 86760fe7c16eb0545a72e9c367046145, type: 2}
   pickWordDataInfo: {fileID: 11400000, guid: 705e50367ef97c646ab4c1cd1b227194, type: 2}

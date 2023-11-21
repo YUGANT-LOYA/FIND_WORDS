@@ -149,6 +149,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             UIManager.Instance.coinText.text = DataHandler.TotalCoin.ToString();
             LevelHandler.Instance.ClearAllLists();
+            LevelHandler.Instance.noHintExist = false;
             ClearContainer(levelContainer);
             CreateLevel();
         }
@@ -224,18 +225,19 @@ namespace YugantLoyaLibrary.FindWords
                 LevelHandler.Instance.quesHintStr = null;
                 UIManager.SetCoinData(shuffleUsingCoin, -1);
                 StartCoroutine(UIManager.Instance.UpdateReducedCoinText(0f, shuffleUsingCoin, 0.5f));
+                UIManager.Instance.ShuffleButtonClicked();
             }
 
             LevelHandler.Instance.SetLevelRunningBool(false);
             SoundManager.instance.PlaySound(SoundManager.SoundType.Click);
-            UIManager.Instance.ShuffleButtonClicked();
             float time = _currLevel.timeToWaitForEachGrid;
             float timeToPlaceGrids = _currLevel.timeToPlaceGrid;
             List<GridTile> list = new List<GridTile>(LevelHandler.Instance.unlockedGridList);
             //ShuffleList(list);
             LevelHandler.Instance.DisableWordCompleteGameObject();
-            StartCoroutine(LevelHandler.Instance.ReturnToDeck(list, time, timeToPlaceGrids));
             LevelHandler.Instance.ClearInGameList();
+            StartCoroutine(LevelHandler.Instance.ReturnToDeck(list, time, timeToPlaceGrids));
+            
         }
 
         public void Deal(bool isCalledByPlayer = true)
@@ -262,14 +264,7 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             if (isCalledByPlayer)
-            {
-                if (LevelHandler.Instance.wordCompletedGridList.Count <= 0)
-                {
-                    SoundManager.instance.PlaySound(SoundManager.SoundType.ErrorMessage);
-                    UIManager.Instance.toastMessageScript.ShowNoDealFoundToast();
-                    return;
-                }
-                
+            { 
                 if (DataHandler.TotalCoin < dealUsingCoin)
                 {
                     SoundManager.instance.PlaySound(SoundManager.SoundType.ErrorMessage);
@@ -277,10 +272,18 @@ namespace YugantLoyaLibrary.FindWords
                     return;
                 }
                 
+                if (LevelHandler.Instance.wordCompletedGridList.Count <= 0)
+                {
+                    SoundManager.instance.PlaySound(SoundManager.SoundType.ErrorMessage);
+                    UIManager.Instance.toastMessageScript.ShowNoDealFoundToast();
+                    return;
+                }
+                
                 Debug.Log("Deal Called !!");
                 Vibration.Vibrate(20);
                 UIManager.SetCoinData(dealUsingCoin, -1);
                 StartCoroutine(UIManager.Instance.UpdateReducedCoinText(0f, dealUsingCoin, 0.5f));
+                UIManager.Instance.DealButtonEffect();
             }
 
             LevelHandler.Instance.SetLevelRunningBool(false);
@@ -289,7 +292,7 @@ namespace YugantLoyaLibrary.FindWords
             ShuffleList(list);
             StartCoroutine(BackToDeckAnim(list));
 
-            UIManager.Instance.DealButtonEffect();
+            
         }
 
         IEnumerator HelperDeal()
@@ -497,6 +500,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             yield return new WaitForSeconds(time);
             LevelHandler.Instance.LastQuesTile = null;
+            LevelHandler.Instance.noHintExist = false;
             LevelHandler.Instance.SetLevelRunningBool(true);
             LevelHandler.Instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
         }
