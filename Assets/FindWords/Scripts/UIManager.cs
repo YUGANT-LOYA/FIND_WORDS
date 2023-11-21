@@ -153,14 +153,15 @@ namespace YugantLoyaLibrary.FindWords
             Image dealImage = dealButton.GetComponent<Image>();
             Image shuffleImage = shuffleButton.GetComponent<Image>();
 
-            if (!isActive)
-            {
-                shuffleButton.enabled = false;
-                shuffleImage.color = disableButtonColor;
-            }
-            else if (DataHandler.TotalCoin < GameController.instance.shuffleUsingCoin)
+            
+            if (DataHandler.TotalCoin < GameController.instance.shuffleUsingCoin)
             {
                 shuffleButton.enabled = true;
+                shuffleImage.color = disableButtonColor;
+            }
+            else if (!isActive)
+            {
+                shuffleButton.enabled = false;
                 shuffleImage.color = disableButtonColor;
             }
             else
@@ -169,14 +170,14 @@ namespace YugantLoyaLibrary.FindWords
                 shuffleImage.color = Color.white;
             }
 
-            if (!isActive)
-            {
-                dealButton.enabled = false;
-                dealImage.color = disableButtonColor;
-            }
-            else if (DataHandler.TotalCoin < GameController.instance.dealUsingCoin)
+            if (DataHandler.TotalCoin < GameController.instance.dealUsingCoin)
             {
                 dealButton.enabled = true;
+                dealImage.color = disableButtonColor;
+            }
+            else if (!isActive)
+            {
+                dealButton.enabled = false;
                 dealImage.color = disableButtonColor;
             }
             else
@@ -341,8 +342,8 @@ namespace YugantLoyaLibrary.FindWords
             yield return new WaitForSeconds(waitTime);
 
             int startVal = int.Parse(coinText.text);
-            float time = coinMoveTime / (float)coinToSubtract;
-
+            float time = coinMoveTime / coinToSubtract;
+            Debug.Log("Coin Reduce Time : " + time);
             for (int i = 1; i <= coinToSubtract; i++)
             {
                 coinText.text = $"{startVal - i}";
