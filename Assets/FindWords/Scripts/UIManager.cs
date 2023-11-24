@@ -37,7 +37,7 @@ namespace YugantLoyaLibrary.FindWords
         public Color defaultWrongEffectColor, redWrongEffectColor;
         private Color _defaultCoinAnimTextColor, _coinTextTargetColor;
         public bool isSmokeTransitionOn;
-        float _startCoinTextFadeTime;
+        float _startCoinTextFadeTime, _defaultSmokeAnimSpeed = 1f;
 
         private void Awake()
         {
@@ -92,7 +92,7 @@ namespace YugantLoyaLibrary.FindWords
             hintButton.enabled = true;
 
             if (isActive == false ||
-                DataHandler.CurrTotalQuesSize > LevelHandler.Instance.gridAvailableOnScreenList.Count)
+                DataHandler.UnlockedQuesLetter > LevelHandler.Instance.gridAvailableOnScreenList.Count)
             {
                 //Debug.Log("Hint Disable Called !");
                 hintButton.GetComponent<Image>().color = disableButtonColor;
@@ -153,7 +153,7 @@ namespace YugantLoyaLibrary.FindWords
             Image dealImage = dealButton.GetComponent<Image>();
             Image shuffleImage = shuffleButton.GetComponent<Image>();
 
-            
+
             if (DataHandler.TotalCoin < GameController.instance.shuffleUsingCoin)
             {
                 shuffleButton.enabled = true;
@@ -403,43 +403,42 @@ namespace YugantLoyaLibrary.FindWords
             });
         }
 
-        public void SmokeTransition()
+        public void SmokeTransition(bool shouldBackGroundChange = false, float speed = 1f)
         {
-            isSmokeTransitionOn = true;
-            StartCoroutine(nameof(SmokeAnim));
-        }
+            SmokeAnimationSpeed smokeSpeedScript = smokeTransitionGm.GetComponent<SmokeAnimationSpeed>();
 
-        IEnumerator SmokeAnim()
-        {
-            DataHandler.BgIndex++;
+            smokeSpeedScript.ChangeAnimationSpeed(Math.Abs(speed - 1f) < 0.05f
+                ? smokeSpeedScript.defaultAnimationSpeed
+                : speed);
+
             smokeTransitionGm.SetActive(true);
-            LevelHandler.Instance.SetLevelRunningBool(false);
-
-            yield return new WaitForSeconds(1.25f / 2);
-
-            DataHandler.instance.SetBg();
-
-            yield return new WaitForSeconds(1.25f / 2);
-            smokeTransitionGm.SetActive(false);
-            LevelHandler.Instance.SetLevelRunningBool(true);
-            //StartCoroutine(DeactivateSmokeTransition());
+            float totalTime = smokeSpeedScript.TotalAnimationTime() * speed;
+            isSmokeTransitionOn = true;
+            StartCoroutine(SmokeAnim(shouldBackGroundChange, totalTime));
         }
 
-        IEnumerator DeactivateSmokeTransition()
+        IEnumerator SmokeAnim(bool shouldBackGroundChange, float totalTime)
         {
-            if (!isSmokeTransitionOn)
+            Debug.Log("Smoke Anim Called !");
+
+            if (shouldBackGroundChange)
             {
-                yield return new WaitForSeconds(0.3f);
-                Debug.Log("Smoke Transition Deactivated !!");
-                smokeTransitionGm.SetActive(false);
-                LevelHandler.Instance.SetLevelRunningBool(true);
+                DataHandler.BgIndex++;
             }
-            else
+
+            Debug.Log("Smoke Anim Time : " + totalTime);
+            //LevelHandler.Instance.SetLevelRunningBool(false);
+
+            yield return new WaitForSeconds(totalTime / 2);
+
+            if (shouldBackGroundChange)
             {
-                yield return new WaitForSeconds(0.3f);
-                Debug.Log("Deactivating Smoke Transition Checking !!");
-                StartCoroutine(DeactivateSmokeTransition());
+                DataHandler.instance.SetBg();
             }
+
+            yield return new WaitForSeconds(totalTime / 2);
+            smokeTransitionGm.SetActive(false);
+            LevelHandler.Instance.SetLevelRunningBool();
         }
     }
 }

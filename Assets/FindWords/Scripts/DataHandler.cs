@@ -8,7 +8,7 @@ namespace YugantLoyaLibrary.FindWords
     {
         public static DataHandler instance;
         public List<Material> gameBgMaterialList;
-        
+        public List<int> iqToUnlockNewQuesTileList = new List<int>();
         [Header("Prefab Holders")] public GameObject coinPrefab;
         public GameObject levelPrefab, gridPrefab, quesPrefab;
 
@@ -85,11 +85,17 @@ namespace YugantLoyaLibrary.FindWords
             get => PlayerPrefs.GetInt(StringHelper.FIRST_TIME_OPEN, 0);
             set => PlayerPrefs.SetInt(StringHelper.FIRST_TIME_OPEN, value);
         }
-        
+
         public static int LevelNum
         {
             get => PlayerPrefs.GetInt(StringHelper.LEVEL_NUM, 1);
             set => PlayerPrefs.SetInt(StringHelper.LEVEL_NUM, value);
+        }
+        
+        public static int IsUnlockingGridActive
+        {
+            get => PlayerPrefs.GetInt(StringHelper.UNLOCKING_GRIDS, 0);
+            set => PlayerPrefs.SetInt(StringHelper.UNLOCKING_GRIDS, value);
         }
         
         public static int HelperLevelCompleted
@@ -145,18 +151,19 @@ namespace YugantLoyaLibrary.FindWords
             get => PlayerPrefs.GetInt(StringHelper.IQ_EXP_LEVEL, GameController.instance.defaultIq);
             set => PlayerPrefs.SetInt(StringHelper.IQ_EXP_LEVEL, value);
         }
-        
+
         public static float IqBarVal
         {
             get => PlayerPrefs.GetFloat(StringHelper.IQ_BAR_VAL, 0);
             set => PlayerPrefs.SetFloat(StringHelper.IQ_BAR_VAL, value);
         }
+
         public static int WordCompleteNum
         {
             get => PlayerPrefs.GetInt(StringHelper.WORD_COMPLETE_NUM, GameController.instance.defaultIq);
             set => PlayerPrefs.SetInt(StringHelper.WORD_COMPLETE_NUM, value);
         }
-        
+
         //This is for traversing the Pick Data Info Word List
         public static int PickDataIndex
         {
@@ -188,6 +195,18 @@ namespace YugantLoyaLibrary.FindWords
             set => PlayerPrefs.SetInt(StringHelper.CURR_TOTAL_QUES_SIZE, value);
         }
 
+        public static int NewQuesGridUnlock
+        {
+            get => PlayerPrefs.GetInt((StringHelper.NEW_QUES_TILE_UNLOCK), 0);
+            set => PlayerPrefs.SetInt(StringHelper.NEW_QUES_TILE_UNLOCK, value);
+        }
+        
+        public static int NewQuesGridUnlockIndex
+        {
+            get => PlayerPrefs.GetInt((StringHelper.NEW_QUES_TILE_UNLOCK_INDEX), 0);
+            set => PlayerPrefs.SetInt(StringHelper.NEW_QUES_TILE_UNLOCK_INDEX, value);
+        }
+        
         public static int TotalCoin
         {
             get => PlayerPrefs.GetInt(StringHelper.COIN_AVAIL, _initCoins);

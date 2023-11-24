@@ -41,16 +41,16 @@ namespace YugantLoyaLibrary.FindWords
         {
             //Debug.Log("Level StartInit Called !");
             Debug.Log($"Aspect Ratio : {_cam.aspect} , Width : {Screen.width} , Height  : {Screen.height}");
-            //SetCameraPos();
-            SetGridContainerPos();
+            SetGridContainerPos(DataHandler.CurrGridSize);
+            SetQuesGrid(DataHandler.CurrTotalQuesSize);
             CreateGrid();
             LevelHandler.Instance.SetCoinPerWord();
-            //Debug.Log("Level Init Completed !!");
+            Debug.Log("Level Init Completed !!");
         }
 
-        private void SetGridContainerPos()
+        private void SetGridContainerPos(int gridCount)
         {
-            switch (DataHandler.CurrGridSize)
+            switch (gridCount)
             {
                 case 4:
                     _currGridSize = 1.2f;
@@ -76,16 +76,26 @@ namespace YugantLoyaLibrary.FindWords
                                                        new Vector3(2.23f, -0.15f, 0f);
                     break;
             }
+        }
+
+        public void SetQuesGrid(int quesGridCount, bool isGridUnlockFromOutside = false)
+        {
+            if (DataHandler.CurrGridSize == GameController.instance.startingGridSize &&
+                DataHandler.NewQuesGridUnlock == 0)
+            {
+                quesGridCount = DataHandler.UnlockedQuesLetter;
+            }
 
             int totalChild = quesGridTrans.childCount;
             Vector3 startPos = quesGridTrans.transform.position;
             float spacing = 0f;
+            Debug.Log("Set Ques Grid Count : " + quesGridCount);
 
-
-            switch (DataHandler.CurrTotalQuesSize)
+            switch (quesGridCount)
             {
                 case 3:
                     _currQuesSize = 1.1f;
+
                     quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
                                              new Vector3(1.2f, -3.3f, 0f);
                     spacing = 0.05f;
@@ -93,15 +103,34 @@ namespace YugantLoyaLibrary.FindWords
 
                 case 4:
                     _currQuesSize = 1f;
-                    quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
-                                             new Vector3(1.6f, -3.5f, 0f);
+
+                    if (!isGridUnlockFromOutside)
+                    {
+                        quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
+                                                 new Vector3(1.6f, -3.5f, 0f);
+                    }
+                    else
+                    {
+                        quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
+                                                 new Vector3(0.4f, -3.5f, 0f);
+                    }
+
                     spacing = 0.05f;
                     break;
 
                 case 5:
                     _currQuesSize = 0.85f;
-                    quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
-                                             new Vector3(1.8f, -3.3f, 0f);
+                    if (!isGridUnlockFromOutside)
+                    {
+                        quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
+                                                 new Vector3(1.8f, -3.3f, 0f);
+                    }
+                    else
+                    {
+                        quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
+                                                 new Vector3(1.2f, -3.3f, 0f);
+                    }
+
                     spacing = 0.05f;
                     break;
 
@@ -115,7 +144,11 @@ namespace YugantLoyaLibrary.FindWords
                     break;
             }
 
-            for (int i = 0; i < DataHandler.CurrTotalQuesSize; i++)
+
+            LevelHandler.Instance.quesTileList.Clear();
+
+            int index = 0;
+            for (int i = 0; i < quesGridCount; i++)
             {
                 GameObject gmObj = totalChild > 0
                     ? quesGridTrans.GetChild(i).gameObject
@@ -125,9 +158,16 @@ namespace YugantLoyaLibrary.FindWords
                 gmObj.transform.localScale = new Vector3(_currQuesSize, _currQuesSize, _currQuesSize / 2);
                 gmObj.transform.localPosition = new Vector3(startPos.x, 0, 0);
                 gmObj.name = $"Ques_{i}";
+
+                if (index >= DataHandler.UnlockedQuesLetter)
+                {
+                    quesTileScript.LockQuesTile(100);
+                }
+
                 LevelHandler.Instance.UpdateQuesList(quesTileScript, i);
                 startPos.x += (spacing) + _currQuesSize;
                 totalChild--;
+                index++;
             }
         }
 
@@ -141,7 +181,7 @@ namespace YugantLoyaLibrary.FindWords
             Vector3 startPos = new Vector3(_defaultStartPos.x, _defaultStartPos.y, _defaultStartPos.z);
 
             if (GameController.instance.maxGridSize < DataHandler.CurrGridSize &&
-            DataHandler.UnlockGridIndex >= LevelHandler.Instance.lockedGridList.Count - 1)
+                DataHandler.UnlockGridIndex >= LevelHandler.Instance.lockedGridList.Count - 1)
             {
                 Debug.Log("Before Max Grid Unlocked !!");
                 DataHandler.IsMaxGridOpened = 1;
@@ -322,6 +362,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public void GridPlacement()
         {
+            Debug.Log("Grid Placement Entered !");
             StartCoroutine(PlaceGrids());
         }
 
@@ -357,6 +398,11 @@ namespace YugantLoyaLibrary.FindWords
             {
                 LevelHandler.Instance.SetLevelRunningBool(false);
                 GameController.instance.helper.PlayHelper();
+            }
+
+            if (DataHandler.IsUnlockingGridActive == 1)
+            {
+                LevelHandler.Instance.UnlockGridForUpgrade();
             }
         }
 
