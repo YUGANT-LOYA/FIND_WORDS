@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using DG.Tweening;
 using UnityEngine;
@@ -835,7 +836,6 @@ namespace YugantLoyaLibrary.FindWords
 
         private void AddCoin(int extraCoin = 0)
         {
-            
             UIManager.Instance.CoinCollectionAnimation(coinPerWord + extraCoin);
             //Debug.Log("Coin Per Word To Add: " + coinPerWord);
         }
@@ -1323,54 +1323,52 @@ namespace YugantLoyaLibrary.FindWords
                 //Debug.Log("HINT GRID : " + gridsRemainingList[i].name, gridsRemainingList[i].gameObject);
                 //Debug.Log("Word First Letter Selected : " + word);
                 int index = 1;
-                List<MainDictionary.WordLengthDetailedInfo> dictWordList =
+                MainDictionary.WordLengthDetailedInfo dictLetterInfo =
                     GameController.instance.GetWordListOfLength(count,
                         gridsRemainingList[i].GridTextData);
 
-                Debug.Log("Word List Length : " + dictWordList.Count);
+                Debug.Log("Word List Length : " + dictLetterInfo.wordList.Count());
                 gridsRemainingList.Remove(gridsRemainingList[i]);
 
-                for (int j = 0; j < dictWordList.Count; j++)
+                Debug.Log("Char Selected : " + dictLetterInfo.wordStartChar);
+                
+                if (dictLetterInfo.wordStartChar.ToString() == word.ToString())
                 {
-                    Debug.Log("Char Selected : " + dictWordList[i].wordStartChar);
-                    if (dictWordList[j].wordStartChar.ToString() == word.ToString())
+                    List<string> wordList = dictLetterInfo.wordList;
+                    Debug.Log("LINE COUNT : " + wordList.Count);
+
+                    if (wordList.Count <= 0)
+                        continue;
+
+                    foreach (string str in wordList)
                     {
-                        List<string> wordList = dictWordList[j].wordList;
-                        Debug.Log("LINE COUNT : " + wordList.Count);
-
-                        if (wordList.Count <= 0)
-                            continue;
-
-                        foreach (string str in wordList)
+                        //str = Each Word in Text File
+                        if (!string.IsNullOrWhiteSpace(str))
                         {
-                            //str = Each Word in Text File
-                            if (!string.IsNullOrWhiteSpace(str))
-                            {
-                                word = new StringBuilder(str[0].ToString());
-                                Debug.Log("Text Word : " + str);
-                                bool isWordFormed = FindWordThroughCharacter(index, word, str,
-                                    new List<GridTile>(gridsRemainingList), hintTiles,
-                                    out finalStr);
+                            word = new StringBuilder(str[0].ToString());
+                            Debug.Log("Text Word : " + str);
+                            bool isWordFormed = FindWordThroughCharacter(index, word, str,
+                                new List<GridTile>(gridsRemainingList), hintTiles,
+                                out finalStr);
 
-                                if (!isWordFormed)
-                                {
-                                    hintTiles.Clear();
-                                }
-                                else
-                                {
-                                    //Debug.Log("Word Found in List");
-                                    return finalStr.ToString();
-                                }
+                            if (!isWordFormed)
+                            {
+                                hintTiles.Clear();
+                            }
+                            else
+                            {
+                                //Debug.Log("Word Found in List");
+                                return finalStr.ToString();
                             }
                         }
+                    }
 
-                        Debug.Log("Word : " + word + " Index : " + index);
+                    Debug.Log("Word : " + word + " Index : " + index);
 
-                        if (index < wordList.Count)
-                        {
-                            Debug.Log("Word Append Letter : " + wordList[index]);
-                            word.Append(wordList[index]);
-                        }
+                    if (index < wordList.Count)
+                    {
+                        Debug.Log("Word Append Letter : " + wordList[index]);
+                        word.Append(wordList[index]);
                     }
                 }
 

@@ -503,11 +503,11 @@ namespace YugantLoyaLibrary.FindWords
             LevelHandler.Instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
         }
 
-        public List<MainDictionary.WordLengthDetailedInfo> GetWordListOfLength(int wordLength,
+        public MainDictionary.WordLengthDetailedInfo GetWordListOfLength(int wordLength,
             string startingLetter)
         {
-            List<MainDictionary.WordLengthDetailedInfo>
-                wordList = new List<MainDictionary.WordLengthDetailedInfo>();
+            MainDictionary.WordLengthDetailedInfo
+                wordList = new MainDictionary.WordLengthDetailedInfo();
 
             List<MainDictionary.MainDictionaryInfo> mainList = mainDictionary.dictInfoList;
             for (int i = 0; i < mainList.Count; i++)
@@ -521,7 +521,7 @@ namespace YugantLoyaLibrary.FindWords
                     {
                         if (startingLetter == wordInfoList[j].wordStartChar.ToString().ToLower())
                         {
-                            wordList = new List<MainDictionary.WordLengthDetailedInfo>(wordInfoList);
+                            wordList = wordInfoList[j];
                             //Debug.Log("Word List Count : " + wordList.Count);
                             return wordList;
                         }
