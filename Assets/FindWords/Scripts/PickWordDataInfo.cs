@@ -3,15 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "PickDataInfo", menuName = "Data  Picking Info")]
-public class PickWordDataInfo : ScriptableObject
+namespace YugantLoyaLibrary.FindWords
 {
-    [Serializable]
-    public struct PickingDataInfo
+    [CreateAssetMenu(fileName = "PickDataInfo", menuName = "Data  Picking Info")]
+    public class PickWordDataInfo : ScriptableObject
     {
-        public int quesLetterCount;
-        public List<string> wordList;
-    }
+        [Serializable]
+        public struct PickingDataInfo
+        {
+            public int quesLetterCount;
+            public List<string> wordList;
+        }
 
-    public List<PickingDataInfo> pickDataInfoList;
+        public List<PickingDataInfo> pickDataInfoList;
+    }
 }

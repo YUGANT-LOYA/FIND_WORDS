@@ -438,7 +438,6 @@ namespace YugantLoyaLibrary.FindWords
 
         public string GetDataAccordingToGrid(int totalLetters)
         {
-            
             string mainStr = "";
             //Debug.Log("Unlock String Count : " + mainStr.Length);
             //Debug.Log("Total Letter : " + totalLetters);
@@ -836,6 +835,7 @@ namespace YugantLoyaLibrary.FindWords
 
         private void AddCoin(int extraCoin = 0)
         {
+            
             UIManager.Instance.CoinCollectionAnimation(coinPerWord + extraCoin);
             //Debug.Log("Coin Per Word To Add: " + coinPerWord);
         }
@@ -868,13 +868,13 @@ namespace YugantLoyaLibrary.FindWords
                     time);
             }
 
-            CheckIqExpLevel();
+            CheckIqExpLevel(time);
 
             StartCoroutine(ResetLevelHandlerData(time, true));
             StartCoroutine(DataResetAfterGridAnimation(time));
         }
 
-        private void CheckIqExpLevel()
+        private void CheckIqExpLevel(float time)
         {
             DataHandler.WordCompleteNum++;
             int unlockNextIqExp = 5;
@@ -901,9 +901,14 @@ namespace YugantLoyaLibrary.FindWords
                         Debug.Log("New Ques Tile Introduced ! ");
                         //UIManager.Instance.SmokeTransition();
                         DataHandler.NewQuesGridUnlock = 1;
-                        currLevel.SetQuesGrid(DataHandler.CurrTotalQuesSize, true);
+                        Invoke(nameof(SetNewQuestionTile), time / 2);
                     }
                 });
+        }
+
+        void SetNewQuestionTile()
+        {
+            currLevel.SetQuesGrid(DataHandler.CurrTotalQuesSize, true);
         }
 
         private bool CheckGridLeft()
@@ -1467,7 +1472,7 @@ namespace YugantLoyaLibrary.FindWords
             foreach (GridTile tile in lockedGridList)
             {
                 if (!totalBuyingGridList.Contains(tile)) continue;
-                
+
                 yield return new WaitForSeconds(time);
                 tile.UnlockGrid(false);
             }

@@ -4,17 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-
-[CreateAssetMenu(fileName = "Coin Scriptable", menuName = "Coin System")]
-public class CoinHandlerScriptable : ScriptableObject
+namespace YugantLoyaLibrary.FindWords
 {
-    [Serializable]
-    public struct WordCompleteCoinData
+    [CreateAssetMenu(fileName = "Coin Scriptable", menuName = "Coin System")]
+    public class CoinHandlerScriptable : ScriptableObject
     {
-        [FormerlySerializedAs("gridCount")] public int quesLetterCount;
-        public int coinPerWord;
-    }
+        [Serializable]
+        public struct WordCompleteCoinData
+        {
+            [FormerlySerializedAs("gridCount")] public int quesLetterCount;
+            public int coinPerWord;
+        }
 
-    public List<WordCompleteCoinData> wordCompleteCoinDataList;
-    public List<int> quesUnlockDataList;
+        public List<WordCompleteCoinData> wordCompleteCoinDataList;
+        public List<int> quesUnlockDataList;
+    }
 }

@@ -4652,6 +4652,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startingGridSize: 5
   startingQuesSize: 3
+  maxQuesSize: 6
   maxGridSize: 7
   defaultIq: 1
   changeBgAfter: 4
@@ -7974,7 +7975,7 @@ MonoBehaviour:
     type: 3}
   quesPrefab: {fileID: 6876171383429484901, guid: 2b60b11f0918330469795326020309c3,
     type: 3}
-  initialCoins: 10000
+  initialCoins: 50000
 --- !u!1 &5704458314791691809
 GameObject:
   m_ObjectHideFlags: 0

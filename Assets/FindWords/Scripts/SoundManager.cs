@@ -3,60 +3,63 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SoundManager : MonoBehaviour
+namespace YugantLoyaLibrary.FindWords
 {
-    public static SoundManager instance;
-    public AudioSource audioSource;
-
-    [Serializable]
-    public struct SoundStruct
+    public class SoundManager : MonoBehaviour
     {
-        public SoundType soundType;
-        public AudioClip audioClip;
-    }
+        public static SoundManager instance;
+        public AudioSource audioSource;
 
-    public List<SoundStruct> soundInfoList = new List<SoundStruct>();
-
-    public enum SoundType
-    {
-        None,
-        Click,
-        ErrorMessage,
-        Wrong,
-        Correct,
-        CardDeck,
-        NewGridUnlock,
-        LockGridClicked,
-        NewWordFound
-    }
-
-
-    private void Awake()
-    {
-        CreateSingleton();
-    }
-
-    private void CreateSingleton()
-    {
-        if (instance == null)
+        [Serializable]
+        public struct SoundStruct
         {
-            instance = this;
+            public SoundType soundType;
+            public AudioClip audioClip;
         }
-        else if (instance != this)
+
+        public List<SoundStruct> soundInfoList = new List<SoundStruct>();
+
+        public enum SoundType
         {
-            Destroy(this.gameObject);
+            None,
+            Click,
+            ErrorMessage,
+            Wrong,
+            Correct,
+            CardDeck,
+            NewGridUnlock,
+            LockGridClicked,
+            NewWordFound
         }
-    }
 
 
-    public void PlaySound(SoundType soundType)
-    {
-        foreach (SoundStruct soundStruct in soundInfoList)
+        private void Awake()
         {
-            if (soundStruct.soundType == soundType)
+            CreateSingleton();
+        }
+
+        private void CreateSingleton()
+        {
+            if (instance == null)
             {
-                audioSource.clip = soundStruct.audioClip;
-                audioSource.Play();
+                instance = this;
+            }
+            else if (instance != this)
+            {
+                Destroy(this.gameObject);
+            }
+        }
+
+
+        public void PlaySound(SoundType soundType)
+        {
+            foreach (SoundStruct soundStruct in soundInfoList)
+            {
+                if (soundStruct.soundType == soundType)
+                {
+                    audioSource.clip = soundStruct.audioClip;
+                    audioSource.Play();
+                }
             }
         }
     }

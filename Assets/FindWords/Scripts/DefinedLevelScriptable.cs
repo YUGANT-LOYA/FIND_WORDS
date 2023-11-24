@@ -3,16 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Predefined_Levels", menuName = "Predefined Levels")]
-public class DefinedLevelScriptable : ScriptableObject
+namespace YugantLoyaLibrary.FindWords
 {
-    [Serializable]
-    public struct DefinedLevelInfo
+    [CreateAssetMenu(fileName = "Predefined_Levels", menuName = "Predefined Levels")]
+    public class DefinedLevelScriptable : ScriptableObject
     {
-        public int gridSize;
-        [TextArea(5, 5)] public string gridData;
-        public List<string> hintList;
-    }
+        [Serializable]
+        public struct DefinedLevelInfo
+        {
+            public int gridSize;
+            [TextArea(5, 5)] public string gridData;
+            public List<string> hintList;
+        }
 
-    public List<DefinedLevelInfo> definedLevelInfoList;
+        public List<DefinedLevelInfo> definedLevelInfoList;
+    }
 }

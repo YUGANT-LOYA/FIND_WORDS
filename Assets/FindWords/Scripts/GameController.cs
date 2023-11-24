@@ -21,7 +21,7 @@ namespace YugantLoyaLibrary.FindWords
         };
 
         [Range(4, 7)] public int startingGridSize = 5;
-        [HideInInspector] public int startingQuesSize = 3, maxGridSize = 7;
+        [HideInInspector] public int startingQuesSize = 3, maxQuesSize = 6, maxGridSize = 7;
         public int defaultIq = 1, changeBgAfter = 3;
 
         [Header("References")] [SerializeField]
@@ -110,15 +110,15 @@ namespace YugantLoyaLibrary.FindWords
         {
             //Debug.Log($"Game Restarting After {time}");
 
-            DataHandler.UnlockedQuesLetter = DataHandler.CurrGridSize;
-            DataHandler.CurrTotalQuesSize = DataHandler.UnlockedQuesLetter + 1;
+            // DataHandler.UnlockedQuesLetter = DataHandler.CurrGridSize;
+            // DataHandler.CurrTotalQuesSize = DataHandler.UnlockedQuesLetter + 1;
             DataHandler.CurrGridSize++;
 
-            if (DataHandler.CurrGridSize >= maxGridSize)
-            {
-                DataHandler.CurrTotalQuesSize = DataHandler.CurrGridSize - 1;
-                DataHandler.UnlockedQuesLetter = DataHandler.CurrTotalQuesSize;
-            }
+            // if (DataHandler.CurrGridSize >= maxGridSize)
+            // {
+            //     DataHandler.CurrTotalQuesSize = DataHandler.CurrGridSize - 1;
+            //     DataHandler.UnlockedQuesLetter = DataHandler.CurrTotalQuesSize;
+            // }
 
             //Debug.Log("Curr Grid Size : " + DataHandler.CurrGridSize);
             DataHandler.UnlockGridIndex = 0;

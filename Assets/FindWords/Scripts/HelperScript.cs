@@ -1,87 +1,88 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
-using YugantLoyaLibrary.FindWords;
 
-public class HelperScript : MonoBehaviour
+namespace YugantLoyaLibrary.FindWords
 {
-    public int clickDealIndex = 4;
-    public GameObject canvasHelperHand, gridHelperHand;
-    public List<GridTile> clickingList;
-    public List<int> gridIndexList;
-    public List<GameObject> bgList;
-    public List<Vector3> helperHandPosList;
-    [SerializeField] private Canvas canvas;
-
-    public void PlayHelper()
+    public class HelperScript : MonoBehaviour
     {
-        for (var index = 0; index < gridIndexList.Count; index++)
+        public int clickDealIndex = 4;
+        public GameObject canvasHelperHand, gridHelperHand;
+        public List<GridTile> clickingList;
+        public List<int> gridIndexList;
+        public List<GameObject> bgList;
+        public List<Vector3> helperHandPosList;
+        [SerializeField] private Canvas canvas;
+
+        public void PlayHelper()
         {
-            int val = gridIndexList[index];
-            List<GridTile> totalGridList = new List<GridTile>(LevelHandler.Instance.totalGridsList);
-            for (var i = 0; i < totalGridList.Count; i++)
+            for (var index = 0; index < gridIndexList.Count; index++)
             {
-                var gridTile = totalGridList[i];
-                if (val == i)
+                int val = gridIndexList[index];
+                List<GridTile> totalGridList = new List<GridTile>(LevelHandler.Instance.totalGridsList);
+                for (var i = 0; i < totalGridList.Count; i++)
                 {
-                    clickingList.Add(gridTile);
+                    var gridTile = totalGridList[i];
+                    if (val == i)
+                    {
+                        clickingList.Add(gridTile);
+                    }
                 }
             }
+
+            LevelHandler.Instance.SetLevelRunningBool(true);
+            UIManager.Instance.CanTouch(false);
+            ClickTile(0.2f);
         }
 
-        LevelHandler.Instance.SetLevelRunningBool(true);
-        UIManager.Instance.CanTouch(false);
-        ClickTile(0.2f);
-    }
-
-    public void ClickTile(float time)
-    {
-        StartCoroutine(ClickTileAnim(time));
-    }
-
-    IEnumerator ClickTileAnim(float time)
-    {
-        yield return new WaitForSeconds(time);
-        //Debug.Log("Tile Clicked !");
-        if (DataHandler.HelperIndex < bgList.Count)
+        public void ClickTile(float time)
         {
-            //Debug.Log("IF Helper  Index : " + DataHandler.HelperIndex);
-            bgList[DataHandler.HelperIndex].SetActive(true);
+            StartCoroutine(ClickTileAnim(time));
+        }
 
-            if (DataHandler.HelperIndex >= 1)
+        IEnumerator ClickTileAnim(float time)
+        {
+            yield return new WaitForSeconds(time);
+            //Debug.Log("Tile Clicked !");
+            if (DataHandler.HelperIndex < bgList.Count)
             {
-                //Debug.Log("Last Bg DeActivating !");
-                bgList[DataHandler.HelperIndex - 1].SetActive(false);
-            }
+                //Debug.Log("IF Helper  Index : " + DataHandler.HelperIndex);
+                bgList[DataHandler.HelperIndex].SetActive(true);
 
-            if (DataHandler.HelperIndex < clickDealIndex)
-            {
-                gridHelperHand.SetActive(true);
-                gridHelperHand.transform.position = helperHandPosList[DataHandler.HelperIndex];
-                UIManager.Instance.CanTouch(false);
-                clickingList[DataHandler.HelperIndex].isHelperActivate = true;
-            }
-            else if (clickDealIndex == DataHandler.HelperIndex)
-            { 
-                gridHelperHand.SetActive(false);
-                canvasHelperHand.SetActive(true);
-                UIManager.Instance.CanTouch(true);
+                if (DataHandler.HelperIndex >= 1)
+                {
+                    //Debug.Log("Last Bg DeActivating !");
+                    bgList[DataHandler.HelperIndex - 1].SetActive(false);
+                }
+
+                if (DataHandler.HelperIndex < clickDealIndex)
+                {
+                    gridHelperHand.SetActive(true);
+                    gridHelperHand.transform.position = helperHandPosList[DataHandler.HelperIndex];
+                    UIManager.Instance.CanTouch(false);
+                    clickingList[DataHandler.HelperIndex].isHelperActivate = true;
+                }
+                else if (clickDealIndex == DataHandler.HelperIndex)
+                {
+                    gridHelperHand.SetActive(false);
+                    canvasHelperHand.SetActive(true);
+                    UIManager.Instance.CanTouch(true);
+                }
+                else
+                {
+                    gridHelperHand.SetActive(true);
+                    gridHelperHand.transform.position = helperHandPosList[DataHandler.HelperIndex];
+                    UIManager.Instance.CanTouch(false);
+                    clickingList[DataHandler.HelperIndex - 1].isHelperActivate = true;
+                }
             }
             else
             {
-                gridHelperHand.SetActive(true);
-                gridHelperHand.transform.position = helperHandPosList[DataHandler.HelperIndex];
-                UIManager.Instance.CanTouch(false);
-                clickingList[DataHandler.HelperIndex - 1].isHelperActivate = true;
+                //Reset Game for Original Game !
+                //Debug.Log("ELSE Helper  Index : " + DataHandler.HelperIndex);
+                bgList[DataHandler.HelperIndex - 1].SetActive(false);
+                DataHandler.HelperLevelCompleted = 1;
             }
-        }
-        else
-        {
-            //Reset Game for Original Game !
-            //Debug.Log("ELSE Helper  Index : " + DataHandler.HelperIndex);
-            bgList[DataHandler.HelperIndex - 1].SetActive(false);
-            DataHandler.HelperLevelCompleted = 1;
         }
     }
 }

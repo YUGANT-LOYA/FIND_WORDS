@@ -4,30 +4,33 @@ using UnityEngine;
 using UnityEngine.UI;
 using YugantLoyaLibrary.FindWords;
 
-public class LoadingScript : MonoBehaviour
+namespace YugantLoyaLibrary.FindWords
 {
-    public GameObject loadingGm, loadingCanvas;
-    public TextMeshProUGUI freeCoinText;
-    public Slider loadingBar;
-    private float currFillAmountVal;
-
-    private void Awake()
+    public class LoadingScript : MonoBehaviour
     {
-        loadingGm.SetActive(true);
-        loadingCanvas.SetActive(true);
+        public GameObject loadingGm, loadingCanvas;
+        public TextMeshProUGUI freeCoinText;
+        public Slider loadingBar;
+        private float currFillAmountVal;
 
-        if (DataHandler.FirstTimeGameOpen == 0)
+        private void Awake()
         {
-            freeCoinText.text = $"FREE GIFT : 100 COINS !!";
-            freeCoinText.gameObject.SetActive(true);
+            loadingGm.SetActive(true);
+            loadingCanvas.SetActive(true);
+
+            if (DataHandler.FirstTimeGameOpen == 0)
+            {
+                freeCoinText.text = $"FREE GIFT : 100 COINS !!";
+                freeCoinText.gameObject.SetActive(true);
+            }
+
+            loadingBar.DOValue(1, 3f).OnComplete(() =>
+            {
+                Debug.Log("Loading Bar Destroyed !");
+                GameController.instance.GetCurrentLevel().GridPlacement();
+
+                Destroy(gameObject);
+            });
         }
-
-        loadingBar.DOValue(1, 3f).OnComplete(() =>
-        {
-            Debug.Log("Loading Bar Destroyed !");
-            GameController.instance.GetCurrentLevel().GridPlacement();
-            
-            Destroy(gameObject);
-        });
     }
 }

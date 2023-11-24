@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
 using DG.Tweening;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace YugantLoyaLibrary.FindWords
@@ -88,7 +85,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             DataHandler.UnlockedQuesLetter = DataHandler.CurrTotalQuesSize;
             DataHandler.CurrTotalQuesSize++;
-            GameController.instance.GetCurrentLevel().SetQuesGrid(DataHandler.CurrTotalQuesSize,true);
+            GameController.instance.GetCurrentLevel().SetQuesGrid(DataHandler.CurrTotalQuesSize);
             LevelHandler.Instance.FillNewWordInWordLeftList();
         }
 

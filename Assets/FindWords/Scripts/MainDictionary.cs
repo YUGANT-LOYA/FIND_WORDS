@@ -2,25 +2,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-
-[CreateAssetMenu(fileName = "MainDictionary", menuName = "EnglishDictionary")]
-public class MainDictionary : ScriptableObject
+namespace YugantLoyaLibrary.FindWords
 {
-    [Serializable]
-    public struct MainDictionaryInfo
+    [CreateAssetMenu(fileName = "MainDictionary", menuName = "EnglishDictionary")]
+    public class MainDictionary : ScriptableObject
     {
-        public int wordLength;
-        public List<WordLengthDetailedInfo> wordsInfo;
-    }
+        [Serializable]
+        public struct MainDictionaryInfo
+        {
+            public int wordLength;
+            public List<WordLengthDetailedInfo> wordsInfo;
+        }
 
-    [Serializable]
-    public struct WordLengthDetailedInfo
-    {
-        public char wordStartChar;
-        public List<string> wordList;
-    }
+        [Serializable]
+        public struct WordLengthDetailedInfo
+        {
+            public char wordStartChar;
+            public List<string> wordList;
+        }
 
-    public List<MainDictionaryInfo> dictInfoList;
+        public List<MainDictionaryInfo> dictInfoList;
+    }
 }
