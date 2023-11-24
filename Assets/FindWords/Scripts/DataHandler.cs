@@ -8,7 +8,8 @@ namespace YugantLoyaLibrary.FindWords
     {
         public static DataHandler instance;
         public List<Material> gameBgMaterialList;
-        public List<int> iqToUnlockNewQuesTileList = new List<int>();
+        public List<int> quesGridUnlockPrice = new List<int>();
+        
         [Header("Prefab Holders")] public GameObject coinPrefab;
         public GameObject levelPrefab, gridPrefab, quesPrefab;
 
@@ -90,6 +91,12 @@ namespace YugantLoyaLibrary.FindWords
         {
             get => PlayerPrefs.GetInt(StringHelper.LEVEL_NUM, 1);
             set => PlayerPrefs.SetInt(StringHelper.LEVEL_NUM, value);
+        }
+        
+        public static int QuesPriceUnlockIndex
+        {
+            get => PlayerPrefs.GetInt(StringHelper.QUES_UNLOCK_PRICE_INDEX, 0);
+            set => PlayerPrefs.SetInt(StringHelper.QUES_UNLOCK_PRICE_INDEX, value);
         }
         
         public static int IsUnlockingGridActive

@@ -32,5 +32,6 @@ namespace YugantLoyaLibrary.FindWords
         public static readonly string MAX_GRID_OPENED = "MAX_GRID_OPENED";
         public static readonly string COIN_GRID_UNLOCK_INDEX = "COIN_GRID_UNLOCK_INDEX";
         public static readonly string BG_INDEX = "BG_INDEX";
+        public static readonly string QUES_UNLOCK_PRICE_INDEX = "QUES_UNLOCK_PRICE_INDEX";
     }
 }

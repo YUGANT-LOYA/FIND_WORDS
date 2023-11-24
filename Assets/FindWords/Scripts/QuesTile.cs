@@ -9,7 +9,7 @@ namespace YugantLoyaLibrary.FindWords
 {
     public class QuesTile : MonoBehaviour
     {
-        [SerializeField] private TextMeshPro quesText;
+        [SerializeField] private TextMeshPro quesText, lockText;
         public int id;
         public GameObject lockGm;
         private int _unlockAmount;
@@ -36,8 +36,10 @@ namespace YugantLoyaLibrary.FindWords
 
         public void LockQuesTile(int amount)
         {
+            _unlockAmount = amount;
             isUnlocked = false;
             lockGm.SetActive(true);
+            lockText.text = amount.ToString();
         }
 
         private void DeActivateLock()
@@ -58,17 +60,21 @@ namespace YugantLoyaLibrary.FindWords
 
             if (isUnlocked) return;
 
-            if (DataHandler.TotalCoin < LevelHandler.Instance.coinToUnlockNextGrid)
+            if (DataHandler.TotalCoin < _unlockAmount)
             {
                 SoundManager.instance.PlaySound(SoundManager.SoundType.LockGridClicked);
+                Vibration.Vibrate(20);
                 //ShakeAnim();
             }
             else
             {
+                SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
+                Vibration.Vibrate(20);
                 LevelHandler.Instance.SetLevelRunningBool(false);
+                DataHandler.NewQuesGridUnlockIndex++;
                 DeActivateLock();
-                StartCoroutine(UIManager.Instance.UpdateReducedCoinText(0f, 1000, 0.5f));
-                UIManager.SetCoinData(1000, -1);
+                StartCoroutine(UIManager.Instance.UpdateReducedCoinText(0f, _unlockAmount, 0.5f));
+                UIManager.SetCoinData(_unlockAmount, -1);
                 LevelHandler.Instance.UnlockGridForUpgrade();
             }
         }

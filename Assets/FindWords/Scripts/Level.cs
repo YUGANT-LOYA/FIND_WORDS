@@ -161,7 +161,7 @@ namespace YugantLoyaLibrary.FindWords
 
                 if (index >= DataHandler.UnlockedQuesLetter)
                 {
-                    quesTileScript.LockQuesTile(100);
+                    quesTileScript.LockQuesTile(DataHandler.instance.quesGridUnlockPrice[DataHandler.NewQuesGridUnlockIndex]);
                 }
 
                 LevelHandler.Instance.UpdateQuesList(quesTileScript, i);

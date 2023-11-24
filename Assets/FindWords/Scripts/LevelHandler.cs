@@ -898,18 +898,9 @@ namespace YugantLoyaLibrary.FindWords
                         DataHandler.NewQuesGridUnlock == 0)
                     {
                         Debug.Log("New Ques Tile Introduced ! ");
-                        UIManager.Instance.SmokeTransition();
-                        DataHandler.NewQuesGridUnlockIndex++;
+                        //UIManager.Instance.SmokeTransition();
                         DataHandler.NewQuesGridUnlock = 1;
-
                         currLevel.SetQuesGrid(DataHandler.CurrTotalQuesSize, true);
-
-                        foreach (GridTile tile in inputGridsList)
-                        {
-                            Transform quesTile = tile.placedOnQuesTile.transform;
-                            tile.transform.position = quesTile.position;
-                            tile.transform.localScale = quesTile.localScale;
-                        }
                     }
                 });
         }

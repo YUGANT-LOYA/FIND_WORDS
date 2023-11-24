@@ -436,6 +436,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   quesText: {fileID: 6876171384789056413}
+  lockText: {fileID: 852620330}
   id: 0
   lockGm: {fileID: 660866109}
   isAssigned: 0
