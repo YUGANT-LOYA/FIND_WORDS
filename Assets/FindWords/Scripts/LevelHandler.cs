@@ -80,7 +80,7 @@ namespace YugantLoyaLibrary.FindWords
         }
 
 
-        private void FillNewWordInWordLeftList()
+        public void FillNewWordInWordLeftList()
         {
             List<PickWordDataInfo.PickingDataInfo> pickInfoList =
                 GameController.instance.GetPickDataInfo().pickDataInfoList;
@@ -438,6 +438,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public string GetDataAccordingToGrid(int totalLetters)
         {
+            
             string mainStr = "";
             //Debug.Log("Unlock String Count : " + mainStr.Length);
             //Debug.Log("Total Letter : " + totalLetters);
@@ -475,7 +476,7 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-            //Debug.Log("Unlock String Data " + mainStr);
+            Debug.Log("Unlock String Data " + mainStr);
             mainStr = ShuffleString(mainStr);
 
             //Debug.Log("Unlock String Data " + mainStr);

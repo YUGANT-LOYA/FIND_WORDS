@@ -46,7 +46,8 @@ namespace YugantLoyaLibrary.FindWords
         {
             lockGm.SetActive(false);
             isUnlocked = true;
-            DataHandler.UnlockedQuesLetter = DataHandler.CurrTotalQuesSize;
+            DataHandler.UnlockedQuesLetter++;
+            LevelHandler.Instance.quesTileList.Add(this);
         }
 
         public void ActivateObject()
@@ -75,8 +76,20 @@ namespace YugantLoyaLibrary.FindWords
                 DeActivateLock();
                 StartCoroutine(UIManager.Instance.UpdateReducedCoinText(0f, _unlockAmount, 0.5f));
                 UIManager.SetCoinData(_unlockAmount, -1);
-                LevelHandler.Instance.UnlockGridForUpgrade();
+
+                UnlockNewQuesGrid();
+                
+                LevelHandler.Instance.SetLevelRunningBool();
+                //LevelHandler.Instance.UnlockGridForUpgrade();
             }
+        }
+
+        private void UnlockNewQuesGrid()
+        {
+            DataHandler.UnlockedQuesLetter = DataHandler.CurrTotalQuesSize;
+            DataHandler.CurrTotalQuesSize++;
+            GameController.instance.GetCurrentLevel().SetQuesGrid(DataHandler.CurrTotalQuesSize,true);
+            LevelHandler.Instance.FillNewWordInWordLeftList();
         }
 
 

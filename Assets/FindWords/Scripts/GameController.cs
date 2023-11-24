@@ -427,7 +427,7 @@ namespace YugantLoyaLibrary.FindWords
                 //Debug.Log("Hint Added : " + s);
             }
 
-            //Debug.Log("Remaining Letter : " + remainingLetter);
+            Debug.Log("Remaining Letter : " + remainingLetter);
             //Debug.Log("RANDOM Pick Letter : " + randomPickedWord);
             //Debug.Log("Temp STR Count : " + tempList.Count);
             //Debug.Log("RANDOM PICK VAL : " + randomPickedWord);

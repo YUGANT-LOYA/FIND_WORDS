@@ -128,17 +128,27 @@ namespace YugantLoyaLibrary.FindWords
                     else
                     {
                         quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
-                                                 new Vector3(1.2f, -3.3f, 0f);
+                                                 new Vector3(1.4f, -3.3f, 0f);
                     }
 
                     spacing = 0.05f;
                     break;
 
                 case 6:
-
+                    
                     _currQuesSize = 0.71f;
-                    quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
-                                             new Vector3(1.9f, -3.3f, 0f);
+                    
+                    if (!isGridUnlockFromOutside)
+                    {
+                        quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
+                                                 new Vector3(1.9f, -3.3f, 0f);
+                    }
+                    else
+                    {
+                        quesGridTrans.position = LevelHandler.Instance.boxContainer.transform.position -
+                                                 new Vector3(0.5f, -3.3f, 0f);
+                    }
+
                     spacing = 0.05f;
 
                     break;
