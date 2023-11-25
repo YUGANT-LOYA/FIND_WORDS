@@ -6,7 +6,7 @@ namespace YugantLoyaLibrary.FindWords
 {
     public class DataHandler : MonoBehaviour
     {
-        public static DataHandler instance;
+        public static DataHandler Instance;
         public List<Material> gameBgMaterialList;
         public List<int> quesGridUnlockPrice = new List<int>();
         
@@ -27,11 +27,11 @@ namespace YugantLoyaLibrary.FindWords
 
         void CreateSingleton()
         {
-            if (instance == null)
+            if (Instance == null)
             {
-                instance = this;
+                Instance = this;
             }
-            else if (instance != this)
+            else if (Instance != this)
             {
                 Destroy(gameObject);
             }
@@ -39,11 +39,11 @@ namespace YugantLoyaLibrary.FindWords
 
         void Init()
         {
-            int poolSize = GameController.instance.coinPoolSize;
+            int poolSize = GameController.Instance.coinPoolSize;
             _initCoins = initialCoins;
             for (int i = 0; i < poolSize; i++)
             {
-                GameObject coin = Instantiate(coinPrefab, GameController.instance.coinContainerTran);
+                GameObject coin = Instantiate(coinPrefab, GameController.Instance.coinContainerTran);
                 coin.transform.localScale = Vector3.zero;
                 coin.gameObject.SetActive(false);
             }
@@ -61,7 +61,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public GameObject GetCoin()
         {
-            Transform tran = GameController.instance.coinContainerTran;
+            Transform tran = GameController.Instance.coinContainerTran;
 
             foreach (Transform coinTran in tran)
             {
@@ -77,7 +77,7 @@ namespace YugantLoyaLibrary.FindWords
         public void ResetCoin(GameObject coin)
         {
             coin.gameObject.SetActive(false);
-            coin.transform.SetParent(GameController.instance.coinContainerTran);
+            coin.transform.SetParent(GameController.Instance.coinContainerTran);
             coin.transform.localScale = Vector3.one * (UIManager.Instance.maxCoinScale / 2f);
         }
 
@@ -155,7 +155,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public static int IqExpLevel
         {
-            get => PlayerPrefs.GetInt(StringHelper.IQ_EXP_LEVEL, GameController.instance.defaultIq);
+            get => PlayerPrefs.GetInt(StringHelper.IQ_EXP_LEVEL, GameController.Instance.defaultIq);
             set => PlayerPrefs.SetInt(StringHelper.IQ_EXP_LEVEL, value);
         }
 
@@ -167,7 +167,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public static int WordCompleteNum
         {
-            get => PlayerPrefs.GetInt(StringHelper.WORD_COMPLETE_NUM, GameController.instance.defaultIq);
+            get => PlayerPrefs.GetInt(StringHelper.WORD_COMPLETE_NUM, GameController.Instance.defaultIq);
             set => PlayerPrefs.SetInt(StringHelper.WORD_COMPLETE_NUM, value);
         }
 
@@ -186,7 +186,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public static int CurrGridSize
         {
-            get => PlayerPrefs.GetInt((StringHelper.CURR_GRIDSIZE), GameController.instance.startingGridSize);
+            get => PlayerPrefs.GetInt((StringHelper.CURR_GRIDSIZE), GameController.Instance.startingGridSize);
             set => PlayerPrefs.SetInt(StringHelper.CURR_GRIDSIZE, value);
         }
 
@@ -198,7 +198,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public static int CurrTotalQuesSize
         {
-            get => PlayerPrefs.GetInt((StringHelper.CURR_TOTAL_QUES_SIZE), GameController.instance.startingQuesSize);
+            get => PlayerPrefs.GetInt((StringHelper.CURR_TOTAL_QUES_SIZE), GameController.Instance.startingQuesSize);
             set => PlayerPrefs.SetInt(StringHelper.CURR_TOTAL_QUES_SIZE, value);
         }
 
@@ -222,7 +222,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public static int UnlockedQuesLetter
         {
-            get => PlayerPrefs.GetInt((StringHelper.UNLOCK_QUES_LETTER), GameController.instance.startingQuesSize);
+            get => PlayerPrefs.GetInt((StringHelper.UNLOCK_QUES_LETTER), GameController.Instance.startingQuesSize);
             set => PlayerPrefs.SetInt(StringHelper.UNLOCK_QUES_LETTER, value);
         }
     }

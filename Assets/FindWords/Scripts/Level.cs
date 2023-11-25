@@ -80,15 +80,15 @@ namespace YugantLoyaLibrary.FindWords
 
         public void SetQuesGrid(int quesGridCount, bool isGridUnlockFromOutside = false)
         {
-            if (DataHandler.CurrGridSize == GameController.instance.startingGridSize &&
-                DataHandler.NewQuesGridUnlock == 0)
-            {
-                quesGridCount = DataHandler.UnlockedQuesLetter;
-            }
+            // if (DataHandler.CurrGridSize == GameController.Instance.startingGridSize &&
+            //     DataHandler.NewQuesGridUnlock == 0)
+            // {
+            //     quesGridCount = DataHandler.UnlockedQuesLetter;
+            // }
 
-            if (DataHandler.CurrTotalQuesSize >= GameController.instance.maxGridSize)
+            if (DataHandler.CurrTotalQuesSize >= GameController.Instance.maxGridSize)
             {
-                DataHandler.CurrTotalQuesSize = GameController.instance.maxQuesSize;
+                DataHandler.CurrTotalQuesSize = GameController.Instance.maxQuesSize;
                 quesGridCount = DataHandler.CurrTotalQuesSize;
             }
 
@@ -97,7 +97,7 @@ namespace YugantLoyaLibrary.FindWords
             Vector3 startPos = quesGridTrans.transform.localPosition;
             float spacing = 0.05f;
             Debug.Log("Set Ques Grid Count : " + quesGridCount);
-           
+
             switch (quesGridCount)
             {
                 case 3:
@@ -125,17 +125,18 @@ namespace YugantLoyaLibrary.FindWords
             {
                 GameObject gmObj = totalChild > 0
                     ? quesGridTrans.GetChild(i).gameObject
-                    : Instantiate(DataHandler.instance.quesPrefab, quesGridTrans);
+                    : Instantiate(DataHandler.Instance.quesPrefab, quesGridTrans);
 
                 QuesTile quesTileScript = gmObj.GetComponent<QuesTile>();
                 gmObj.transform.localScale = new Vector3(_currQuesSize, _currQuesSize, _currQuesSize / 2);
+                quesTileScript.defaultTileScale = gmObj.transform.localScale;
                 gmObj.transform.localPosition = new Vector3(startPos.x, 0, 0);
                 gmObj.name = $"Ques_{i}";
 
                 if (index >= DataHandler.UnlockedQuesLetter)
                 {
                     quesTileScript.LockQuesTile(
-                        DataHandler.instance.quesGridUnlockPrice[DataHandler.NewQuesGridUnlockIndex]);
+                        DataHandler.Instance.quesGridUnlockPrice[DataHandler.NewQuesGridUnlockIndex]);
                 }
 
                 LevelHandler.Instance.UpdateQuesList(quesTileScript, i);
@@ -148,42 +149,42 @@ namespace YugantLoyaLibrary.FindWords
             {
                 case 3:
 
-                    quesGridTrans.localPosition = new Vector3(-1.2f, 3.5f, 0f);
-                    
+                    quesGridTrans.localPosition = new Vector3(-1.2f, 3.3f, -0.5f);
+
                     break;
 
                 case 4:
-                    
-                    quesGridTrans.localPosition = new Vector3(-1.6f, 3.5f, 0f);
-                  
+
+                    quesGridTrans.localPosition = new Vector3(-1.6f, 3.3f, -0.5f);
+
                     break;
 
                 case 5:
-                    
-                    quesGridTrans.localPosition = new Vector3(-1.8f, 3.5f, 0f);
-                    
+
+                    quesGridTrans.localPosition = new Vector3(-1.8f, 3.3f, -0.5f);
+
                     break;
 
                 case 6:
-                    
-                    quesGridTrans.localPosition = new Vector3(-1.9f, 3.5f, 0f);
-                    
+
+                    quesGridTrans.localPosition = new Vector3(-1.9f, 3.3f, -0.5f);
+
                     break;
             }
-            
+
             LevelHandler.Instance.SetCoinPerWord();
         }
 
         private void CreateGrid()
         {
-            GameObject gridPrefab = DataHandler.instance.gridPrefab;
+            GameObject gridPrefab = DataHandler.Instance.gridPrefab;
             Transform boxTrans = gridContainer.transform;
             _defaultStartPos.y = boxTrans.localScale.y * 2;
             _defaultStartPos.x = _currGridSize / 2;
             //Debug.Log("Default Pos : " + _defaultStartPos.x);
             Vector3 startPos = new Vector3(_defaultStartPos.x, _defaultStartPos.y, _defaultStartPos.z);
 
-            if (GameController.instance.maxGridSize < DataHandler.CurrGridSize &&
+            if (GameController.Instance.maxGridSize < DataHandler.CurrGridSize &&
                 DataHandler.UnlockGridIndex >= LevelHandler.Instance.lockedGridList.Count - 1)
             {
                 Debug.Log("Before Max Grid Unlocked !!");
@@ -257,7 +258,7 @@ namespace YugantLoyaLibrary.FindWords
                     _defaultStartPos.z);
             }
 
-            if (DataHandler.CurrGridSize == GameController.instance.maxGridSize &&
+            if (DataHandler.CurrGridSize == GameController.Instance.maxGridSize &&
                 DataHandler.UnlockGridIndex >= LevelHandler.Instance.lockedGridList.Count - 1)
             {
                 Debug.Log("After Max Grid Unlocked !!");
@@ -399,13 +400,17 @@ namespace YugantLoyaLibrary.FindWords
 
             if (DataHandler.HelperLevelCompleted == 0)
             {
-                LevelHandler.Instance.SetLevelRunningBool(false);
-                GameController.instance.helper.PlayHelper();
-            }
+                if (DataHandler.HelperIndex < GameController.Instance.helper.clickDealIndex)
+                {
+                    DataHandler.HelperIndex = 0;
+                }
+                else if (DataHandler.HelperIndex > GameController.Instance.helper.clickDealIndex)
+                {
+                    DataHandler.HelperIndex = GameController.Instance.helper.clickDealIndex + 1;
+                }
 
-            if (DataHandler.IsUnlockingGridActive == 1)
-            {
-                LevelHandler.Instance.UnlockGridForUpgrade();
+                LevelHandler.Instance.SetLevelRunningBool(false);
+                GameController.Instance.helper.PlayHelper();
             }
         }
 

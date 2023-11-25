@@ -27,7 +27,7 @@ namespace YugantLoyaLibrary.FindWords
             loadingBar.DOValue(1, 3f).OnComplete(() =>
             {
                 Debug.Log("Loading Bar Destroyed !");
-                GameController.instance.GetCurrentLevel().GridPlacement();
+                GameController.Instance.GetCurrentLevel().GridPlacement();
 
                 Destroy(gameObject);
             });

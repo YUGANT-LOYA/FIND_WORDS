@@ -36,7 +36,7 @@ namespace YugantLoyaLibrary.FindWords
         [SerializeField] Image wrongEffectImg;
         public Color defaultWrongEffectColor, redWrongEffectColor;
         private Color _defaultCoinAnimTextColor, _coinTextTargetColor;
-        public bool isSmokeTransitionOn;
+        public bool boolNewQuesIntroduced;
         float _startCoinTextFadeTime, _defaultSmokeAnimSpeed = 1f;
 
         private void Awake()
@@ -55,9 +55,9 @@ namespace YugantLoyaLibrary.FindWords
             _defaultShuffleButtonSize = shuffleButton.transform.localScale;
             _defaultDealButtonSize = dealButton.transform.localScale;
 
-            shuffleButton.onClick.AddListener(() => { GameController.instance.ShuffleGrid(); });
-            dealButton.onClick.AddListener(() => { GameController.instance.Deal(); });
-            hintButton.onClick.AddListener(() => { GameController.instance.Hint(); });
+            shuffleButton.onClick.AddListener(() => { GameController.Instance.ShuffleGrid(); });
+            dealButton.onClick.AddListener(() => { GameController.Instance.Deal(); });
+            hintButton.onClick.AddListener(() => { GameController.Instance.Hint(); });
         }
 
         private void CreateSingleton()
@@ -98,11 +98,6 @@ namespace YugantLoyaLibrary.FindWords
                 hintButton.GetComponent<Image>().color = disableButtonColor;
                 LevelHandler.Instance.isHintAvailInButton = false;
             }
-            // else if (DataHandler.TotalCoin < GameController.instance.hintUsingCoin)
-            // {
-            //     hintButton.enabled = true;
-            //     hintButton.GetComponent<Image>().color = disableButtonColor;
-            // }
             else
             {
                 //Debug.Log("Hint Enable Called !");
@@ -124,7 +119,7 @@ namespace YugantLoyaLibrary.FindWords
             bool isHintAvail = LevelHandler.Instance.CheckHintStatus(out string finalStr);
             HintStatus(isHintAvail);
 
-            if (isHintAvail && DataHandler.TotalCoin >= GameController.instance.hintUsingCoin)
+            if (isHintAvail && DataHandler.TotalCoin >= GameController.Instance.hintUsingCoin)
             {
                 hintButton.enabled = true;
                 hintButton.GetComponent<Image>().color = Color.white;
@@ -137,11 +132,11 @@ namespace YugantLoyaLibrary.FindWords
             dealButton.enabled = true;
             shuffleButton.enabled = true;
 
-            shuffleButton.GetComponent<Image>().color = DataHandler.TotalCoin < GameController.instance.shuffleUsingCoin
+            shuffleButton.GetComponent<Image>().color = DataHandler.TotalCoin < GameController.Instance.shuffleUsingCoin
                 ? disableButtonColor
                 : Color.white;
 
-            dealButton.GetComponent<Image>().color = DataHandler.TotalCoin < GameController.instance.dealUsingCoin
+            dealButton.GetComponent<Image>().color = DataHandler.TotalCoin < GameController.Instance.dealUsingCoin
                 ? disableButtonColor
                 : Color.white;
         }
@@ -154,7 +149,7 @@ namespace YugantLoyaLibrary.FindWords
             Image shuffleImage = shuffleButton.GetComponent<Image>();
 
 
-            if (DataHandler.TotalCoin < GameController.instance.shuffleUsingCoin)
+            if (DataHandler.TotalCoin < GameController.Instance.shuffleUsingCoin)
             {
                 shuffleButton.enabled = true;
                 shuffleImage.color = disableButtonColor;
@@ -170,7 +165,7 @@ namespace YugantLoyaLibrary.FindWords
                 shuffleImage.color = Color.white;
             }
 
-            if (DataHandler.TotalCoin < GameController.instance.dealUsingCoin)
+            if (DataHandler.TotalCoin < GameController.Instance.dealUsingCoin)
             {
                 dealButton.enabled = true;
                 dealImage.color = disableButtonColor;
@@ -191,7 +186,7 @@ namespace YugantLoyaLibrary.FindWords
                 hintButton.enabled = false;
                 hintImage.color = disableButtonColor;
             }
-            else if (DataHandler.TotalCoin < GameController.instance.hintUsingCoin)
+            else if (DataHandler.TotalCoin < GameController.Instance.hintUsingCoin)
             {
                 hintButton.enabled = true;
                 hintImage.color = disableButtonColor;
@@ -265,8 +260,8 @@ namespace YugantLoyaLibrary.FindWords
             float xVal = Random.Range(-0.5f, 0.5f);
             float yVal = Random.Range(-0.5f, 0.5f);
             bool isCoinTextUpdating = false;
-            int totalCoin = GameController.instance.coinPoolSize;
-            Vector3 coinContainerTransPos = GameController.instance.coinContainerTran.position;
+            int totalCoin = GameController.Instance.coinPoolSize;
+            Vector3 coinContainerTransPos = GameController.Instance.coinContainerTran.position;
             float coinSpawningTime = coinAnimTime / 2;
             float coinMovementTime = (coinSpawningTime) / totalCoin;
 
@@ -282,9 +277,9 @@ namespace YugantLoyaLibrary.FindWords
                 Screen.height, -2f);
             coinTargetPos = Camera.main.ScreenToWorldPoint(coinTargetPos);
             Debug.Log("coin Target Pos : " + coinTargetPos);
-            for (int i = 0; i < GameController.instance.coinPoolSize; i++)
+            for (int i = 0; i < GameController.Instance.coinPoolSize; i++)
             {
-                GameObject coin = DataHandler.instance.GetCoin();
+                GameObject coin = DataHandler.Instance.GetCoin();
                 coin.transform.localScale = Vector3.one * maxCoinScale;
                 coin.transform.rotation = Quaternion.identity;
                 coin.transform.position = new Vector3(coinContainerTransPos.x + xVal,
@@ -302,7 +297,7 @@ namespace YugantLoyaLibrary.FindWords
                     .SetEase(coinMovementEase).OnComplete(
                         () =>
                         {
-                            DataHandler.instance.ResetCoin(coin);
+                            DataHandler.Instance.ResetCoin(coin);
                             if (isCoinTextUpdating) return;
                             isCoinTextUpdating = true;
                         });
@@ -335,16 +330,28 @@ namespace YugantLoyaLibrary.FindWords
             SetUICoinText();
         }
 
-        public IEnumerator UpdateReducedCoinText(float waitTime, int coinToSubtract, float coinMoveTime,
+        public IEnumerator UpdateReducedCoinText(float waitTime, int coinToSubtract,
             Action callback = null)
         {
             //Debug.Log("Reduced Coin Text Called !");
+            int startVal = int.Parse(coinText.text);
+            int increaseBy = 1;
+
+            if (coinToSubtract is >= 100 and < 1000)
+            {
+                increaseBy = 10;
+            }
+            else if (coinToSubtract >= 1000)
+            {
+                increaseBy = 100;
+            }
+
+            float time = 1f / ((float)coinToSubtract / increaseBy);
+            Debug.Log("Coin Reduce Time : " + time);
+
             yield return new WaitForSeconds(waitTime);
 
-            int startVal = int.Parse(coinText.text);
-            float time = coinMoveTime / coinToSubtract;
-            Debug.Log("Coin Reduce Time : " + time);
-            for (int i = 1; i <= coinToSubtract; i++)
+            for (int i = 1; i <= coinToSubtract; i += increaseBy)
             {
                 coinText.text = $"{startVal - i}";
                 yield return new WaitForSeconds(time);
@@ -413,7 +420,6 @@ namespace YugantLoyaLibrary.FindWords
 
             smokeTransitionGm.SetActive(true);
             float totalTime = smokeSpeedScript.TotalAnimationTime() * speed;
-            isSmokeTransitionOn = true;
             StartCoroutine(SmokeAnim(shouldBackGroundChange, totalTime));
         }
 
@@ -433,7 +439,7 @@ namespace YugantLoyaLibrary.FindWords
 
             if (shouldBackGroundChange)
             {
-                DataHandler.instance.SetBg();
+                DataHandler.Instance.SetBg();
             }
 
             yield return new WaitForSeconds(totalTime / 2);

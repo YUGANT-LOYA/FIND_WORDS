@@ -191,7 +191,6 @@ MonoBehaviour:
   isBlastAfterWordComplete: 0
   isFullLocked: 0
   isCurrLock: 0
-  isGridOnRent: 0
   id: {x: 0, y: 0}
   placedOnQuesTile: {fileID: 0}
   isMoving: 0
@@ -210,7 +209,7 @@ MonoBehaviour:
   vibrationStrength: 12
   shakeRandomness: 10
   unlockEase: 1
-  unlockRotationTime: 2
+  unlockRotationTime: 3
   unlockTime: 0.75
 --- !u!1 &4439169905883863216
 GameObject:

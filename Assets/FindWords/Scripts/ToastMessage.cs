@@ -8,10 +8,13 @@ namespace YugantLoyaLibrary.FindWords
     public class ToastMessage : MonoBehaviour
     {
         [SerializeField] GameObject toastMsgGm, newWordFoundGm;
-        [SerializeField] private TextMeshProUGUI toastMsgTxt;
+        public GameObject newQuesTileUnlockedGm;
+        [SerializeField] private TextMeshProUGUI toastMsgTxt, newQuesTileUnlockTxt;
         [SerializeField] string notEnoughCoinsMsg, noWordFoundMsg, noDealFoundMsg;
         public float toastMsgTime = 0.5f;
         public bool isToastActive;
+
+
         public void ShowNotEnoughCoinsToast()
         {
             StopCoroutine(nameof(ToastAnimation));
@@ -39,6 +42,16 @@ namespace YugantLoyaLibrary.FindWords
             StartCoroutine(ToastAnimation(toastMsgGm));
         }
 
+        public void ShowXLetterWordCanFormToast()
+        {
+            StopCoroutine(nameof(ToastAnimation));
+            isToastActive = true;
+            UIManager.Instance.boolNewQuesIntroduced = true;
+            newQuesTileUnlockTxt.text = $"Form a Word using {DataHandler.UnlockedQuesLetter} Letters !!";
+            newQuesTileUnlockedGm.SetActive(true);
+            //StartCoroutine(ToastAnimation(newQuesTileUnlockedGm,5f));
+        }
+
         public void ShowNewWordFoundToast()
         {
             //toastMessage.SetActive(false);
@@ -48,9 +61,19 @@ namespace YugantLoyaLibrary.FindWords
             StartCoroutine(ToastAnimation(newWordFoundGm));
         }
 
-        IEnumerator ToastAnimation(GameObject messageGm)
+        public void MakeToastMessageDisappear(GameObject messageGm, float timeToWait = -1f)
         {
-            yield return new WaitForSeconds(toastMsgTime);
+            StartCoroutine(ToastAnimation(messageGm, timeToWait));
+        }
+
+        IEnumerator ToastAnimation(GameObject messageGm, float timeToWait = -1f)
+        {
+            if (Math.Abs(timeToWait - (-1f)) < 0.1f)
+            {
+                timeToWait = toastMsgTime;
+            }
+
+            yield return new WaitForSeconds(timeToWait);
 
             if (isToastActive)
             {

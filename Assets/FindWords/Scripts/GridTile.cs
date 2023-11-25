@@ -64,10 +64,21 @@ namespace YugantLoyaLibrary.FindWords
             return gridText;
         }
 
-        public void SetCurrentLockStatus(bool isActive)
+        public void SetCurrentLockStatus(bool isActive, float time = 0f)
         {
-            currlockGm.SetActive(isActive);
-            otherLockGm.SetActive(!isActive);
+            Invoke(!isActive ? nameof(DisableLockStatus) : nameof(EnableLockStatus), time);
+        }
+
+        void DisableLockStatus()
+        {
+            currlockGm.SetActive(false);
+            otherLockGm.SetActive(true);
+        }
+
+        void EnableLockStatus()
+        {
+            currlockGm.SetActive(true);
+            otherLockGm.SetActive(false);
         }
 
         public void DeactivateLockStatus()
@@ -165,7 +176,7 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        public void UnlockGrid(bool calledByPlayer = true)
+        private void UnlockGrid(bool calledByPlayer = true)
         {
             isFullLocked = false;
             isGridActive = true;
@@ -175,7 +186,7 @@ namespace YugantLoyaLibrary.FindWords
             {
                 LevelHandler.Instance.lastLockedGrid = this;
             }
-            
+
             DataHandler.UnlockGridIndex++;
             LevelHandler.Instance.unlockedGridList.Add(this);
             LevelHandler.Instance.totalBuyingGridList.Remove(this);
@@ -186,7 +197,7 @@ namespace YugantLoyaLibrary.FindWords
                 UIManager.SetCoinData(LevelHandler.Instance.coinToUnlockNextGrid, -1);
                 SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
                 StartCoroutine(
-                    UIManager.Instance.UpdateReducedCoinText(0f, LevelHandler.Instance.coinToUnlockNextGrid, 0.5f));
+                    UIManager.Instance.UpdateReducedCoinText(0f, LevelHandler.Instance.coinToUnlockNextGrid));
             }
 
             NewGridUnlockAnimation(calledByPlayer);
@@ -234,7 +245,8 @@ namespace YugantLoyaLibrary.FindWords
                     LevelHandler.Instance.noHintExist = false;
                     bool allGridBought = false;
 
-                    if (LevelHandler.Instance.totalBuyingGridList.Count <= 0 && LevelHandler.Instance.lastLockedGrid == this)
+                    if (LevelHandler.Instance.totalBuyingGridList.Count <= 0 &&
+                        LevelHandler.Instance.lastLockedGrid == this)
                     {
                         allGridBought = LevelHandler.Instance.CheckAllGridBought();
                     }
@@ -254,6 +266,15 @@ namespace YugantLoyaLibrary.FindWords
                 });
         }
 
+        public void RotateToOpen()
+        {
+            transform.DORotate(
+                    new Vector3(unlockRotationTime * 360f, transform.rotation.eulerAngles.y,
+                        transform.rotation.eulerAngles.z),
+                    unlockTime, RotateMode.FastBeyond360)
+                .SetEase(movingEase).OnComplete(() => { });
+        }
+
 
         //Filling Letter According to the word in WordLeftList.
         void FillData()
@@ -270,7 +291,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             if (DataHandler.HelperLevelCompleted == 0)
             {
-                GameController.instance.helper.gridHelperHand.SetActive(false);
+                GameController.Instance.helper.gridHelperHand.SetActive(false);
             }
 
             StartCoroutine(Move(pos, isMovingToQues, quesTile, time));
@@ -327,7 +348,7 @@ namespace YugantLoyaLibrary.FindWords
                 {
                     isHelperActivate = false;
                     DataHandler.HelperIndex++;
-                    GameController.instance.helper.ClickTile(0.2f);
+                    GameController.Instance.helper.ClickTile(0.2f);
                 }
             });
         }
