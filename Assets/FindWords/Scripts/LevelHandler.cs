@@ -21,7 +21,7 @@ namespace YugantLoyaLibrary.FindWords
         public GameObject boxContainer;
         public EnglishDictWords englishDictWords;
         [SerializeField] Level currLevel;
-        public int coinPerWord = 10;
+        public int coinPerWord = 10, iqLevelForGridLockPop = 2;
         [HideInInspector] public int coinToUnlockNextGrid;
         [Header("Level Info")] public char[][] gridData;
 
@@ -803,15 +803,15 @@ namespace YugantLoyaLibrary.FindWords
                 {
                     hintAvailList.Remove(temp);
                 }
-
-                WordComplete(isUnCommonWordFound);
-                quesHintStr = "";
-
+                
                 if (!isUnCommonWordFound)
                 {
                     SoundManager.instance.PlaySound(SoundManager.SoundType.Correct);
                 }
-
+                
+                WordComplete(isUnCommonWordFound);
+                quesHintStr = "";
+                
                 _wrongClickCount = 0;
                 _correctWordCompleteInLine++;
                 _nextCommentAfter--;
@@ -886,13 +886,10 @@ namespace YugantLoyaLibrary.FindWords
             Slider iqSlider = UIManager.Instance.iqSlider;
             DataHandler.IqBarVal = iqSlider.value + oneWordBarVal;
             float wordLeft = DataHandler.WordCompleteNum % unlockNextIqExp;
-            
+
             iqSlider.DOValue(DataHandler.IqBarVal, 0.3f).OnComplete(
-                () =>
-                {
-                    iqSlider.value = wordLeft / unlockNextIqExp;
-                });
-            
+                () => { iqSlider.value = wordLeft / unlockNextIqExp; });
+
             if (wordLeft != 0) return;
 
             DataHandler.IqExpLevel++;
@@ -900,28 +897,9 @@ namespace YugantLoyaLibrary.FindWords
             UIManager.Instance.iqSlider.value = 0f;
             DataHandler.IqBarVal = 0;
 
-            //New Ques Tile Introducing Only Once when User is New !!
-            // if (DataHandler.IqExpLevel >= 2 &&
-            //     DataHandler.NewQuesGridUnlock == 0)
-            // {
-            //     Debug.Log("New Ques Tile Introduced ! ");
-            //     //UIManager.Instance.SmokeTransition();
-            //     DataHandler.NewQuesGridUnlock = 1;
-            //     Invoke(nameof(SetNewQuestionTile), time / 2);
-            // }
-
-            if (DataHandler.IqExpLevel >= 3)
+            if (DataHandler.IqExpLevel == iqLevelForGridLockPop + 1)
             {
                 UnlockNextGridForCoins();
-            }
-        }
-
-        void SetNewQuestionTile()
-        {
-            currLevel.SetQuesGrid(DataHandler.CurrTotalQuesSize, true);
-
-            if (CheckGridLeft())
-            {
             }
         }
 
@@ -1453,24 +1431,39 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        public void UnlockNextGridForCoins()
+
+        public void UnlockNextGridForCoins(bool isCalledAtStart = false)
         {
+            Debug.Log("Unlock Next Grid Called !!");
             //Unlock next grid using coins...
-            if (DataHandler.IqExpLevel >= 2 && DataHandler.UnlockGridIndex < lockedGridList.Count)
+            if (DataHandler.IqExpLevel > iqLevelForGridLockPop && DataHandler.UnlockGridIndex < lockedGridList.Count)
             {
                 GridTile gridTile = lockedGridList[DataHandler.UnlockGridIndex];
-                
                 gridTile.RotateToOpen();
-                
+
                 int unlockAmount = GameController.Instance.GetCoinDataScriptable()
                     .quesUnlockDataList[DataHandler.CoinGridUnlockIndex];
 
                 coinToUnlockNextGrid = unlockAmount;
                 gridTile.SetLockTextAmount(coinToUnlockNextGrid);
 
-                //Debug.Log(" Unlock Next Grid Coin Called for " + gridTile.gameObject.name);
-                gridTile.SetCurrentLockStatus(true,0.5f);
-                gridTile.isCurrLock = true;
+                Debug.Log(" Unlock Next Grid Coin Called for " + gridTile.gameObject.name);
+
+                if (isCalledAtStart)
+                {
+                    Debug.Log("IF Unlock Next Grid !");
+                    gridTile.isFullLocked = false;
+                    gridTile.isCurrLock = true;
+                    gridTile.SetLockStatus();
+                }
+                else
+                {
+                    Debug.Log("ELSE Unlock Next Grid !");
+                    gridTile.isFullLocked = false;
+                    gridTile.isCurrLock = true;
+                    SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
+                    gridTile.SetLockStatus(0.5f);
+                }
             }
         }
 

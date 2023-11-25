@@ -236,10 +236,10 @@ namespace YugantLoyaLibrary.FindWords
                         LevelHandler.Instance.totalBuyingGridList.Add(gridTileScript);
                         gridTileScript.GetText().gameObject.SetActive(false);
                         gridTileScript.isGridActive = false;
-                        LevelHandler.Instance.lockedGridList.Add(gridTileScript);
-                        gridTileScript.SetCurrentLockStatus(false);
-                        gridTileScript.SetLockTextAmount(LevelHandler.Instance.coinToUnlockNextGrid);
                         gridTileScript.isFullLocked = true;
+                        LevelHandler.Instance.lockedGridList.Add(gridTileScript);
+                        gridTileScript.SetLockStatus();
+                        gridTileScript.SetLockTextAmount(LevelHandler.Instance.coinToUnlockNextGrid);
                     }
                     else
                     {
@@ -265,7 +265,7 @@ namespace YugantLoyaLibrary.FindWords
                 DataHandler.IsMaxGridOpened = 1;
             }
 
-            UnlockPreviousGrids();
+            UnlockPreviousGrids(true);
             LoadHintData();
         }
 
@@ -343,23 +343,27 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        void UnlockPreviousGrids()
+        void UnlockPreviousGrids(bool isCalledAtStart)
         {
             List<GridTile> list = new List<GridTile>(LevelHandler.Instance.lockedGridList);
+            Debug.Log("Unlock Grid Index : " + DataHandler.UnlockGridIndex);
             for (int i = 0; i < list.Count; i++)
             {
                 GridTile tile = list[i];
+                
                 if (i < DataHandler.UnlockGridIndex)
                 {
                     LevelHandler.Instance.gridAvailableOnScreenList.Add(tile);
                     LevelHandler.Instance.totalBuyingGridList.Remove(tile);
                     LevelHandler.Instance.unlockedGridList.Add(tile);
+                    Debug.Log("Unlocked Tile Name From Locked List : " + tile.name);
                     tile.DeactivateLockStatus();
                     continue;
                 }
+                
+                Debug.Log("Tile Unlocked : " + tile + " at : " + i);
+                LevelHandler.Instance.UnlockNextGridForCoins(isCalledAtStart);
 
-                //Debug.Log("Tile Unlocked : " + tile + " at : " + i);
-                LevelHandler.Instance.UnlockNextGridForCoins();
                 break;
             }
         }

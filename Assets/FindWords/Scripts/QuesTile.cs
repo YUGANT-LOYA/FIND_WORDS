@@ -62,13 +62,14 @@ namespace YugantLoyaLibrary.FindWords
 
         public void OnMouseDown()
         {
-            if (!LevelHandler.Instance.GetLevelRunningBool() || isUnlocked)
+            if (!LevelHandler.Instance.GetLevelRunningBool() || isUnlocked || DataHandler.HelperLevelCompleted == 0)
                 return;
 
             Debug.Log("Ques Tile Clicked !");
             if (DataHandler.TotalCoin < _unlockAmount)
             {
                 SoundManager.instance.PlaySound(SoundManager.SoundType.LockGridClicked);
+                UIManager.Instance.toastMessageScript.ShowNotEnoughCoinsToast();
                 Vibration.Vibrate(20);
                 //ShakeAnim();
             }

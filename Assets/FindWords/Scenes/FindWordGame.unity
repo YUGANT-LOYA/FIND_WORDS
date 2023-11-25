@@ -2232,6 +2232,7 @@ MonoBehaviour:
   englishDictWords: {fileID: 3132064099953264817}
   currLevel: {fileID: 0}
   coinPerWord: 10
+  iqLevelForGridLockPop: 2
   coinToUnlockNextGrid: 0
   totalGridsList: []
   inputGridsList: []
@@ -9730,7 +9731,7 @@ MonoBehaviour:
   fullWordTextFile: {fileID: 4900000, guid: f30af87a20b757546bd60f0a622160c0, type: 3}
   filteredWordTextFile: {fileID: 4900000, guid: 6ddb95fe757d8704587fce845380bdf4,
     type: 3}
-  compareWord: key
+  compareWord: steep
   wordInFullDict: 
   wordInFilteredDict: 
   fullDictData: {fileID: 11400000, guid: 531c9dab607b833428888917c0261e6c, type: 2}

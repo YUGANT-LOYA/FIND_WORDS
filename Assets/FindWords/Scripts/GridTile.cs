@@ -63,26 +63,47 @@ namespace YugantLoyaLibrary.FindWords
         {
             return gridText;
         }
-
-        public void SetCurrentLockStatus(bool isActive, float time = 0f)
+        public void SetLockStatus()
         {
-            Invoke(!isActive ? nameof(DisableLockStatus) : nameof(EnableLockStatus), time);
+            if (isFullLocked)
+            {
+                FullLockStatus();
+            }
+            else if (isCurrLock)
+            {
+                CurrLockStatus();
+            }
+        }
+        
+        public void SetLockStatus(float time)
+        {
+            if (isFullLocked)
+            {
+                Invoke(nameof(FullLockStatus), time);
+            }
+            else if (isCurrLock)
+            {
+                Invoke(nameof(CurrLockStatus), time);
+            }
         }
 
-        void DisableLockStatus()
+        void FullLockStatus()
         {
+            Debug.Log("Full Lock Status Called !");
             currlockGm.SetActive(false);
             otherLockGm.SetActive(true);
         }
 
-        void EnableLockStatus()
+        void CurrLockStatus()
         {
+            Debug.Log("Curr Lock Status Called !");
             currlockGm.SetActive(true);
             otherLockGm.SetActive(false);
         }
 
         public void DeactivateLockStatus()
         {
+            Debug.Log("DeActivated All Locks !");
             ObjectStatus(true);
             currlockGm.SetActive(false);
             otherLockGm.SetActive(false);
@@ -191,11 +212,11 @@ namespace YugantLoyaLibrary.FindWords
             LevelHandler.Instance.unlockedGridList.Add(this);
             LevelHandler.Instance.totalBuyingGridList.Remove(this);
             LevelHandler.Instance.gridAvailableOnScreenList.Add(this);
+            SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
 
             if (calledByPlayer)
             {
                 UIManager.SetCoinData(LevelHandler.Instance.coinToUnlockNextGrid, -1);
-                SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
                 StartCoroutine(
                     UIManager.Instance.UpdateReducedCoinText(0f, LevelHandler.Instance.coinToUnlockNextGrid));
             }
