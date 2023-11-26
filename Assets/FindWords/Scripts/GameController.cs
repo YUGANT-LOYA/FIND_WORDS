@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
-using YugantLoyaLibrary.FindWord;
 
 namespace YugantLoyaLibrary.FindWords
 {
@@ -26,6 +23,7 @@ namespace YugantLoyaLibrary.FindWords
 
         [Header("References")] [SerializeField]
         private PickWordDataInfo pickWordDataInfo;
+
         public ParticleSystem confettiParticleSystem;
         public WordCompleteComments wordCommentScript;
         public HelperScript helper;
@@ -161,6 +159,11 @@ namespace YugantLoyaLibrary.FindWords
         public PickWordDataInfo GetPickDataInfo()
         {
             return pickWordDataInfo;
+        }
+
+        public MainDictionary GetMainDictionary()
+        {
+            return mainDictionary;
         }
 
         public CoinHandlerScriptable GetCoinDataScriptable()
@@ -316,6 +319,8 @@ namespace YugantLoyaLibrary.FindWords
                 return;
             }
 
+            bool isHintAvail = false;
+
             if (isCalledByPlayer)
             {
                 if (DataHandler.TotalCoin < hintUsingCoin)
@@ -325,8 +330,8 @@ namespace YugantLoyaLibrary.FindWords
                     return;
                 }
 
-                bool isHintAvail =
-                    LevelHandler.Instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
+
+                isHintAvail = LevelHandler.Instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
 
                 LevelHandler.Instance.quesHintStr = hintStr;
                 Debug.Log("Ques Hint Str : " + hintStr);
@@ -347,7 +352,7 @@ namespace YugantLoyaLibrary.FindWords
 
             SoundManager.instance.PlaySound(SoundManager.SoundType.Click);
 
-            LevelHandler.Instance.ShowHint();
+            LevelHandler.Instance.ShowHint(isHintAvail);
         }
 
         IEnumerator BackToDeckAnim(List<GridTile> list)

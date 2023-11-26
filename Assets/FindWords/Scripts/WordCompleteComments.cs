@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 using DG.Tweening;
 using UnityEngine.UI;
 
-namespace YugantLoyaLibrary.FindWord
+namespace YugantLoyaLibrary.FindWords
 {
     public class WordCompleteComments : MonoBehaviour
     {

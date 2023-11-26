@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -803,15 +801,15 @@ namespace YugantLoyaLibrary.FindWords
                 {
                     hintAvailList.Remove(temp);
                 }
-                
+
                 if (!isUnCommonWordFound)
                 {
                     SoundManager.instance.PlaySound(SoundManager.SoundType.Correct);
                 }
-                
+
                 WordComplete(isUnCommonWordFound);
                 quesHintStr = "";
-                
+
                 _wrongClickCount = 0;
                 _correctWordCompleteInLine++;
                 _nextCommentAfter--;
@@ -1129,7 +1127,6 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-
             passingStr = AnyWordExists();
 
             Debug.Log("Hint Passing String : " + passingStr);
@@ -1146,6 +1143,80 @@ namespace YugantLoyaLibrary.FindWords
             passingStr = "";
             return false;
         }
+
+        string AnyWordExists()
+        {
+            List<char> lettersUsedList = new List<char>();
+            MainDictionary mainDict = GameController.Instance.GetMainDictionary();
+            string gridString = GetStringOfAllAvailableGrids();
+
+            foreach (MainDictionary.MainDictionaryInfo mainDictionaryInfo in mainDict.dictInfoList)
+            {
+                if (mainDictionaryInfo.wordLength != DataHandler.UnlockedQuesLetter) continue;
+
+                foreach (char c in gridString)
+                {
+                    if (lettersUsedList.Contains(c)) continue;
+
+                    lettersUsedList.Add(c);
+                    int val = c - 97;
+                    Debug.Log("C : " + c + "      C Val : " + val);
+                    List<string> wordList = mainDictionaryInfo.wordsInfo[val].wordList;
+
+                    foreach (string str in wordList)
+                    {
+                        if (IsWholeInside(str, gridString))
+                        {
+                            //Debug.Log("Yoo ! Word Can be Formed !!");
+                            return str;
+                        }
+                        else
+                        {
+                            //Debug.Log("Nope ! Word Can not be Formed !!");
+                        }
+                    }
+                }
+            }
+
+            Debug.Log("None of Word Matched ");
+            return "";
+        }
+
+        static bool IsWholeInside(string string1, string string2)
+        {
+            string1 = string1.ToLower().Trim();
+            string2 = string2.ToLower().Trim();
+
+            for (var i = 1; i < string1.Length; i++)
+            {
+                var c = string1[i];
+                Debug.Log("C : " + c);
+                int index = string2.IndexOf(c);
+                Debug.Log("Index : " + index);
+                if (index == -1)
+                {
+                    Debug.Log("Letter  " + c + " Missing !");
+                    return false;
+                }
+
+                // Remove the character from string2 to ensure it is not repeated
+                string2 = string2.Remove(index, 1);
+            }
+
+            return true;
+        }
+
+        string GetStringOfAllAvailableGrids()
+        {
+            StringBuilder gridStrings = new StringBuilder();
+            foreach (GridTile gridTile in gridAvailableOnScreenList)
+            {
+                gridStrings.Append(gridTile.GridTextData);
+            }
+
+            return gridStrings.ToString();
+        }
+
 
         bool CheckAllLetterInGrid()
         {
@@ -1226,7 +1297,7 @@ namespace YugantLoyaLibrary.FindWords
             return isHintAvail;
         }
 
-        public void ShowHint()
+        public void ShowHint(bool isHintAvail)
         {
             GridsBackToPos(true);
 
@@ -1235,7 +1306,7 @@ namespace YugantLoyaLibrary.FindWords
                 SetLevelRunningBool(false);
             }
 
-            if (!string.IsNullOrEmpty(quesHintStr) ||
+            if (!isHintAvail || !string.IsNullOrEmpty(quesHintStr) ||
                 !string.IsNullOrEmpty(DataHandler.CurrHint) ||
                 DataHandler.CurrHint.Length != DataHandler.UnlockedQuesLetter ||
                 quesHintStr.Length != DataHandler.UnlockedQuesLetter)
@@ -1295,84 +1366,85 @@ namespace YugantLoyaLibrary.FindWords
             return true;
         }
 
-        private string AnyWordExists()
-        {
-            int count = DataHandler.UnlockedQuesLetter;
-            List<GridTile> hintTiles = new List<GridTile>();
-            List<GridTile> totalRemainingList = new List<GridTile>(gridAvailableOnScreenList);
-            GameController.ShuffleList(totalRemainingList);
-            // Debug.Log("Grid Remaining Counts : " + gridsRemainingList.Count);
-            StringBuilder finalStr = new StringBuilder("");
 
-            if (totalRemainingList.Count < DataHandler.UnlockedQuesLetter)
-                return finalStr.ToString();
-
-            for (int i = 0; i < totalRemainingList.Count; i++)
-            {
-                List<GridTile> gridsRemainingList = new List<GridTile>(totalRemainingList);
-                //Debug.Log("GridsRemainingList Count : " + gridsRemainingList.Count);
-                StringBuilder word = new StringBuilder(gridsRemainingList[i].GridTextData);
-                hintTiles.Add(gridsRemainingList[i]);
-                //Debug.Log("HINT GRID : " + gridsRemainingList[i].name, gridsRemainingList[i].gameObject);
-                //Debug.Log("Word First Letter Selected : " + word);
-                int index = 1;
-                MainDictionary.WordLengthDetailedInfo dictLetterInfo =
-                    GameController.Instance.GetWordListOfLength(count,
-                        gridsRemainingList[i].GridTextData);
-
-                Debug.Log("Word List Length : " + dictLetterInfo.wordList.Count());
-                gridsRemainingList.Remove(gridsRemainingList[i]);
-
-                Debug.Log("Char Selected : " + dictLetterInfo.wordStartChar);
-
-                if (dictLetterInfo.wordStartChar.ToString() == word.ToString())
-                {
-                    List<string> wordList = dictLetterInfo.wordList;
-                    Debug.Log("LINE COUNT : " + wordList.Count);
-
-                    if (wordList.Count <= 0)
-                        continue;
-
-                    foreach (string str in wordList)
-                    {
-                        //str = Each Word in Text File
-                        if (!string.IsNullOrWhiteSpace(str))
-                        {
-                            word = new StringBuilder(str[0].ToString());
-                            Debug.Log("Text Word : " + str);
-                            bool isWordFormed = FindWordThroughCharacter(index, word, str,
-                                new List<GridTile>(gridsRemainingList), hintTiles,
-                                out finalStr);
-
-                            if (!isWordFormed)
-                            {
-                                hintTiles.Clear();
-                            }
-                            else
-                            {
-                                //Debug.Log("Word Found in List");
-                                return finalStr.ToString();
-                            }
-                        }
-                    }
-
-                    Debug.Log("Word : " + word + " Index : " + index);
-
-                    if (index < wordList.Count)
-                    {
-                        Debug.Log("Word Append Letter : " + wordList[index]);
-                        word.Append(wordList[index]);
-                    }
-                }
-
-                //Debug.Log("Word Append Letter : " + wordList[index]);
-                hintTiles.Clear();
-            }
-
-            Debug.Log("Hint Does Not Exists !");
-
-            return finalStr.ToString();
-        }
+        // private string AnyWordExists()
+        // {
+        //     int count = DataHandler.UnlockedQuesLetter;
+        //     List<GridTile> hintTiles = new List<GridTile>();
+        //     List<GridTile> totalRemainingList = new List<GridTile>(gridAvailableOnScreenList);
+        //     GameController.ShuffleList(totalRemainingList);
+        //     // Debug.Log("Grid Remaining Counts : " + gridsRemainingList.Count);
+        //     StringBuilder finalStr = new StringBuilder("");
+        //
+        //     if (totalRemainingList.Count < DataHandler.UnlockedQuesLetter)
+        //         return finalStr.ToString();
+        //
+        //     for (int i = 0; i < totalRemainingList.Count; i++)
+        //     {
+        //         List<GridTile> gridsRemainingList = new List<GridTile>(totalRemainingList);
+        //         //Debug.Log("GridsRemainingList Count : " + gridsRemainingList.Count);
+        //         StringBuilder word = new StringBuilder(gridsRemainingList[i].GridTextData);
+        //         hintTiles.Add(gridsRemainingList[i]);
+        //         //Debug.Log("HINT GRID : " + gridsRemainingList[i].name, gridsRemainingList[i].gameObject);
+        //         //Debug.Log("Word First Letter Selected : " + word);
+        //         int index = 1;
+        //         MainDictionary.WordLengthDetailedInfo dictLetterInfo =
+        //             GameController.Instance.GetWordListOfLength(count,
+        //                 gridsRemainingList[i].GridTextData);
+        //
+        //         Debug.Log("Word List Length : " + dictLetterInfo.wordList.Count());
+        //         gridsRemainingList.Remove(gridsRemainingList[i]);
+        //
+        //         Debug.Log("Char Selected : " + dictLetterInfo.wordStartChar);
+        //
+        //         if (dictLetterInfo.wordStartChar.ToString() == word.ToString())
+        //         {
+        //             List<string> wordList = dictLetterInfo.wordList;
+        //             Debug.Log("LINE COUNT : " + wordList.Count);
+        //
+        //             if (wordList.Count <= 0)
+        //                 continue;
+        //
+        //             foreach (string str in wordList)
+        //             {
+        //                 //str = Each Word in Text File
+        //                 if (!string.IsNullOrWhiteSpace(str))
+        //                 {
+        //                     word = new StringBuilder(str[0].ToString());
+        //                     Debug.Log("Text Word : " + str);
+        //                     bool isWordFormed = FindWordThroughCharacter(index, word, str,
+        //                         new List<GridTile>(gridsRemainingList), hintTiles,
+        //                         out finalStr);
+        //
+        //                     if (!isWordFormed)
+        //                     {
+        //                         hintTiles.Clear();
+        //                     }
+        //                     else
+        //                     {
+        //                         //Debug.Log("Word Found in List");
+        //                         return finalStr.ToString();
+        //                     }
+        //                 }
+        //             }
+        //
+        //             Debug.Log("Word : " + word + " Index : " + index);
+        //
+        //             if (index < wordList.Count)
+        //             {
+        //                 Debug.Log("Word Append Letter : " + wordList[index]);
+        //                 word.Append(wordList[index]);
+        //             }
+        //         }
+        //
+        //         //Debug.Log("Word Append Letter : " + wordList[index]);
+        //         hintTiles.Clear();
+        //     }
+        //
+        //     Debug.Log("Hint Does Not Exists !");
+        //
+        //     return finalStr.ToString();
+        // }
 
 
         bool FindWordThroughCharacter(int index, StringBuilder formedWord, string word,
