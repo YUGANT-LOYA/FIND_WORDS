@@ -12,10 +12,12 @@ namespace YugantLoyaLibrary.FindWords
         private Level _level;
         public GameObject cube;
         [SerializeField] private GameObject currlockGm, otherLockGm;
-        [SerializeField] private TextMeshPro gridText, rentTimeText;
+        [SerializeField] private TextMeshPro gridText;
         [HideInInspector] public Vector3 defaultGridSize;
         [HideInInspector] public Vector3 defaultLocalGridPos, defaultGlobalGridPos;
         [HideInInspector] public Quaternion defaultQuaternionRotation;
+        [SerializeField] private BoxCollider boxCollider;
+        [SerializeField] private MeshRenderer cubeMeshRenderer;
         public Vector3 blastPos;
 
         public bool isHelperActivate = false,
@@ -63,6 +65,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             return gridText;
         }
+
         public void SetLockStatus()
         {
             if (isFullLocked)
@@ -74,7 +77,7 @@ namespace YugantLoyaLibrary.FindWords
                 CurrLockStatus();
             }
         }
-        
+
         public void SetLockStatus(float time)
         {
             if (isFullLocked)
@@ -89,14 +92,14 @@ namespace YugantLoyaLibrary.FindWords
 
         void FullLockStatus()
         {
-            Debug.Log("Full Lock Status Called !");
+            //Debug.Log("Full Lock Status Called !");
             currlockGm.SetActive(false);
             otherLockGm.SetActive(true);
         }
 
         void CurrLockStatus()
         {
-            Debug.Log("Curr Lock Status Called !");
+            //Debug.Log("Curr Lock Status Called !");
             currlockGm.SetActive(true);
             otherLockGm.SetActive(false);
         }
@@ -127,8 +130,8 @@ namespace YugantLoyaLibrary.FindWords
 
         public void ObjectStatus(bool isActive)
         {
-            cube.GetComponent<MeshRenderer>().enabled = isActive;
-            GetComponent<BoxCollider>().enabled = isActive;
+            cubeMeshRenderer.enabled = isActive;
+            boxCollider.enabled = isActive;
             gridText.gameObject.SetActive(isActive);
         }
 

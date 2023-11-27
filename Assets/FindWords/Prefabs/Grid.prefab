@@ -184,6 +184,8 @@ MonoBehaviour:
   defaultLocalGridPos: {x: 0, y: 0, z: 0}
   defaultGlobalGridPos: {x: 0, y: 0, z: 0}
   defaultQuaternionRotation: {x: 0, y: 0, z: 0, w: 0}
+  boxCollider: {fileID: 3702479008882131488}
+  cubeMeshRenderer: {fileID: 8152889435325786636}
   blastPos: {x: -4, y: 0, z: 0}
   isHelperActivate: 0
   isGridActive: 1

@@ -40,7 +40,7 @@ namespace YugantLoyaLibrary.FindWords
 
                     lettersUsedList.Add(c);
                     int val = c - 97;
-                    Debug.Log("C : " + c + "      C Val : " + val);
+                    //Debug.Log("C : " + c + "      C Val : " + val);
                     List<string> wordList = mainDictionaryInfo.wordsInfo[val].wordList;
 
                     foreach (string str in wordList)
@@ -70,12 +70,12 @@ namespace YugantLoyaLibrary.FindWords
             for (var i = 1; i < string1.Length; i++)
             {
                 var c = string1[i];
-                Debug.Log("C : " + c);
+                //Debug.Log("C : " + c);
                 int index = string2.IndexOf(c);
-                Debug.Log("Index : " + index);
+                //Debug.Log("Index : " + index);
                 if (index == -1)
                 {
-                    Debug.Log("Letter  " + c + " Missing !");
+                    //Debug.Log("Letter  " + c + " Missing !");
                     return false;
                 }
 

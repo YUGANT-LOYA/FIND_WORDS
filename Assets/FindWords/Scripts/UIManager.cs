@@ -27,6 +27,7 @@ namespace YugantLoyaLibrary.FindWords
         public CanvasGroup coinAnimCanvasGroup;
         private Vector3 _coinAnimTextDefaultPos;
         public Button shuffleButton, dealButton, hintButton;
+        private Image _shuffleButtonImg, _dealButtonImg, _hintButtonImg;
         private Vector3 _defaultHintButtonSize, _defaultShuffleButtonSize, _defaultDealButtonSize;
         public Sprite pressedDealButton, normalDealButton;
         public Ease coinMovementEase;
@@ -58,6 +59,10 @@ namespace YugantLoyaLibrary.FindWords
             shuffleButton.onClick.AddListener(() => { GameController.Instance.ShuffleGrid(); });
             dealButton.onClick.AddListener(() => { GameController.Instance.Deal(); });
             hintButton.onClick.AddListener(() => { GameController.Instance.Hint(); });
+
+            _shuffleButtonImg = shuffleButton.GetComponent<Image>();
+            _dealButtonImg = dealButton.GetComponent<Image>();
+            _hintButtonImg = hintButton.GetComponent<Image>();
         }
 
         private void CreateSingleton()
@@ -87,7 +92,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public bool HintStatus(bool isActive)
         {
-            Debug.Log("Hint Button Status Called !");
+            //Debug.Log("Hint Button Status Called !");
             //Debug.Log("Hint Button Status : " + hintButton.enabled);
             hintButton.enabled = true;
 
@@ -95,7 +100,7 @@ namespace YugantLoyaLibrary.FindWords
                 DataHandler.UnlockedQuesLetter > LevelHandler.Instance.gridAvailableOnScreenList.Count)
             {
                 //Debug.Log("Hint Disable Called !");
-                hintButton.GetComponent<Image>().color = disableButtonColor;
+                _hintButtonImg.color = disableButtonColor;
                 LevelHandler.Instance.isHintAvailInButton = false;
             }
             else
@@ -103,7 +108,7 @@ namespace YugantLoyaLibrary.FindWords
                 //Debug.Log("Hint Enable Called !");
 
                 LevelHandler.Instance.isHintAvailInButton = true;
-                hintButton.GetComponent<Image>().color = Color.white;
+                _hintButtonImg.color = Color.white;
             }
 
             //Debug.Log("Hint Button Status : " + hintButton.enabled);
@@ -122,84 +127,79 @@ namespace YugantLoyaLibrary.FindWords
             if (isHintAvail && DataHandler.TotalCoin >= GameController.Instance.hintUsingCoin)
             {
                 hintButton.enabled = true;
-                hintButton.GetComponent<Image>().color = Color.white;
+                _hintButtonImg.color = Color.white;
             }
         }
 
         private void CheckOtherButtonStatus()
         {
-            Debug.Log("Check Other Button Status Called !");
+            //Debug.Log("Check Other Button Status Called !");
             dealButton.enabled = true;
             shuffleButton.enabled = true;
 
-            shuffleButton.GetComponent<Image>().color = DataHandler.TotalCoin < GameController.Instance.shuffleUsingCoin
+            _shuffleButtonImg.color = DataHandler.TotalCoin < GameController.Instance.shuffleUsingCoin
                 ? disableButtonColor
                 : Color.white;
 
-            dealButton.GetComponent<Image>().color = DataHandler.TotalCoin < GameController.Instance.dealUsingCoin
+            _dealButtonImg.color = DataHandler.TotalCoin < GameController.Instance.dealUsingCoin
                 ? disableButtonColor
                 : Color.white;
         }
 
         private void SetAllButtonStatus(bool isActive)
         {
-            Debug.Log("Set All Button Status Called !");
-            Image hintImage = hintButton.GetComponent<Image>();
-            Image dealImage = dealButton.GetComponent<Image>();
-            Image shuffleImage = shuffleButton.GetComponent<Image>();
-
-
+            //Debug.Log("Set All Button Status Called !");
             if (DataHandler.TotalCoin < GameController.Instance.shuffleUsingCoin)
             {
                 shuffleButton.enabled = true;
-                shuffleImage.color = disableButtonColor;
+                _shuffleButtonImg.color = disableButtonColor;
             }
             else if (!isActive)
             {
                 shuffleButton.enabled = false;
-                shuffleImage.color = disableButtonColor;
+                _shuffleButtonImg.color = disableButtonColor;
             }
             else
             {
                 shuffleButton.enabled = true;
-                shuffleImage.color = Color.white;
+                _shuffleButtonImg.color = Color.white;
             }
 
             if (DataHandler.TotalCoin < GameController.Instance.dealUsingCoin)
             {
                 dealButton.enabled = true;
-                dealImage.color = disableButtonColor;
+                _dealButtonImg.color = disableButtonColor;
             }
             else if (!isActive)
             {
                 dealButton.enabled = false;
-                dealImage.color = disableButtonColor;
+                _dealButtonImg.color = disableButtonColor;
             }
             else
             {
                 dealButton.enabled = true;
-                dealImage.color = Color.white;
+                _dealButtonImg.color = Color.white;
             }
 
             if (!isActive)
             {
                 hintButton.enabled = false;
-                hintImage.color = disableButtonColor;
+                _hintButtonImg.color = disableButtonColor;
             }
             else if (DataHandler.TotalCoin < GameController.Instance.hintUsingCoin)
             {
                 hintButton.enabled = true;
-                hintImage.color = disableButtonColor;
+                _hintButtonImg.color = disableButtonColor;
             }
             else if (!LevelHandler.Instance.isHintAvailInButton)
             {
                 hintButton.enabled = true;
-                hintImage.color = disableButtonColor;
+                _hintButtonImg.color = disableButtonColor;
             }
             else
             {
                 hintButton.enabled = true;
-                hintImage.color = Color.white;
+                _hintButtonImg.color = Color.white;
             }
         }
 
@@ -347,7 +347,7 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             float time = 1f / ((float)coinToSubtract / increaseBy);
-            Debug.Log("Coin Reduce Time : " + time);
+            //Debug.Log("Coin Reduce Time : " + time);
 
             yield return new WaitForSeconds(waitTime);
 
@@ -379,15 +379,15 @@ namespace YugantLoyaLibrary.FindWords
 
         IEnumerator DealButtonClicked()
         {
-            dealButton.gameObject.GetComponent<Image>().sprite = pressedDealButton;
+            _dealButtonImg.sprite = pressedDealButton;
             dealButton.transform.localScale = _defaultDealButtonSize;
             Vector3 finalScale = dealButton.transform.localScale - Vector3.one * 0.1f;
-            dealButton.gameObject.transform.DOScale(finalScale, 0.25f).OnComplete(() =>
+            dealButton.transform.DOScale(finalScale, 0.25f).OnComplete(() =>
             {
-                dealButton.gameObject.transform.DOScale(_defaultDealButtonSize, 0.25f);
+                dealButton.transform.DOScale(_defaultDealButtonSize, 0.25f);
             });
             yield return new WaitForSeconds(0.25f);
-            dealButton.gameObject.GetComponent<Image>().sprite = normalDealButton;
+            _dealButtonImg.sprite = normalDealButton;
         }
 
         public void HintButtonClicked()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace YugantLoyaLibrary.FindWords
@@ -210,7 +211,7 @@ namespace YugantLoyaLibrary.FindWords
                     return;
                 }
 
-                Debug.Log("Shuffle Called !!");
+                //Debug.Log("Shuffle Called !!");
                 Vibration.Vibrate(20);
                 LevelHandler.Instance.quesHintStr = "";
                 UIManager.SetCoinData(shuffleUsingCoin, -1);
@@ -272,7 +273,7 @@ namespace YugantLoyaLibrary.FindWords
                     return;
                 }
 
-                Debug.Log("Deal Called !!");
+                //Debug.Log("Deal Called !!");
                 Vibration.Vibrate(20);
                 UIManager.SetCoinData(dealUsingCoin, -1);
                 StartCoroutine(UIManager.Instance.UpdateReducedCoinText(0f, dealUsingCoin));
@@ -281,7 +282,7 @@ namespace YugantLoyaLibrary.FindWords
 
             SoundManager.instance.PlaySound(SoundManager.SoundType.Click);
             List<GridTile> list = new List<GridTile>(LevelHandler.Instance.wordCompletedGridList);
-            ShuffleList(list);
+            //ShuffleList(list);
             StartCoroutine(BackToDeckAnim(list));
         }
 
@@ -357,7 +358,7 @@ namespace YugantLoyaLibrary.FindWords
 
         IEnumerator BackToDeckAnim(List<GridTile> list)
         {
-            string randomPickedWord = "";
+            StringBuilder randomPickedWord = new StringBuilder("");
             List<GridTile> tempList = new List<GridTile>(LevelHandler.Instance.gridAvailableOnScreenList);
             int total = list.Count;
             string remainingLetter = "";
@@ -369,7 +370,7 @@ namespace YugantLoyaLibrary.FindWords
                 string tempStr =
                     LevelHandler.Instance.PickRandomWordFormingLetters(tempList, 2, out string gridExistingString);
 
-                Debug.Log("Temp Word : " + tempStr);
+                //Debug.Log("Temp Word : " + tempStr);
 
                 if (tempStr.Length > 0)
                 {
@@ -392,21 +393,15 @@ namespace YugantLoyaLibrary.FindWords
                         }
                     }
 
-                    //Debug.Log("Temp List Count : " + tempList.Count);
-
-                    // foreach (GridTile tile in tempList)
-                    // {
-                    //     Debug.Log("Temp Element : " + tile);
-                    // }
-
                     hintFitStringList.Add(tempStr);
-                    randomPickedWord += remainingLetter.Trim();
+                    randomPickedWord.Append(remainingLetter.Trim());
                 }
                 else
                 {
                     hintFitStringList.Clear();
                     //Debug.Log("Printing Data From Word Left List ");
-                    randomPickedWord = LevelHandler.Instance.GetDataAccordingToGrid(list.Count);
+                    string str = LevelHandler.Instance.GetDataAccordingToGrid(list.Count);
+                    randomPickedWord = new StringBuilder(str);
                     total -= randomPickedWord.Length;
                 }
 
@@ -421,7 +416,7 @@ namespace YugantLoyaLibrary.FindWords
                 //Debug.Log("Hint Added : " + s);
             }
 
-            Debug.Log("Remaining Letter : " + remainingLetter);
+            //Debug.Log("Remaining Letter : " + remainingLetter);
             //Debug.Log("RANDOM Pick Letter : " + randomPickedWord);
             //Debug.Log("Temp STR Count : " + tempList.Count);
             //Debug.Log("RANDOM PICK VAL : " + randomPickedWord);
