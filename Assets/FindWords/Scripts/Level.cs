@@ -11,11 +11,9 @@ namespace YugantLoyaLibrary.FindWords
         [Header("Main Info")] private Camera _cam;
         [HideInInspector] public Vector2Int gridSize;
         private float _camOrthographicSize;
-        public Material gridMaterial;
         private readonly int[] _randomScreenPointArr = { -1, 1 };
         public Ease gridPlacementEase;
         Vector3 _gridContainerSize, _defaultStartPos;
-        public float defaultStartYPos = 1.5f;
 
         [Tooltip("The Grid Should come inside camera's orthographic size, so there should be offset from one side")]
         public float camGridOffset = 0.5f;
@@ -80,12 +78,6 @@ namespace YugantLoyaLibrary.FindWords
 
         public void SetQuesGrid(int quesGridCount, bool isGridUnlockFromOutside = false)
         {
-            // if (DataHandler.CurrGridSize == GameController.Instance.startingGridSize &&
-            //     DataHandler.NewQuesGridUnlock == 0)
-            // {
-            //     quesGridCount = DataHandler.UnlockedQuesLetter;
-            // }
-
             if (DataHandler.CurrTotalQuesSize >= GameController.Instance.maxGridSize)
             {
                 DataHandler.CurrTotalQuesSize = GameController.Instance.maxQuesSize;
@@ -96,7 +88,7 @@ namespace YugantLoyaLibrary.FindWords
             quesGridTrans.localPosition = Vector2.zero;
             Vector3 startPos = quesGridTrans.transform.localPosition;
             float spacing = 0.05f;
-            Debug.Log("Set Ques Grid Count : " + quesGridCount);
+            //Debug.Log("Set Ques Grid Count : " + quesGridCount);
 
             switch (quesGridCount)
             {
@@ -187,7 +179,7 @@ namespace YugantLoyaLibrary.FindWords
             if (GameController.Instance.maxGridSize < DataHandler.CurrGridSize &&
                 DataHandler.UnlockGridIndex >= LevelHandler.Instance.lockedGridList.Count - 1)
             {
-                Debug.Log("Before Max Grid Unlocked !!");
+                //Debug.Log("Before Max Grid Unlocked !!");
                 DataHandler.IsMaxGridOpened = 1;
             }
 
@@ -201,7 +193,6 @@ namespace YugantLoyaLibrary.FindWords
                     GameObject gmObj = Instantiate(gridPrefab, gridContainer);
                     GridTile gridTileScript = gmObj.GetComponent<GridTile>();
                     //Assigning New Material to each grid.
-                    Renderer gmRenderer = gridTileScript.cube.GetComponent<Renderer>();
                     Vector3 globalPos = gmObj.transform.TransformPoint(startPos);
                     gmObj.transform.localScale = new Vector3(_currGridSize, _currGridSize, _currGridSize / 2);
                     gridTileScript.DefaultGridData(startPos, gmObj.transform.rotation, globalPos);
@@ -211,7 +202,9 @@ namespace YugantLoyaLibrary.FindWords
                     gmObj.name = $"Grid_{i}_{j}";
                     gridTileScript.AssignInfo(this);
                     gridTileScript.GridID = new Vector2Int(i, j);
-                    LevelHandler.Instance.totalGridsList.Add(gridTileScript);
+                    //LevelHandler.Instance.totalGridsList.Add(gridTileScript);
+                    LevelHandler.AddGridToList(LevelHandler.Instance.totalGridsList,
+                        gridTileScript);
 
                     if (DataHandler.NewGridCreated == 0)
                     {
@@ -233,18 +226,18 @@ namespace YugantLoyaLibrary.FindWords
 
                     if ((i == gridSize.x - 1 || j == gridSize.y - 1) && DataHandler.IsMaxGridOpened == 0)
                     {
-                        LevelHandler.Instance.totalBuyingGridList.Add(gridTileScript);
+                        LevelHandler.AddGridToList(LevelHandler.Instance.totalBuyingGridList, gridTileScript);
                         gridTileScript.GetText().gameObject.SetActive(false);
                         gridTileScript.isGridActive = false;
                         gridTileScript.isFullLocked = true;
-                        LevelHandler.Instance.lockedGridList.Add(gridTileScript);
+                        LevelHandler.AddGridToList(LevelHandler.Instance.lockedGridList, gridTileScript);
                         gridTileScript.SetLockStatus();
                         gridTileScript.SetLockTextAmount(LevelHandler.Instance.coinToUnlockNextGrid);
                     }
                     else
                     {
-                        LevelHandler.Instance.unlockedGridList.Add(gridTileScript);
-                        LevelHandler.Instance.gridAvailableOnScreenList.Add(gridTileScript);
+                        LevelHandler.AddGridToList(LevelHandler.Instance.unlockedGridList, gridTileScript);
+                        LevelHandler.AddGridToList(LevelHandler.Instance.gridAvailableOnScreenList, gridTileScript);
                     }
 
                     //Debug.Log("GRID CREATED INDEX : " + index);
@@ -261,7 +254,7 @@ namespace YugantLoyaLibrary.FindWords
             if (DataHandler.CurrGridSize == GameController.Instance.maxGridSize &&
                 DataHandler.UnlockGridIndex >= LevelHandler.Instance.lockedGridList.Count - 1)
             {
-                Debug.Log("After Max Grid Unlocked !!");
+                //Debug.Log("After Max Grid Unlocked !!");
                 DataHandler.IsMaxGridOpened = 1;
             }
 
@@ -346,22 +339,20 @@ namespace YugantLoyaLibrary.FindWords
         void UnlockPreviousGrids(bool isCalledAtStart)
         {
             List<GridTile> list = new List<GridTile>(LevelHandler.Instance.lockedGridList);
-            Debug.Log("Unlock Grid Index : " + DataHandler.UnlockGridIndex);
+            //Debug.Log("Unlock Grid Index : " + DataHandler.UnlockGridIndex);
             for (int i = 0; i < list.Count; i++)
             {
                 GridTile tile = list[i];
-                
+
                 if (i < DataHandler.UnlockGridIndex)
                 {
-                    LevelHandler.Instance.gridAvailableOnScreenList.Add(tile);
-                    LevelHandler.Instance.totalBuyingGridList.Remove(tile);
-                    LevelHandler.Instance.unlockedGridList.Add(tile);
-                    Debug.Log("Unlocked Tile Name From Locked List : " + tile.name);
+                    LevelHandler.Instance.UnlockingGrid(tile);
+                    //Debug.Log("Unlocked Tile Name From Locked List : " + tile.name);
                     tile.DeactivateLockStatus();
                     continue;
                 }
-                
-                Debug.Log("Tile Unlocked : " + tile + " at : " + i);
+
+                //Debug.Log("Tile Unlocked : " + tile + " at : " + i);
                 LevelHandler.Instance.UnlockNextGridForCoins(isCalledAtStart);
 
                 break;
@@ -393,8 +384,8 @@ namespace YugantLoyaLibrary.FindWords
                     }
                     else
                     {
-                        LevelHandler.Instance.wordCompletedGridList.Add(gmObj);
-                        LevelHandler.Instance.gridAvailableOnScreenList.Remove(gmObj);
+                        LevelHandler.AddGridToList(LevelHandler.Instance.wordCompletedGridList, gmObj);
+                        LevelHandler.RemoveGridFromList(LevelHandler.Instance.gridAvailableOnScreenList, gmObj);
                     }
                 }
             }
@@ -420,7 +411,7 @@ namespace YugantLoyaLibrary.FindWords
 
         private void AssignGridData(GridTile gridTileScript, int row, int column)
         {
-            string str = LevelHandler.Instance.gridData[row][column].ToString().ToUpper();
+            string str = LevelHandler.Instance.GridStringData[row][column].ToString().ToUpper();
             gridTileScript.GridTextData = str;
 
             if (string.IsNullOrWhiteSpace(str))

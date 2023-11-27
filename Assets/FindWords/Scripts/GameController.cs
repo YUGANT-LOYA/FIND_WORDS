@@ -296,7 +296,7 @@ namespace YugantLoyaLibrary.FindWords
                 yield return new WaitForSeconds(_currLevel.timeToWaitForEachGrid);
                 gridTile.isBlastAfterWordComplete = false;
                 gridTile.GridTextData = randomPickedWord[index].ToString();
-                LevelHandler.Instance.gridAvailableOnScreenList.Add(gridTile);
+                LevelHandler.AddGridToList(LevelHandler.Instance.gridAvailableOnScreenList, gridTile);
                 gridTile.MoveTowardsGrid();
                 index++;
             }
@@ -335,7 +335,6 @@ namespace YugantLoyaLibrary.FindWords
                 isHintAvail = LevelHandler.Instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
 
                 LevelHandler.Instance.quesHintStr = hintStr;
-                Debug.Log("Ques Hint Str : " + hintStr);
 
                 if (!isHintAvail)
                 {
@@ -431,9 +430,9 @@ namespace YugantLoyaLibrary.FindWords
                 //Debug.Log("Moving To Grid Place Again !");
                 gridTile.isBlastAfterWordComplete = false;
                 gridTile.GridTextData = randomPickedWord[index].ToString();
-                LevelHandler.Instance.gridAvailableOnScreenList.Add(gridTile);
+                LevelHandler.AddGridToList(LevelHandler.Instance.gridAvailableOnScreenList, gridTile);
                 gridTile.MoveTowardsGrid();
-                LevelHandler.Instance.wordCompletedGridList.Remove(gridTile);
+                LevelHandler.RemoveGridFromList(LevelHandler.Instance.wordCompletedGridList, gridTile);
                 index++;
             }
 
@@ -486,10 +485,7 @@ namespace YugantLoyaLibrary.FindWords
         IEnumerator ResetLevelHandlerData(float time)
         {
             yield return new WaitForSeconds(time);
-            LevelHandler.Instance.LastQuesTile = null;
-            LevelHandler.Instance.noHintExist = false;
-            LevelHandler.Instance.SetLevelRunningBool(true);
-            LevelHandler.Instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
+            LevelHandler.Instance.AfterBackToDeckAnim();
         }
 
         public MainDictionary.WordLengthDetailedInfo GetWordListOfLength(int wordLength,
@@ -521,101 +517,18 @@ namespace YugantLoyaLibrary.FindWords
             return wordList;
         }
 
-        public bool Search(string word)
-        {
-            List<MainDictionary.MainDictionaryInfo> dictInfoList = mainDictionary.dictInfoList;
-            //Debug.Log("DictInfo List Count : " + dictInfoList.Count);
-            bool isWordThere = IsWordAvailable(word, dictInfoList);
-
-            if (isWordThere)
-                return true;
-
-            return false;
-        }
-
-        private bool IsWordAvailable(string word, List<MainDictionary.MainDictionaryInfo> dictInfoList)
-        {
-            for (int i = 0; i < dictInfoList.Count; i++)
-            {
-                if (dictInfoList[i].wordLength != word.Length)
-                    continue;
-
-                List<MainDictionary.WordLengthDetailedInfo> wordInfoList = dictInfoList[i].wordsInfo;
-
-                for (int j = 0; j < wordInfoList.Count; j++)
-                {
-                    if (wordInfoList[j].wordStartChar == word[0])
-                    {
-                        //Debug.Log("First Char of Word : " + word[0]);
-                        List<string> wordList = wordInfoList[j].wordList;
-
-                        foreach (string str in wordList)
-                        {
-                            // Debug.Log("Search Word : " + str);
-                            // Debug.Log("Search Word Length : " + str.Length);
-                            // Debug.Log(" Word Length: " + word.Length);
-
-                            if (string.Equals(str.Trim(), word, StringComparison.CurrentCultureIgnoreCase))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public bool IsWordSame(int index, string word, string textWord)
-        {
-            if (word.Length < index || textWord.Length < index)
-            {
-                return false;
-            }
-
-            if (word[index] == textWord[index])
-            {
-                //Debug.Log($"{word} Word Same !! ");
-
-                if (word.Length - 1 == index)
-                {
-                    //Debug.Log($"{word} Word Detected !! ");
-                    return true;
-                }
-
-                index++;
-                return IsWordSame(index, word, textWord);
-            }
-
-            //Debug.Log($"Letter Not Same {word} , {textWord} , {index} ");
-            return false;
-        }
-
         private void OnApplicationPause(bool isGameActive)
         {
             isGameActive = !isGameActive;
 
             if (isGameActive) return;
 
-            //Debug.Log("Game Pause Called !");
             LevelHandler.Instance.SaveSystem();
-            //Debug.Log("Game Pause (Word Left List) Count : " + SaveManager.Instance.state.wordLeftList.Count);
-            //Debug.Log("Game Pause (Hint List) Count : " + SaveManager.Instance.state.hintList.Count);
-            // Debug.Log("Game Pause (Grid On Screen List) Count : " +
-            //           SaveManager.Instance.state.gridOnScreenList.Count);
-            //Debug.Log("Game Pause (Grid Data List) Count : " + SaveManager.Instance.state.gridDataList.Count);
         }
 
         private void OnApplicationQuit()
         {
-            //Debug.Log("Application Quit Called !");
             LevelHandler.Instance.SaveSystem();
-            //Debug.Log("Game Quit (Word Left List) Count : " + SaveManager.Instance.state.wordLeftList.Count);
-            //Debug.Log("Game Quit (Hint List) Count : " + SaveManager.Instance.state.hintList.Count);
-            // Debug.Log("Game Quit (Grid On Screen List) Count : " +
-            //           SaveManager.Instance.state.gridOnScreenList.Count);
-            //Debug.Log("Game Quit (Grid Data List) Count : " + SaveManager.Instance.state.gridDataList.Count);
         }
     }
 }

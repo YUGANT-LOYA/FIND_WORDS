@@ -276,7 +276,7 @@ namespace YugantLoyaLibrary.FindWords
             Vector3 coinTargetPos = new Vector3(Screen.width + (3 * (coinTargetOffset.x / 2)),
                 Screen.height, -2f);
             coinTargetPos = Camera.main.ScreenToWorldPoint(coinTargetPos);
-            Debug.Log("coin Target Pos : " + coinTargetPos);
+            //Debug.Log("coin Target Pos : " + coinTargetPos);
             for (int i = 0; i < GameController.Instance.coinPoolSize; i++)
             {
                 GameObject coin = DataHandler.Instance.GetCoin();

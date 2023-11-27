@@ -212,9 +212,7 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             DataHandler.UnlockGridIndex++;
-            LevelHandler.Instance.unlockedGridList.Add(this);
-            LevelHandler.Instance.totalBuyingGridList.Remove(this);
-            LevelHandler.Instance.gridAvailableOnScreenList.Add(this);
+            LevelHandler.Instance.UnlockingGrid(this);
             SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
 
             if (calledByPlayer)
@@ -238,6 +236,7 @@ namespace YugantLoyaLibrary.FindWords
         private void NewGridUnlockAnimation(bool calledByPlayer = true)
         {
             isMoving = true;
+            transform.rotation = defaultQuaternionRotation;
 
             if (calledByPlayer)
             {
@@ -265,7 +264,7 @@ namespace YugantLoyaLibrary.FindWords
 
                     DeactivateLockStatus();
                     gridText.gameObject.SetActive(true);
-                    isMoving = false;
+
                     LevelHandler.Instance.noHintExist = false;
                     bool allGridBought = false;
 
@@ -279,6 +278,8 @@ namespace YugantLoyaLibrary.FindWords
                     {
                         LevelHandler.Instance.CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
                     }
+
+                    isMoving = false;
 
                     LionStudiosManager.LevelComplete(DataHandler.LevelNum, GameController.LevelAttempts, 0);
                     GAScript.LevelEnd(true, DataHandler.LevelNum.ToString());
@@ -296,7 +297,7 @@ namespace YugantLoyaLibrary.FindWords
                     new Vector3(unlockRotationTime * 360f, transform.rotation.eulerAngles.y,
                         transform.rotation.eulerAngles.z),
                     unlockTime, RotateMode.FastBeyond360)
-                .SetEase(movingEase).OnComplete(() => { });
+                .SetEase(movingEase).OnComplete(() => { isMoving = false; });
         }
 
 
@@ -324,7 +325,7 @@ namespace YugantLoyaLibrary.FindWords
         IEnumerator Move(Vector3 pos, bool isMovingToQues, QuesTile quesTile, float time = 0f)
         {
             isMoving = true;
-
+            string quesStr = LevelHandler.Instance.quesHintStr;
             yield return new WaitForSeconds(time);
 
             if (isMovingToQues)
@@ -334,11 +335,10 @@ namespace YugantLoyaLibrary.FindWords
             }
             else
             {
-                if (!string.IsNullOrEmpty(LevelHandler.Instance.quesHintStr) &&
-                    !string.IsNullOrWhiteSpace(LevelHandler.Instance.quesHintStr))
+                if (!string.IsNullOrEmpty(quesStr) && quesStr.Length == DataHandler.UnlockedQuesLetter)
                 {
                     int id = placedOnQuesTile.id;
-                    placedOnQuesTile.QuesTextData = LevelHandler.Instance.quesHintStr[id].ToString();
+                    placedOnQuesTile.QuesTextData = quesStr[id].ToString();
                     placedOnQuesTile.isAssigned = false;
                     Invoke(nameof(ActivatePlacedQuesTile), 0.2f);
                 }
@@ -433,11 +433,8 @@ namespace YugantLoyaLibrary.FindWords
 
         public void DeckAnimation(float timeToPlaceGrids, Vector2 pos, string gridData, bool shouldReturn = true)
         {
-            if (!LevelHandler.Instance.gridAvailableOnScreenList.Contains(this))
-            {
-                LevelHandler.Instance.gridAvailableOnScreenList.Add(this);
-            }
-
+            
+            LevelHandler.AddGridToList(LevelHandler.Instance.gridAvailableOnScreenList, this);
             SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeck);
             blastPos = pos;
             transform.DOMove(blastPos, timeToPlaceGrids / 2).SetEase(movingEase);

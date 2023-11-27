@@ -80,18 +80,13 @@ namespace YugantLoyaLibrary.FindWords
                 SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
                 Vibration.Vibrate(20);
                 DataHandler.NewQuesGridUnlockIndex++;
-
                 DeActivateLock();
                 Invoke(nameof(UnlockNewQuesGrid), (float)unlockRotationTime / 2);
                 CheckGridsAvailableForMakingWord();
                 LevelHandler.Instance.SetLevelRunningBool(false);
-                LevelHandler.Instance.GridsBackToPos();
-
+                LevelHandler.Instance.RevertGridBackToPosAndCleanQuesTilesData();
                 StartCoroutine(UIManager.Instance.UpdateReducedCoinText(0f, _unlockAmount));
                 UIManager.SetCoinData(_unlockAmount, -1);
-
-                // LevelHandler.Instance.SetLevelRunningBool();
-                // UIManager.Instance.CanTouch(true);
             }
         }
 
@@ -143,14 +138,5 @@ namespace YugantLoyaLibrary.FindWords
                     time, RotateMode.FastBeyond360)
                 .SetEase(rotationEase).OnComplete(() => { });
         }
-
-
-        // void ShakeAnim()
-        // {
-        //     DOTween.Kill(transform, false);
-        //     transform.localPosition = defaultLocalTilePos;
-        //     transform.DOShakePosition(lockShakeTime, shakeStrength, vibrationStrength, shakeRandomness)
-        //         .SetEase(lockEase).OnComplete(() => { transform.localPosition = defaultLocalTilePos; });
-        // }
     }
 }
