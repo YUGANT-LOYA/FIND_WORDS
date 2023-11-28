@@ -305,7 +305,7 @@ namespace YugantLoyaLibrary.FindWords
             //Debug.Log("Helper Deal For Each Completed !");
             LevelHandler.Instance.wordCompletedGridList.Clear();
             DataHandler.HelperIndex++;
-            helper.ClickTile(0.6f);
+            helper.ClickTile(1f);
         }
 
         public void Hint(bool isCalledByPlayer = true)
@@ -424,6 +424,8 @@ namespace YugantLoyaLibrary.FindWords
 
             SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeck);
 
+            StartCoroutine(ResetLevelHandlerData(_currLevel.timeToWaitForEachGrid * list.Count));
+
             foreach (GridTile gridTile in list)
             {
                 yield return new WaitForSeconds(_currLevel.timeToWaitForEachGrid);
@@ -435,8 +437,6 @@ namespace YugantLoyaLibrary.FindWords
                 LevelHandler.RemoveGridFromList(LevelHandler.Instance.wordCompletedGridList, gridTile);
                 index++;
             }
-
-            StartCoroutine(ResetLevelHandlerData(_currLevel.timeToWaitForEachGrid * list.Count));
         }
 
         string RemoveCharFromString(string originalString, char charToRemove)

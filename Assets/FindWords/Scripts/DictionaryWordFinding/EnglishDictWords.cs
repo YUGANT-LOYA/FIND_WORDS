@@ -87,18 +87,18 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        public bool SearchInFilteredFullDict(string word)
+        private bool SearchInFilteredFullDict(string word)
         {
             bool isAvailable = filteredDictData.dictionaryTrie.Search(word.ToLower());
 
             if (isAvailable)
             {
-                Debug.Log($"Yoo !! {word} Word Found");
+                //Debug.Log($"Yoo !! {word} Word Found");
                 return true;
             }
             else
             {
-                Debug.Log($"Oops !! {word} Word Not Found");
+                //Debug.Log($"Oops !! {word} Word Not Found");
                 return false;
             }
         }
