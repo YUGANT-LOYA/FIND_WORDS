@@ -2239,11 +2239,9 @@ MonoBehaviour:
   wordCompletedGridList: []
   unlockedGridList: []
   lockedGridList: []
-  rentGridList: []
   gridAvailableOnScreenList: []
   totalBuyingGridList: []
   quesTileList: []
-  selectedWords: []
   wordsLeftList: []
   noHintExist: 0
   lastLockedGrid: {fileID: 0}
@@ -9734,7 +9732,7 @@ MonoBehaviour:
   compareWord: steep
   wordInFullDict: 
   wordInFilteredDict: 
-  fullDictData: {fileID: 11400000, guid: 531c9dab607b833428888917c0261e6c, type: 2}
+  fullDictData: {fileID: 11400000, guid: 040ed09d962a4254ebefb42b809d46da, type: 2}
   filteredDictData: {fileID: 11400000, guid: c255ee4dfe5fe094fa1f0dc42772ebd0, type: 2}
 --- !u!4 &3132064099953264830
 Transform:
@@ -9870,7 +9868,7 @@ MonoBehaviour:
     type: 3}
   quesPrefab: {fileID: 6876171383429484901, guid: 2b60b11f0918330469795326020309c3,
     type: 3}
-  initialCoins: 40000
+  initialCoins: 100
 --- !u!1 &5704458314791691809
 GameObject:
   m_ObjectHideFlags: 0
