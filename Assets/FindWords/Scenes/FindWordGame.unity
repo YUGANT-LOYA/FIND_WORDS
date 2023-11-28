@@ -11361,7 +11361,7 @@ MonoBehaviour:
     type: 3}
   quesPrefab: {fileID: 6876171383429484901, guid: 2b60b11f0918330469795326020309c3,
     type: 3}
-  initialCoins: 100
+  initialCoins: 40000
 --- !u!1 &5704458314791691809
 GameObject:
   m_ObjectHideFlags: 0

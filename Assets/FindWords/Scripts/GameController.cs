@@ -201,9 +201,10 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             LevelHandler.Instance.SetLevelRunningBool(false);
-
+            
             if (isCalledByPlayer)
             {
+               
                 if (DataHandler.TotalCoin < shuffleUsingCoin)
                 {
                     UIManager.Instance.toastMessageScript.ShowNotEnoughCoinsToast();
@@ -235,6 +236,8 @@ namespace YugantLoyaLibrary.FindWords
         {
             if (!LevelHandler.Instance.GetLevelRunningBool())
                 return;
+            
+            LevelHandler.Instance.SetLevelRunningBool(false);
 
             if (DataHandler.HelperLevelCompleted == 0)
             {
@@ -242,6 +245,7 @@ namespace YugantLoyaLibrary.FindWords
                 if (DataHandler.HelperIndex != helper.clickDealIndex)
                 {
                     //Debug.Log("IF Helper Index Same in Deal And Function Returns !");
+                    LevelHandler.Instance.SetLevelRunningBool();
                     return;
                 }
                 else
@@ -250,11 +254,10 @@ namespace YugantLoyaLibrary.FindWords
                     UIManager.Instance.DealButtonEffect();
                     SoundManager.instance.PlaySound(SoundManager.SoundType.Click);
                     StartCoroutine(HelperDeal());
+                    LevelHandler.Instance.SetLevelRunningBool();
                     return;
                 }
             }
-
-            LevelHandler.Instance.SetLevelRunningBool(false);
 
             if (isCalledByPlayer)
             {

@@ -701,6 +701,7 @@ namespace YugantLoyaLibrary.FindWords
         public void SetLevelRunningBool(bool canTouch = true)
         {
             _isLevelRunning = canTouch;
+            UIManager.Instance.CanTouch(canTouch);
         }
 
         public bool GetLevelRunningBool()
@@ -1123,6 +1124,10 @@ namespace YugantLoyaLibrary.FindWords
                 {
                     //Debug.Log("GRID CHECK ELSE IF");
                     CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
+                    noHintExist = false;
+                    LastQuesTile = null;
+                    inputGridsList.Clear();
+                    SetLevelRunningBool();
                     //Debug.Log("IF Is Hint Avail : " + hintButtonStatus);
                 }
                 else
@@ -1134,12 +1139,13 @@ namespace YugantLoyaLibrary.FindWords
             else
             {
                 CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
+                noHintExist = false;
+                LastQuesTile = null;
+                inputGridsList.Clear();
+                SetLevelRunningBool();
             }
 
-            noHintExist = false;
-            LastQuesTile = null;
-            inputGridsList.Clear();
-            SetLevelRunningBool();
+            
         }
 
         public bool CheckHintStatus(out string passingStr)
