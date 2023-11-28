@@ -400,7 +400,7 @@ namespace YugantLoyaLibrary.FindWords
             return mainStr;
         }
 
-
+//Picking Letters that are from Word Left List
         public string PickRandomWordFormingLetters(List<GridTile> list, int commonLetters,
             out string gridExistingString)
         {
@@ -1139,7 +1139,7 @@ namespace YugantLoyaLibrary.FindWords
             noHintExist = false;
             LastQuesTile = null;
             inputGridsList.Clear();
-            SetLevelRunningBool(true);
+            SetLevelRunningBool();
         }
 
         public bool CheckHintStatus(out string passingStr)
@@ -1199,8 +1199,9 @@ namespace YugantLoyaLibrary.FindWords
                 return true;
             }
 
+            //StartCoroutine(CallDealAfterTime());
             noHintExist = true;
-            //Debug.Log("Hint Not Found!");
+            Debug.Log("Hint Not Found!");
             passingStr = "";
             return false;
         }
@@ -1267,7 +1268,7 @@ namespace YugantLoyaLibrary.FindWords
             return true;
         }
 
-        string GetStringOfAllAvailableGrids()
+        public string GetStringOfAllAvailableGrids()
         {
             StringBuilder gridStrings = new StringBuilder();
             foreach (GridTile gridTile in gridAvailableOnScreenList)
@@ -1391,6 +1392,22 @@ namespace YugantLoyaLibrary.FindWords
                     index++;
                 }
             }
+        }
+
+        IEnumerator CallDealAfterTime(float time = 0.5f, bool isCalledByPlayer = false)
+        {
+            _isLevelRunning = false;
+            //UIManager.Instance.CanTouch(false);
+            //float canTouchWaitTime = currLevel.timeToWaitForEachGrid * wordCompletedGridList.Count;
+
+            yield return new WaitForSeconds(time);
+            
+            _isLevelRunning = true;
+            GameController.Instance.Deal(isCalledByPlayer);
+
+            //yield return new WaitForSeconds(canTouchWaitTime);
+
+            //UIManager.Instance.CanTouch(true);
         }
 
         static bool LettersExistInWord(string word1, string word2)

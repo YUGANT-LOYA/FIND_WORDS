@@ -134,7 +134,7 @@ namespace YugantLoyaLibrary.FindWords
                 }
                 else
                 {
-                    Debug.Log("Word is Not Common!");
+                    //Debug.Log("Word is Not Common!");
                 }
             }
             else

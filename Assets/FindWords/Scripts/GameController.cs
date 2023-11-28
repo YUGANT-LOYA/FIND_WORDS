@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -229,7 +230,7 @@ namespace YugantLoyaLibrary.FindWords
             LevelHandler.Instance.ClearInGameList();
             StartCoroutine(LevelHandler.Instance.ReturnToDeck(list, time, timeToPlaceGrids));
         }
-
+        
         public void Deal(bool isCalledByPlayer = true)
         {
             if (!LevelHandler.Instance.GetLevelRunningBool())
@@ -355,64 +356,109 @@ namespace YugantLoyaLibrary.FindWords
             LevelHandler.Instance.ShowHint(isHintAvail);
         }
 
-        IEnumerator BackToDeckAnim(List<GridTile> list)
+        IEnumerator BackToDeckAnim(List<GridTile> wordCompleteList)
         {
             StringBuilder randomPickedWord = new StringBuilder("");
             List<GridTile> tempList = new List<GridTile>(LevelHandler.Instance.gridAvailableOnScreenList);
-            int total = list.Count;
+            int total = wordCompleteList.Count;
             string remainingLetter = "";
             List<string> hintFitStringList = new List<string>();
 
-            while (total > 0)
+            StringBuilder vowels = new StringBuilder("");
+            string gridString = LevelHandler.Instance.GetStringOfAllAvailableGrids();
+            int vowelCount = 0;
+            bool isVowelLess = false;
+            
+            foreach (char c in gridString)
             {
-                //Debug.Log("Forming Word From Screen Letters");
-                string tempStr =
-                    LevelHandler.Instance.PickRandomWordFormingLetters(tempList, 2, out string gridExistingString);
-
-                //Debug.Log("Temp Word : " + tempStr);
-
-                if (tempStr.Length > 0)
+                if (Vowels.Contains(c))
                 {
-                    remainingLetter = tempStr;
+                    vowelCount++;
+                }
+            }
 
-                    foreach (char repeatedChar in gridExistingString)
+            //Grid available are greater than or equal to 2/3 of total Grids, so check vowels and if vowels are less than give deal of vowels.
+            if (gridString.Length >= 2 * LevelHandler.Instance.unlockedGridList.Count / 3)
+            {
+                //If There are less vowels and whole grid string contains consonents, so it is better to provide vowels rather than forming and giving letters of another words.
+                if (vowelCount < LevelHandler.Instance.gridAvailableOnScreenList.Count / 3)
+                {
+                    Debug.Log("LESS VOWELS CALLED !!");
+                    for (int i = 0; i < total; i++)
                     {
-                        //Debug.Log("Repeated Char" + repeatedChar);
-                        remainingLetter = RemoveCharFromString(remainingLetter, repeatedChar);
-                        //Debug.Log("Remaining Letter : " + remainingLetter);
-
-
-                        foreach (GridTile tile in tempList)
-                        {
-                            if (tile.GridTextData != repeatedChar.ToString()) continue;
-
-                            //Debug.Log("Removed Tile : " + tile.name);
-                            tempList.Remove(tile);
-                            break;
-                        }
+                        vowels.Append(RandomVowel());
                     }
 
-                    hintFitStringList.Add(tempStr);
-                    randomPickedWord.Append(remainingLetter.Trim());
+                    randomPickedWord = vowels;
+                    isVowelLess = true;
                 }
                 else
                 {
-                    hintFitStringList.Clear();
-                    //Debug.Log("Printing Data From Word Left List ");
-                    string str = LevelHandler.Instance.GetDataAccordingToGrid(list.Count);
-                    randomPickedWord = new StringBuilder(str);
-                    total -= randomPickedWord.Length;
+                    Debug.Log("MORE VOWELS CALLED !!");
+                }
+            }
+            
+            
+            if(!isVowelLess)
+            {
+                Debug.Log("NORMAL DEAL CALLED !!");
+                while (total > 0)
+                {
+                    //Debug.Log("Forming Word From Screen Letters");
+
+                    string tempStr = LevelHandler.Instance.PickRandomWordFormingLetters(tempList, 2,
+                        out string gridExistingString);
+
+                    if (tempStr.Length > 0)
+                    {
+                        remainingLetter = tempStr;
+
+                        foreach (char repeatedChar in gridExistingString)
+                        {
+                            //Debug.Log("Repeated Char" + repeatedChar);
+                            remainingLetter = RemoveCharFromString(remainingLetter, repeatedChar);
+                            //Debug.Log("Remaining Letter : " + remainingLetter);
+
+
+                            foreach (GridTile tile in tempList)
+                            {
+                                if (tile.GridTextData != repeatedChar.ToString()) continue;
+
+                                //Debug.Log("Removed Tile : " + tile.name);
+                                tempList.Remove(tile);
+                                break;
+                            }
+                        }
+
+                        hintFitStringList.Add(tempStr);
+                        randomPickedWord.Append(remainingLetter.Trim());
+                    }
+                    else
+                    {
+                        hintFitStringList.Clear();
+                        //Debug.Log("Printing Data From Word Left List ");
+                        string str = LevelHandler.Instance.GetDataAccordingToGrid(wordCompleteList.Count);
+                        randomPickedWord = new StringBuilder(str);
+                        total -= randomPickedWord.Length;
+                    }
+
+                    total -= remainingLetter.Length;
                 }
 
-                total -= remainingLetter.Length;
+                //Debug.Log("Temp Word : " + tempStr);
+
+
                 //Debug.Log("Total : " + total);
                 //Debug.Log("RANDOM Pick Letter : " + randomPickedWord);
-            }
 
-            foreach (string s in hintFitStringList)
-            {
-                LevelHandler.Instance.hintAvailList.Add(s);
-                //Debug.Log("Hint Added : " + s);
+                if (hintFitStringList.Count > 0)
+                {
+                    foreach (string s in hintFitStringList)
+                    {
+                        LevelHandler.Instance.hintAvailList.Add(s);
+                        //Debug.Log("Hint Added : " + s);
+                    }
+                }
             }
 
             //Debug.Log("Remaining Letter : " + remainingLetter);
@@ -424,9 +470,9 @@ namespace YugantLoyaLibrary.FindWords
 
             SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeck);
 
-            StartCoroutine(ResetLevelHandlerData(_currLevel.timeToWaitForEachGrid * list.Count));
+            StartCoroutine(ResetLevelHandlerData(_currLevel.timeToWaitForEachGrid * wordCompleteList.Count));
 
-            foreach (GridTile gridTile in list)
+            foreach (GridTile gridTile in wordCompleteList)
             {
                 yield return new WaitForSeconds(_currLevel.timeToWaitForEachGrid);
                 //Debug.Log("Moving To Grid Place Again !");

@@ -78,11 +78,15 @@ namespace YugantLoyaLibrary.FindWords
         }
 
 
-        public void CanTouch(bool isActive)
+        public void CanTouch(bool isActive, bool shouldButtonStatusBeChecked = true)
         {
             //Debug.Log("Touch is " + isActive);
             touchPanelGm.SetActive(!isActive);
-            SetAllButtonStatus(isActive);
+
+            if (shouldButtonStatusBeChecked)
+            {
+                SetAllButtonStatus(isActive);
+            }
         }
 
         public void EnableHint()
@@ -136,14 +140,14 @@ namespace YugantLoyaLibrary.FindWords
             //Debug.Log("Check Other Button Status Called !");
             dealButton.enabled = true;
             shuffleButton.enabled = true;
-
-            _shuffleButtonImg.color = DataHandler.TotalCoin < GameController.Instance.shuffleUsingCoin
-                ? disableButtonColor
-                : Color.white;
-
-            _dealButtonImg.color = DataHandler.TotalCoin < GameController.Instance.dealUsingCoin
-                ? disableButtonColor
-                : Color.white;
+            //
+            // _shuffleButtonImg.color = DataHandler.TotalCoin < GameController.Instance.shuffleUsingCoin
+            //     ? disableButtonColor
+            //     : Color.white;
+            //
+            // _dealButtonImg.color = DataHandler.TotalCoin < GameController.Instance.dealUsingCoin
+            //     ? disableButtonColor
+            //     : Color.white;
         }
 
         private void SetAllButtonStatus(bool isActive)
@@ -152,7 +156,7 @@ namespace YugantLoyaLibrary.FindWords
             if (DataHandler.TotalCoin < GameController.Instance.shuffleUsingCoin)
             {
                 shuffleButton.enabled = true;
-                _shuffleButtonImg.color = disableButtonColor;
+                _shuffleButtonImg.color = Color.white;
             }
             else if (!isActive)
             {
@@ -168,7 +172,7 @@ namespace YugantLoyaLibrary.FindWords
             if (DataHandler.TotalCoin < GameController.Instance.dealUsingCoin)
             {
                 dealButton.enabled = true;
-                _dealButtonImg.color = disableButtonColor;
+                _dealButtonImg.color = Color.white;
             }
             else if (!isActive)
             {
@@ -189,7 +193,7 @@ namespace YugantLoyaLibrary.FindWords
             else if (DataHandler.TotalCoin < GameController.Instance.hintUsingCoin)
             {
                 hintButton.enabled = true;
-                _hintButtonImg.color = disableButtonColor;
+                _hintButtonImg.color = Color.white;
             }
             else if (!LevelHandler.Instance.isHintAvailInButton)
             {
