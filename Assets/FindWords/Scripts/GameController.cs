@@ -11,6 +11,7 @@ namespace YugantLoyaLibrary.FindWords
     {
         public static GameController Instance;
         public static int LevelAttempts;
+        public bool isTesting;
         private static readonly char[] Vowels = { 'a', 'e', 'i', 'o', 'u' };
 
         private static readonly char[] Consonants =
@@ -64,6 +65,12 @@ namespace YugantLoyaLibrary.FindWords
         private void Start()
         {
             MakeInstance();
+            
+            if (isTesting)
+            {
+                DataHandler.HelperLevelCompleted = 1;
+            }
+
             DataHandler.Instance.SetBg();
             Init();
         }
@@ -201,10 +208,9 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             LevelHandler.Instance.SetLevelRunningBool(false);
-            
+
             if (isCalledByPlayer)
             {
-               
                 if (DataHandler.TotalCoin < shuffleUsingCoin)
                 {
                     UIManager.Instance.toastMessageScript.ShowNotEnoughCoinsToast();
@@ -231,12 +237,12 @@ namespace YugantLoyaLibrary.FindWords
             LevelHandler.Instance.ClearInGameList();
             StartCoroutine(LevelHandler.Instance.ReturnToDeck(list, time, timeToPlaceGrids));
         }
-        
+
         public void Deal(bool isCalledByPlayer = true)
         {
             if (!LevelHandler.Instance.GetLevelRunningBool())
                 return;
-            
+
             LevelHandler.Instance.SetLevelRunningBool(false);
 
             if (DataHandler.HelperLevelCompleted == 0)
@@ -371,7 +377,7 @@ namespace YugantLoyaLibrary.FindWords
             string gridString = LevelHandler.Instance.GetStringOfAllAvailableGrids();
             int vowelCount = 0;
             bool isVowelLess = false;
-            
+
             foreach (char c in gridString)
             {
                 if (Vowels.Contains(c))
@@ -400,9 +406,9 @@ namespace YugantLoyaLibrary.FindWords
                     Debug.Log("MORE VOWELS CALLED !!");
                 }
             }
-            
-            
-            if(!isVowelLess)
+
+
+            if (!isVowelLess)
             {
                 Debug.Log("NORMAL DEAL CALLED !!");
                 while (total > 0)
@@ -473,16 +479,26 @@ namespace YugantLoyaLibrary.FindWords
 
             SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeck);
 
-            StartCoroutine(ResetLevelHandlerData(_currLevel.timeToWaitForEachGrid * wordCompleteList.Count));
+            //StartCoroutine(ResetLevelHandlerData(_currLevel.timeToWaitForEachGrid * (wordCompleteList.Count + 1)));
 
-            foreach (GridTile gridTile in wordCompleteList)
+            for (var i = 0; i < wordCompleteList.Count; i++)
             {
+                var gridTile = wordCompleteList[i];
                 yield return new WaitForSeconds(_currLevel.timeToWaitForEachGrid);
                 //Debug.Log("Moving To Grid Place Again !");
                 gridTile.isBlastAfterWordComplete = false;
                 gridTile.GridTextData = randomPickedWord[index].ToString();
                 LevelHandler.AddGridToList(LevelHandler.Instance.gridAvailableOnScreenList, gridTile);
-                gridTile.MoveTowardsGrid();
+
+                if (i == wordCompleteList.Count - 1)
+                {
+                    gridTile.MoveTowardsGrid(LevelHandler.Instance.AfterBackToDeckAnim);
+                }
+                else
+                {
+                    gridTile.MoveTowardsGrid();
+                }
+
                 LevelHandler.RemoveGridFromList(LevelHandler.Instance.wordCompletedGridList, gridTile);
                 index++;
             }
@@ -531,9 +547,14 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        IEnumerator ResetLevelHandlerData(float time)
+        // IEnumerator ResetLevelHandlerData(float time)
+        // {
+        //     yield return new WaitForSeconds(time);
+        //     LevelHandler.Instance.AfterBackToDeckAnim();
+        // }
+
+        void ResetLevelHandlerData()
         {
-            yield return new WaitForSeconds(time);
             LevelHandler.Instance.AfterBackToDeckAnim();
         }
 

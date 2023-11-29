@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace YugantLoyaLibrary.FindWords
 {
@@ -419,13 +421,16 @@ namespace YugantLoyaLibrary.FindWords
             });
         }
 
-        public void MoveTowardsGrid()
+        public void MoveTowardsGrid(Action callback = null)
         {
             transform.position = _level.BottomOfScreenPoint();
             transform.DORotate(new Vector3(360f * blastRotationTime, 0f, 360f * blastRotationTime), blastTime / 2,
                 RotateMode.FastBeyond360).SetEase(blastReturnEase);
 
-            transform.DOMove(defaultGlobalGridPos, blastTime / 2).SetEase(blastReturnEase).OnComplete(() => { });
+            transform.DOMove(defaultGlobalGridPos, blastTime / 2).SetEase(blastReturnEase).OnComplete(() =>
+            {
+                callback?.Invoke();
+            });
 
             StartCoroutine(ResetData(blastTime / 2));
         }
@@ -462,7 +467,7 @@ namespace YugantLoyaLibrary.FindWords
         }
 
 
-        public IEnumerator ResetData(float time = 0f)
+        private IEnumerator ResetData(float time = 0f)
         {
             yield return new WaitForSeconds(time);
             isSelected = false;
