@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Profiling;
 using UnityEngine;
 
 namespace YugantLoyaLibrary.FindWords
@@ -12,8 +13,8 @@ namespace YugantLoyaLibrary.FindWords
         public static readonly string NEW_GRID_CREATED = "NEW_GRID_CREATED";
         public static readonly string CURR_DEFINED_LEVEL = "CURR_DEFINED_LEVEL";
         public static readonly string HELPER_LEVEL_COMPLETED = "HELPER_LEVEL_COMPLETED";
-        
-        
+
+
         public static readonly string CURR_HINT = "CURR_HINT";
         public static readonly string LEVEL_NUM = "LEVEL_NUM";
         public static readonly string UNLOCKING_GRIDS = "UNLOCKING_GRIDS";
@@ -33,5 +34,9 @@ namespace YugantLoyaLibrary.FindWords
         public static readonly string COIN_GRID_UNLOCK_INDEX = "COIN_GRID_UNLOCK_INDEX";
         public static readonly string BG_INDEX = "BG_INDEX";
         public static readonly string QUES_UNLOCK_PRICE_INDEX = "QUES_UNLOCK_PRICE_INDEX";
+
+
+        //Profiler Marker in the Game
+        public static readonly ProfilerMarker HintCalculationMarker = new("MyGame.HintCalculation");
     }
 }

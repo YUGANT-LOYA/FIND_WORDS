@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using DG.Tweening;
 using UnityEngine;
@@ -1144,8 +1145,6 @@ namespace YugantLoyaLibrary.FindWords
                 inputGridsList.Clear();
                 SetLevelRunningBool();
             }
-
-            
         }
 
         public bool CheckHintStatus(out string passingStr)
@@ -1194,7 +1193,12 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
+            Debug.Log("Hint Calculating From Full Dict Words !");
+            StringHelper.HintCalculationMarker.Begin();
+
             passingStr = AnyWordExists();
+
+            StringHelper.HintCalculationMarker.End();
 
             //Debug.Log("Hint Passing String : " + passingStr);
 
@@ -1214,7 +1218,7 @@ namespace YugantLoyaLibrary.FindWords
 
         string AnyWordExists()
         {
-            List<char> lettersUsedList = new List<char>();
+            char[] lettersUsedArr = new char[gridAvailableOnScreenList.Count];
             MainDictionary mainDict = GameController.Instance.GetMainDictionary();
             string gridString = GetStringOfAllAvailableGrids();
 
@@ -1222,11 +1226,13 @@ namespace YugantLoyaLibrary.FindWords
             {
                 if (mainDictionaryInfo.wordLength != DataHandler.UnlockedQuesLetter) continue;
 
-                foreach (char c in gridString)
+                for (var index = 0; index < gridString.Length; index++)
                 {
-                    if (lettersUsedList.Contains(c)) continue;
+                    var c = gridString[index];
 
-                    lettersUsedList.Add(c);
+                    if (lettersUsedArr.Contains(c)) continue;
+
+                    lettersUsedArr[index] = c;
                     int val = c - 97;
                     //Debug.Log("C : " + c + "      C Val : " + val);
                     List<string> wordList = mainDictionaryInfo.wordsInfo[val].wordList;
@@ -1407,7 +1413,7 @@ namespace YugantLoyaLibrary.FindWords
             //float canTouchWaitTime = currLevel.timeToWaitForEachGrid * wordCompletedGridList.Count;
 
             yield return new WaitForSeconds(time);
-            
+
             _isLevelRunning = true;
             GameController.Instance.Deal(isCalledByPlayer);
 
