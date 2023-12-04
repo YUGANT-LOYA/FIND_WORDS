@@ -795,9 +795,9 @@ namespace YugantLoyaLibrary.FindWords
             float timeToPlaceGrids = currLevel.timeToPlaceGrid;
 
             DisableWordCompleteGameObject();
-            StartCoroutine(ReturnToDeck(unlockedGridList, time, timeToPlaceGrids, false));
+            StartCoroutine(ReturnToDeck(unlockedGridList, timeToPlaceGrids, false));
             StartCoroutine(GameController.Instance.StartGameAfterCertainTime(timeToPlaceGrids +
-                                                                             (time * (totalGridsList.Count + 1))));
+                                                                             time * ((float)totalGridsList.Count / 2)));
             return true;
         }
 
@@ -1025,7 +1025,7 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        public void RevertQuesData()
+        private void RevertQuesData()
         {
             foreach (QuesTile quesTile in quesTileList)
             {
@@ -1058,7 +1058,7 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
-        public IEnumerator ReturnToDeck(List<GridTile> gridLists, float waitTime, float timeToPlaceGrids,
+        public IEnumerator ReturnToDeck(List<GridTile> gridLists, float timeToPlaceGrids,
             bool shouldReturnToGridPlace = true)
         {
             Vector2 pos = currLevel.BottomOfScreenPoint();
@@ -1071,10 +1071,8 @@ namespace YugantLoyaLibrary.FindWords
                 //Debug.Log("Whole Grid Data Main Str : " + mainStr);
 
                 //Debug.Log("Should Return To Grid Place Entered !");
-                StartCoroutine(ResetLevelHandlerData(timeToPlaceGrids + 0.3f));
+                //StartCoroutine();
             }
-
-            Invoke(nameof(RevertQuesData), timeToPlaceGrids - 0.1f);
 
             int index = 0;
             float time = timeToPlaceGrids / gridLists.Count;
@@ -1088,8 +1086,10 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-            foreach (var gridTile in gridLists)
+            for (var i = 0; i < gridLists.Count; i++)
             {
+                GridTile gridTile = gridLists[i];
+
                 yield return new WaitForSeconds(time);
 
                 string gridString = mainStr.Length > index
@@ -1099,6 +1099,16 @@ namespace YugantLoyaLibrary.FindWords
                 gridTile.DeckAnimation(timeToPlaceGrids, pos, gridString, shouldReturnToGridPlace);
 
                 index++;
+            }
+
+            yield return new WaitForSeconds(timeToPlaceGrids);
+            
+            StartCoroutine(ResetLevelHandlerData(0f));
+            RevertQuesData();
+            
+            foreach (var gridTile in gridLists)
+            {
+                gridTile.ObjectStatus(true);
             }
 
             yield return null;
@@ -1147,6 +1157,14 @@ namespace YugantLoyaLibrary.FindWords
             }
         }
 
+        public void TouchStatusOfAllGrid(bool isTouchAllowed)
+        {
+            foreach (GridTile gridTile in unlockedGridList)
+            {
+                //gridTile.cube
+            }
+        }
+        
         public bool CheckHintStatus(out string passingStr)
         {
             //Debug.Log("Check Hint Status Called !");

@@ -438,12 +438,14 @@ namespace YugantLoyaLibrary.FindWords
 
         public void DeckAnimation(float timeToPlaceGrids, Vector2 pos, string gridData, bool shouldReturn = true)
         {
-            
             LevelHandler.AddGridToList(LevelHandler.Instance.gridAvailableOnScreenList, this);
             SoundManager.instance.PlaySound(SoundManager.SoundType.CardDeck);
             blastPos = pos;
             transform.DOMove(blastPos, timeToPlaceGrids / 2).SetEase(movingEase);
-            transform.DOScale(defaultGridSize, timeToPlaceGrids / 2).SetEase(movingEase);
+            transform.DOScale(defaultGridSize, timeToPlaceGrids / 2).SetEase(movingEase).OnComplete(() =>
+            {
+                transform.localScale = defaultGridSize;
+            });
             transform.DORotate(new Vector3(moveRotationTimes * -360f, 0f, -360f * moveRotationTimes),
                 timeToPlaceGrids / 2,
                 RotateMode.FastBeyond360).SetEase(movingEase).OnComplete(() =>
@@ -453,14 +455,17 @@ namespace YugantLoyaLibrary.FindWords
 
                 GridTextData = gridData;
                 transform.rotation = Quaternion.Euler(Vector3.zero);
-                ObjectStatus(true);
+                // ObjectStatus(true);
                 isBlastAfterWordComplete = false;
                 transform.DORotate(new Vector3(360f * moveRotationTimes, 0f, 360f * moveRotationTimes),
                     timeToPlaceGrids / 2,
                     RotateMode.FastBeyond360).SetEase(movingEase);
 
                 transform.DOLocalMove(defaultLocalGridPos, timeToPlaceGrids / 2).SetEase(movingEase)
-                    .OnComplete(() => { });
+                    .OnComplete(() =>
+                    {
+                        transform.localPosition = defaultLocalGridPos;
+                    });
             });
 
             StartCoroutine(ResetData(timeToPlaceGrids));
