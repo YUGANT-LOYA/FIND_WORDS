@@ -52,7 +52,7 @@ namespace YugantLoyaLibrary.FindWords
             isUnlocked = true;
             DataHandler.UnlockedQuesLetter++;
             LevelHandler.Instance.quesTileList.Add(this);
-            RotateToOpen();
+            RotateToOpen(0, true);
         }
 
         public void ActivateObject()
@@ -75,15 +75,12 @@ namespace YugantLoyaLibrary.FindWords
             }
             else
             {
-                //LevelHandler.Instance.SetLevelRunningBool(false);
-                UIManager.Instance.CanTouch(false);
+                LevelHandler.Instance.SetLevelRunningBool(false);
                 SoundManager.instance.PlaySound(SoundManager.SoundType.NewGridUnlock);
                 Vibration.Vibrate(20);
                 DataHandler.NewQuesGridUnlockIndex++;
                 DeActivateLock();
-                Invoke(nameof(UnlockNewQuesGrid), (float)unlockRotationTime / 2);
                 CheckGridsAvailableForMakingWord();
-                LevelHandler.Instance.SetLevelRunningBool(false);
                 LevelHandler.Instance.RevertGridBackToPosAndCleanQuesTilesData();
                 StartCoroutine(UIManager.Instance.UpdateReducedCoinText(0f, _unlockAmount));
                 UIManager.SetCoinData(_unlockAmount, -1);
@@ -94,11 +91,12 @@ namespace YugantLoyaLibrary.FindWords
         {
             //LevelHandler.Instance.SetLevelRunningBool();
             bool isGridLeft = LevelHandler.Instance.CheckGridLeft();
-            Debug.Log("Grid Left Bool : " + isGridLeft);
-            Debug.Log("Level Running Bool  " + LevelHandler.Instance.GetLevelRunningBool());
+            //Debug.Log("Grid Left Bool : " + isGridLeft);
+            //Debug.Log("Level Running Bool  " + LevelHandler.Instance.GetLevelRunningBool());
             if (LevelHandler.Instance.gridAvailableOnScreenList.Count < DataHandler.UnlockedQuesLetter && isGridLeft)
             {
                 Debug.Log("Deal Called From Unlocking Ques Tile !");
+                LevelHandler.Instance.SetLevelRunningBool(true, false);
                 GameController.Instance.Deal(false);
             }
         }
@@ -125,7 +123,7 @@ namespace YugantLoyaLibrary.FindWords
             GameController.Instance.confettiParticleSystem.gameObject.SetActive(true);
         }
 
-        void RotateToOpen(float time = -1f)
+        void RotateToOpen(float time = -1f, bool isUnlockingGrid = false)
         {
             if (Math.Abs(time - (-1f)) < 0.1f)
             {
@@ -136,7 +134,15 @@ namespace YugantLoyaLibrary.FindWords
                     new Vector3(unlockRotationTime * 360f, transform.rotation.eulerAngles.y,
                         transform.rotation.eulerAngles.z),
                     time, RotateMode.FastBeyond360)
-                .SetEase(rotationEase).OnComplete(() => { });
+                .SetEase(rotationEase)
+                .OnComplete(() =>
+                {
+                    if (isUnlockingGrid)
+                    {
+                        Debug.Log("Unlocking Grid Called !");
+                        UnlockNewQuesGrid();
+                    }
+                });
         }
     }
 }

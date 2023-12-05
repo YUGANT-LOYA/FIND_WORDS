@@ -3865,7 +3865,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83af8b539e8c22f4c90ba1635dbe89ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isTesting: 0
+  isTesting: 1
   startingGridSize: 5
   startingQuesSize: 3
   maxQuesSize: 6
@@ -6883,7 +6883,7 @@ MonoBehaviour:
     type: 3}
   quesPrefab: {fileID: 6876171383429484901, guid: 2b60b11f0918330469795326020309c3,
     type: 3}
-  initialCoins: 100
+  initialCoins: 40000
 --- !u!1 &5704458314791691809
 GameObject:
   m_ObjectHideFlags: 0

@@ -699,10 +699,26 @@ namespace YugantLoyaLibrary.FindWords
             return GetLastUnMatchedLetter(word, textWord, index);
         }
 
-        public void SetLevelRunningBool(bool canTouch = true)
+        private IEnumerator CallSetLevelRunningBoolAfter(float time, bool canTouch = true)
+        {
+            //Debug.Log("CallSetLevelRunningBoolAfter Called !");
+
+            yield return new WaitForSeconds(time);
+            
+            //Debug.Log("CallSetLevelRunningBoolAfter Time Over ! Level Running Status : "+_isLevelRunning);
+            SetLevelRunningBool(canTouch);
+        }
+
+        public void SetLevelRunningBool(bool canTouch = true, bool shouldUITouchBeAffected = true)
         {
             _isLevelRunning = canTouch;
-            UIManager.Instance.CanTouch(canTouch);
+            //Debug.Log("Is Level Running : " + _isLevelRunning);
+            
+            if (shouldUITouchBeAffected)
+            {
+                //Debug.Log("UI Touch Affected Called ! ");
+                UIManager.Instance.CanTouch(canTouch);
+            }
         }
 
         public bool GetLevelRunningBool()
@@ -737,7 +753,8 @@ namespace YugantLoyaLibrary.FindWords
                     AddGridToList(inputGridsList,
                         gridTileScript);
 
-                    StartCoroutine(LevelRunningStatus(true, gridTileScript.reachTime + 0.1f));
+                    
+                    //StartCoroutine(LevelRunningStatus(true, gridTileScript.reachTime + 0.1f));
                     gridTileScript.MoveAfter(pos, true, quesTileList[index]);
                 }
             }
@@ -803,8 +820,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public void CheckAnswer()
         {
-            _isLevelRunning = false;
-            UIManager.Instance.CanTouch(false);
+            SetLevelRunningBool(false);
 
             bool isBlocksUsed = true;
 
@@ -920,7 +936,7 @@ namespace YugantLoyaLibrary.FindWords
 
             CheckIqExpLevel(time);
 
-            StartCoroutine(ResetLevelHandlerData(time, true));
+            StartCoroutine(ResetLevelHandlerData(5 * time / 4, true));
             StartCoroutine(DataResetAfterGridAnimation(time));
         }
 
@@ -972,6 +988,7 @@ namespace YugantLoyaLibrary.FindWords
 
             if (!waitForBackToPos)
             {
+                Debug.Log("Wait Time is Zero !");
                 waitTime = 0;
             }
 
@@ -995,7 +1012,7 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-            StartCoroutine(LevelRunningStatus(true, time));
+            StartCoroutine(CallSetLevelRunningBoolAfter(5 * time / 4));
             StartCoroutine(DataResetAfterGridAnimation(time, calledByHint));
 
             //Debug.Log("Grid Back To Pos Exited !");
@@ -1003,8 +1020,20 @@ namespace YugantLoyaLibrary.FindWords
 
         public void RevertGridBackToPosAndCleanQuesTilesData()
         {
-            GridsBackToPos(false, false);
             RevertQuesData();
+            
+            if (inputGridsList.Count > 0)
+            {
+                //Debug.Log("Grid Back To Pos Called !");
+                SetLevelRunningBool(false);
+                GridsBackToPos(false, false);
+            }
+            else
+            {
+                //Debug.Log("ELSE Part of RevertGridBackToPosAndCleanQuesTilesData Called !");
+                SetLevelRunningBool();
+            }
+
             quesHintStr = "";
         }
 
@@ -1012,7 +1041,6 @@ namespace YugantLoyaLibrary.FindWords
         IEnumerator DataResetAfterGridAnimation(float time, bool isCalledByHint = false)
         {
             yield return new WaitForSeconds(time);
-            UIManager.Instance.CanTouch(true);
             //Debug.Log("Data Reset After Grid Animation !");
 
             inputGridsList.Clear();
@@ -1102,10 +1130,10 @@ namespace YugantLoyaLibrary.FindWords
             }
 
             yield return new WaitForSeconds(timeToPlaceGrids);
-            
+
             StartCoroutine(ResetLevelHandlerData(0f));
             RevertQuesData();
-            
+
             foreach (var gridTile in gridLists)
             {
                 gridTile.ObjectStatus(true);
@@ -1118,22 +1146,22 @@ namespace YugantLoyaLibrary.FindWords
         {
             yield return new WaitForSeconds(time);
 
-            //Debug.Log("Do Check Grid Left : " + doCheckGridLeft);
+            Debug.Log("Do Check Grid Left : " + doCheckGridLeft);
 
             if (doCheckGridLeft)
             {
-                //Debug.Log("Checking Grid Left !");
+                Debug.Log("Checking Grid Left !");
                 bool isGridLeft = CheckGridLeft();
-                //Debug.Log("Grid Left Bool : " + isGridLeft);
+                Debug.Log("Grid Left Bool : " + isGridLeft);
 
                 if (gridAvailableOnScreenList.Count < DataHandler.UnlockedQuesLetter && isGridLeft)
                 {
-                    //Debug.Log("GRID CHECK IF");
+                    Debug.Log("GRID CHECK IF");
                     GameController.Instance.Deal(false);
                 }
                 else if (isGridLeft)
                 {
-                    //Debug.Log("GRID CHECK ELSE IF");
+                    Debug.Log("GRID CHECK ELSE IF");
                     CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);
                     noHintExist = false;
                     LastQuesTile = null;
@@ -1143,7 +1171,7 @@ namespace YugantLoyaLibrary.FindWords
                 }
                 else
                 {
-                    //Debug.Log("GRID CHECK ELSE ");
+                    Debug.Log("GRID CHECK ELSE ");
                     GameController.Instance.ShuffleGrid(false);
                 }
             }
@@ -1164,7 +1192,7 @@ namespace YugantLoyaLibrary.FindWords
                 //gridTile.cube
             }
         }
-        
+
         public bool CheckHintStatus(out string passingStr)
         {
             //Debug.Log("Check Hint Status Called !");

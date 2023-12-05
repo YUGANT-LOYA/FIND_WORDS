@@ -198,7 +198,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public void ShuffleGrid(bool isCalledByPlayer = true)
         {
-            if (!LevelHandler.Instance.GetLevelRunningBool())
+            if (!LevelHandler.Instance.GetLevelRunningBool() && isCalledByPlayer)
                 return;
 
             if (DataHandler.HelperLevelCompleted == 0)
@@ -240,7 +240,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public void Deal(bool isCalledByPlayer = true)
         {
-            if (!LevelHandler.Instance.GetLevelRunningBool())
+            if (!LevelHandler.Instance.GetLevelRunningBool() && isCalledByPlayer)
                 return;
 
             LevelHandler.Instance.SetLevelRunningBool(false);
@@ -283,7 +283,7 @@ namespace YugantLoyaLibrary.FindWords
                     return;
                 }
 
-                //Debug.Log("Deal Called !!");
+                Debug.Log("Deal Called !!");
                 Vibration.Vibrate(20);
                 UIManager.SetCoinData(dealUsingCoin, -1);
                 StartCoroutine(UIManager.Instance.UpdateReducedCoinText(0f, dealUsingCoin));
