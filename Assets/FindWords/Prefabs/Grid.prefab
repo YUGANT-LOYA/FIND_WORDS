@@ -179,7 +179,6 @@ MonoBehaviour:
   currlockGm: {fileID: 5404208774061186188}
   otherLockGm: {fileID: 160908412518281720}
   gridText: {fileID: 4584858875892991531}
-  rentTimeText: {fileID: 0}
   defaultGridSize: {x: 0, y: 0, z: 0}
   defaultLocalGridPos: {x: 0, y: 0, z: 0}
   defaultGlobalGridPos: {x: 0, y: 0, z: 0}
@@ -201,8 +200,8 @@ MonoBehaviour:
   reachTime: 0.5
   blastEase: 4
   blastRotationTime: 1
-  blastEffectAfterTime: 0.5
-  blastTime: 1.25
+  blastEffectAfterTime: 0.4
+  blastTime: 1
   blastReturnEase: 4
   amountToUnlockText: {fileID: 4439169905883863217}
   lockEase: 31

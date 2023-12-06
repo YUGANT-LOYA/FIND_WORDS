@@ -704,7 +704,7 @@ namespace YugantLoyaLibrary.FindWords
             //Debug.Log("CallSetLevelRunningBoolAfter Called !");
 
             yield return new WaitForSeconds(time);
-            
+
             //Debug.Log("CallSetLevelRunningBoolAfter Time Over ! Level Running Status : "+_isLevelRunning);
             SetLevelRunningBool(canTouch);
         }
@@ -713,7 +713,7 @@ namespace YugantLoyaLibrary.FindWords
         {
             _isLevelRunning = canTouch;
             //Debug.Log("Is Level Running : " + _isLevelRunning);
-            
+
             if (shouldUITouchBeAffected)
             {
                 //Debug.Log("UI Touch Affected Called ! ");
@@ -753,7 +753,7 @@ namespace YugantLoyaLibrary.FindWords
                     AddGridToList(inputGridsList,
                         gridTileScript);
 
-                    
+
                     //StartCoroutine(LevelRunningStatus(true, gridTileScript.reachTime + 0.1f));
                     gridTileScript.MoveAfter(pos, true, quesTileList[index]);
                 }
@@ -936,8 +936,8 @@ namespace YugantLoyaLibrary.FindWords
 
             CheckIqExpLevel(time);
 
-            StartCoroutine(ResetLevelHandlerData(5 * time / 4, true));
-            StartCoroutine(DataResetAfterGridAnimation(time));
+            StartCoroutine(ResetLevelHandlerData(3 * time / 4, true));
+            StartCoroutine(DataResetAfterGridAnimation(3 * time / 4));
         }
 
         private void CheckIqExpLevel(float time)
@@ -1012,8 +1012,8 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-            StartCoroutine(CallSetLevelRunningBoolAfter(5 * time / 4));
-            StartCoroutine(DataResetAfterGridAnimation(time, calledByHint));
+            StartCoroutine(CallSetLevelRunningBoolAfter(3 * time / 4));
+            StartCoroutine(DataResetAfterGridAnimation(3 * time / 4, calledByHint));
 
             //Debug.Log("Grid Back To Pos Exited !");
         }
@@ -1021,7 +1021,7 @@ namespace YugantLoyaLibrary.FindWords
         public void RevertGridBackToPosAndCleanQuesTilesData()
         {
             RevertQuesData();
-            
+
             if (inputGridsList.Count > 0)
             {
                 //Debug.Log("Grid Back To Pos Called !");

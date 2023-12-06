@@ -2980,7 +2980,7 @@ MonoBehaviour:
   touchPanelGm: {fileID: 1365435766}
   smokeTransitionGm: {fileID: 819056353}
   toastMessageScript: {fileID: 2113502229}
-  coinAnimTime: 1
+  coinAnimTime: 0.75
   coinRotateAngle: 810
   maxCoinScale: 0.015
   iqExperienceText: {fileID: 522775779}
@@ -2996,7 +2996,7 @@ MonoBehaviour:
   normalDealButton: {fileID: 340624123, guid: e7f4391e056141e4a940f8be30feedfe, type: 3}
   coinMovementEase: 26
   disableButtonColor: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
-  wrongEffectTime: 0.3
+  wrongEffectTime: 0.2
   wrongEffectImg: {fileID: 617413402}
   defaultWrongEffectColor: {r: 1, g: 1, b: 1, a: 0}
   redWrongEffectColor: {r: 1, g: 0, b: 0, a: 0.3137255}
@@ -3865,7 +3865,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83af8b539e8c22f4c90ba1635dbe89ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isTesting: 1
+  isTesting: 0
   startingGridSize: 5
   startingQuesSize: 3
   maxQuesSize: 6
@@ -6883,7 +6883,7 @@ MonoBehaviour:
     type: 3}
   quesPrefab: {fileID: 6876171383429484901, guid: 2b60b11f0918330469795326020309c3,
     type: 3}
-  initialCoins: 40000
+  initialCoins: 100
 --- !u!1 &5704458314791691809
 GameObject:
   m_ObjectHideFlags: 0
