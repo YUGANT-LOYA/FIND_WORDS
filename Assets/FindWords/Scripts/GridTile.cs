@@ -151,7 +151,6 @@ namespace YugantLoyaLibrary.FindWords
 
         public void OnMouseDown()
         {
-            Debug.Log("Grid Level Running Status : " + LevelHandler.Instance.GetLevelRunningBool());
             if (!LevelHandler.Instance.GetLevelRunningBool() || isMoving)
                 return;
 
@@ -186,7 +185,6 @@ namespace YugantLoyaLibrary.FindWords
             if (LevelHandler.Instance.LastQuesTile == null)
             {
                 SoundManager.instance.PlaySound(SoundManager.SoundType.Click);
-                Debug.Log($"Grid {gameObject.name} Clicked !");
                 isSelected = !isSelected;
                 //Debug.Log("Is Selected : " + isSelected);
 

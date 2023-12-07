@@ -807,7 +807,7 @@ namespace YugantLoyaLibrary.FindWords
                 DataHandler.CurrGridSize >= GameController.Instance.maxGridSize)
                 return false;
 
-            _isLevelRunning = false;
+            SetLevelRunningBool(false);
             float time = currLevel.timeToWaitForEachGrid;
             float timeToPlaceGrids = currLevel.timeToPlaceGrid;
 

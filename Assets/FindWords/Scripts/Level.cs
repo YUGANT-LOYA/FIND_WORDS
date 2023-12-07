@@ -361,6 +361,7 @@ namespace YugantLoyaLibrary.FindWords
 
         public void GridPlacement()
         {
+            LevelHandler.Instance.SetLevelRunningBool(false);
             Debug.Log("Grid Placement Entered !");
             StartCoroutine(PlaceGrids());
         }
@@ -371,28 +372,25 @@ namespace YugantLoyaLibrary.FindWords
             UIManager.Instance.catIdleAnimator.Play("Empty");
             if (LevelHandler.Instance.totalGridsList.Count > 0)
             {
-                foreach (GridTile gmObj in LevelHandler.Instance.totalGridsList)
+                foreach (GridTile gridTile in LevelHandler.Instance.totalGridsList)
                 {
                     yield return new WaitForSeconds(timeToWaitForEachGrid / 2);
 
-                    gmObj.gameObject.SetActive(true);
+                    gridTile.gameObject.SetActive(true);
 
-                    if (!gmObj.isBlastAfterWordComplete)
+                    if (!gridTile.isBlastAfterWordComplete)
                     {
-                        gmObj.transform.DOLocalMove(gmObj.defaultLocalGridPos, timeToPlaceGrid)
+                        gridTile.transform.DOLocalMove(gridTile.defaultLocalGridPos, timeToPlaceGrid)
                             .SetEase(gridPlacementEase);
                     }
                     else
                     {
-                        LevelHandler.AddGridToList(LevelHandler.Instance.wordCompletedGridList, gmObj);
-                        LevelHandler.RemoveGridFromList(LevelHandler.Instance.gridAvailableOnScreenList, gmObj);
+                        LevelHandler.AddGridToList(LevelHandler.Instance.wordCompletedGridList, gridTile);
+                        LevelHandler.RemoveGridFromList(LevelHandler.Instance.gridAvailableOnScreenList, gridTile);
                     }
                 }
             }
-
-            UIManager.Instance.CheckAllButtonStatus();
-            LevelHandler.Instance.SetLevelRunningBool(true);
-
+            
             if (DataHandler.HelperLevelCompleted == 0)
             {
                 if (DataHandler.HelperIndex < GameController.Instance.helper.clickDealIndex)
@@ -406,6 +404,13 @@ namespace YugantLoyaLibrary.FindWords
 
                 LevelHandler.Instance.SetLevelRunningBool(false);
                 GameController.Instance.helper.PlayHelper();
+            }
+            else
+            {
+                yield return new WaitForSeconds(timeToWaitForEachGrid / 2);
+                
+                UIManager.Instance.CheckAllButtonStatus();
+                LevelHandler.Instance.SetLevelRunningBool();
             }
         }
 

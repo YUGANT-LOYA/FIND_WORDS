@@ -30,7 +30,7 @@ namespace YugantLoyaLibrary.FindWords
                 }
             }
 
-            LevelHandler.Instance.SetLevelRunningBool(true);
+            LevelHandler.Instance.SetLevelRunningBool(true,false);
             UIManager.Instance.CanTouch(false,false);
             ClickTile(0.2f);
         }
