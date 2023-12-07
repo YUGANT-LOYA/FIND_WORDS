@@ -93,12 +93,14 @@ namespace YugantLoyaLibrary.FindWords
             bool isGridLeft = LevelHandler.Instance.CheckGridLeft();
             //Debug.Log("Grid Left Bool : " + isGridLeft);
             //Debug.Log("Level Running Bool  " + LevelHandler.Instance.GetLevelRunningBool());
-            if (LevelHandler.Instance.gridAvailableOnScreenList.Count < DataHandler.UnlockedQuesLetter && isGridLeft)
-            {
-                Debug.Log("Deal Called From Unlocking Ques Tile !");
-                LevelHandler.Instance.SetLevelRunningBool(true, false);
-                GameController.Instance.Deal(false);
-            }
+            
+            
+            // if (LevelHandler.Instance.gridAvailableOnScreenList.Count < DataHandler.UnlockedQuesLetter && isGridLeft)
+            // {
+            //     Debug.Log("Deal Called From Unlocking Ques Tile !");
+            //     LevelHandler.Instance.SetLevelRunningBool(true, false);
+            //     GameController.Instance.Deal(false);
+            // }
         }
 
         private void UnlockNewQuesGrid()

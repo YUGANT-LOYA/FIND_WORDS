@@ -6874,7 +6874,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 5a57ce00a64f4444289dc9b80ca4f3e1, type: 2}
   - {fileID: 2100000, guid: 3f249a8d9fc26364a97029637f1503ef, type: 2}
   - {fileID: 2100000, guid: 67dbd11bb6a809a4db8641fd5555b6fa, type: 2}
-  quesGridUnlockPrice: f4010000d0070000a00f0000
+  quesGridUnlockPrice: c8000000d0070000a00f0000
   coinPrefab: {fileID: 8579674800967252615, guid: 28100a049f60b554f90b837aaf279eb6,
     type: 3}
   levelPrefab: {fileID: 2675200230763130632, guid: 6a0c1a2eb4a934d4e8f1cc97f5ea3182,

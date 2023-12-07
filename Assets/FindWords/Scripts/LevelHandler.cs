@@ -1154,12 +1154,14 @@ namespace YugantLoyaLibrary.FindWords
                 bool isGridLeft = CheckGridLeft();
                 Debug.Log("Grid Left Bool : " + isGridLeft);
 
-                if (gridAvailableOnScreenList.Count < DataHandler.UnlockedQuesLetter && isGridLeft)
-                {
-                    Debug.Log("GRID CHECK IF");
-                    GameController.Instance.Deal(false);
-                }
-                else if (isGridLeft)
+                // if (gridAvailableOnScreenList.Count < DataHandler.UnlockedQuesLetter && isGridLeft)
+                // {
+                //     Debug.Log("GRID CHECK IF");
+                //     GameController.Instance.Deal(false);
+                // }
+                // else 
+                
+                if (isGridLeft)
                 {
                     Debug.Log("GRID CHECK ELSE IF");
                     CheckWordExistOrNot(out bool hintButtonStatus, out string hintStr);

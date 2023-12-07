@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:30bef8b33145324dbb90c908c83f19531c86f50a478aa9ba5a6893939eb2179e
-size 417
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 390695eb687d0904eb1a5154b8835c34, type: 3}
+  m_Name: MainDict
+  m_EditorClassIdentifier: 
+  totalWords: 24460
