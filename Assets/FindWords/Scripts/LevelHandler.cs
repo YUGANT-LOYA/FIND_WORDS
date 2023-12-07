@@ -20,7 +20,7 @@ namespace YugantLoyaLibrary.FindWords
         public GameObject boxContainer;
         public EnglishDictWords englishDictWords;
         [SerializeField] Level currLevel;
-        public int coinPerWord = 10, iqLevelForGridLockPop = 2;
+        public int coinPerWord = 10,extraCoinForNewWord = 5, iqLevelForGridLockPop = 2;
         [HideInInspector] public int coinToUnlockNextGrid;
         [Header("Level Info")] public char[][] GridStringData;
 
@@ -919,7 +919,7 @@ namespace YugantLoyaLibrary.FindWords
 
                     if (isCommonWord)
                     {
-                        AddCoin(5);
+                        AddCoin(extraCoinForNewWord);
                     }
                     else
                     {
@@ -1128,16 +1128,18 @@ namespace YugantLoyaLibrary.FindWords
 
                 index++;
             }
-
+            
+            foreach (var gridTile in gridLists)
+            {
+                gridTile.ObjectStatus(true);
+            }
+            
             yield return new WaitForSeconds(timeToPlaceGrids);
 
             StartCoroutine(ResetLevelHandlerData(0f));
             RevertQuesData();
 
-            foreach (var gridTile in gridLists)
-            {
-                gridTile.ObjectStatus(true);
-            }
+            
 
             yield return null;
         }

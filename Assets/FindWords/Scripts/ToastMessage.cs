@@ -9,7 +9,7 @@ namespace YugantLoyaLibrary.FindWords
     {
         [SerializeField] GameObject toastMsgGm, newWordFoundGm;
         public GameObject newQuesTileUnlockedGm;
-        [SerializeField] private TextMeshProUGUI toastMsgTxt, newQuesTileUnlockTxt;
+        [SerializeField] private TextMeshProUGUI toastMsgTxt,newWordFoundTxt, newQuesTileUnlockTxt;
         [SerializeField] string notEnoughCoinsMsg, noWordFoundMsg, noDealFoundMsg;
         public float toastMsgTime = 0.5f;
         public bool isToastActive;
@@ -57,6 +57,7 @@ namespace YugantLoyaLibrary.FindWords
             //toastMessage.SetActive(false);
             StopCoroutine(nameof(ToastAnimation));
             isToastActive = true;
+            newWordFoundTxt.text = $"New Word Found {LevelHandler.Instance.coinPerWord} + {LevelHandler.Instance.extraCoinForNewWord} = {LevelHandler.Instance.coinPerWord + LevelHandler.Instance.extraCoinForNewWord} ";
             newWordFoundGm.SetActive(true);
             StartCoroutine(ToastAnimation(newWordFoundGm));
         }
