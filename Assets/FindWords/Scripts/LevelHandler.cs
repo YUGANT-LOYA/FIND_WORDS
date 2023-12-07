@@ -958,11 +958,20 @@ namespace YugantLoyaLibrary.FindWords
             UIManager.Instance.iqExperienceText.text = $"{DataHandler.IqExpLevel.ToString()}";
             UIManager.Instance.iqSlider.value = 0f;
             DataHandler.IqBarVal = 0;
-
+            
             if (DataHandler.IqExpLevel == iqLevelForGridLockPop + 1)
             {
                 UnlockNextGridForCoins();
             }
+
+            int levelNum = DataHandler.IqExpLevel - 1;
+            
+            LionStudiosManager.LevelComplete( levelNum, GameController.LevelAttempts, 0);
+            GAScript.LevelEnd(true, levelNum.ToString());
+            GameController.LevelAttempts = 0;
+
+            LionStudiosManager.LevelStart(levelNum, GameController.LevelAttempts, 0);
+            GAScript.LevelStart(levelNum.ToString());
         }
 
         public bool CheckGridLeft()

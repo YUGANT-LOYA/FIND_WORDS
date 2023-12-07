@@ -282,13 +282,6 @@ namespace YugantLoyaLibrary.FindWords
 
                     isMoving = false;
 
-                    LionStudiosManager.LevelComplete(DataHandler.LevelNum, GameController.LevelAttempts, 0);
-                    GAScript.LevelEnd(true, DataHandler.LevelNum.ToString());
-                    GameController.LevelAttempts = 0;
-                    DataHandler.LevelNum++;
-
-                    LionStudiosManager.LevelStart(DataHandler.LevelNum, GameController.LevelAttempts, 0);
-                    GAScript.LevelStart(DataHandler.LevelNum.ToString());
                 });
         }
 

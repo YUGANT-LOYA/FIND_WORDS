@@ -103,8 +103,8 @@ namespace YugantLoyaLibrary.FindWords
             StartGame();
             //Debug.Log("Game Created !");
 
-            LionStudiosManager.LevelStart(DataHandler.LevelNum, LevelAttempts, 0);
-            GAScript.LevelStart(DataHandler.LevelNum.ToString());
+            LionStudiosManager.LevelStart(DataHandler.IqExpLevel, LevelAttempts, 0);
+            GAScript.LevelStart(DataHandler.IqExpLevel.ToString());
         }
 
         public IEnumerator StartGameAfterCertainTime(float time)
