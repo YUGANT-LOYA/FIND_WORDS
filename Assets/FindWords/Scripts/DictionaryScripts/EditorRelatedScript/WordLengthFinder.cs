@@ -11,6 +11,7 @@ namespace YugantLoyaLibrary.FindWords
 {
     public class WordLengthFinder : MonoBehaviour
     {
+        public bool rewriteFile;
         public int wordLength = 3, minLength = 3, maxLength = 8;
         public TextAsset oxfordDictTextFile, filteredDictTextFile;
 
@@ -36,7 +37,7 @@ namespace YugantLoyaLibrary.FindWords
 
 // Specify the relative path within the "Assets" folder where you want to save the CSV file
             string relativeFilePath = "FindWords/Resources/WordLengthFindFolder/FullLengthWordData";
-            string fileName = $"WordLength_{wordLength}.csv";
+            string fileName = $"WordLength_{wordLength}.txt";
 
 // Combine the paths to get the full path of the CSV file
             string folderPath = Path.Combine(assetsFolderPath, relativeFilePath);
@@ -50,7 +51,7 @@ namespace YugantLoyaLibrary.FindWords
             }
 
 // Save the CSV file
-            if (!File.Exists(filePath))
+            if (rewriteFile)
             {
                 Debug.Log("File Creating !!");
                 File.WriteAllText(filePath, csvContent.ToString());
@@ -89,7 +90,7 @@ namespace YugantLoyaLibrary.FindWords
 
 // Specify the relative path within the "Assets" folder where you want to save the CSV file
             string relativeFilePath = "FindWords/Resources/WordLengthFindFolder/FilteredLengthWordData";
-            string fileName = $"WordLength_{wordLength}.csv";
+            string fileName = $"WordLength_{wordLength}.txt";
 
 // Combine the paths to get the full path of the CSV file
             string folderPath = Path.Combine(assetsFolderPath, relativeFilePath);
@@ -141,7 +142,7 @@ namespace YugantLoyaLibrary.FindWords
             string assetsFolderPath = Application.dataPath;
 
             // Specify the relative path within the "Assets" folder where you want to save the CSV file
-            string relativeFilePath = $"FindWords/Resources/WordDictData/NewOxfordDict.csv";
+            string relativeFilePath = $"FindWords/Resources/WordDictData/NewOxfordDict.txt";
 
             // Combine the paths to get the full path of the CSV file
             string filePath = Path.Combine(assetsFolderPath, relativeFilePath);

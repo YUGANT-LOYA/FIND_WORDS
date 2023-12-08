@@ -381,8 +381,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   compareFileNum: 1
-  file1: {fileID: 4900000, guid: 2f11f0a158bad964e85f6d4b9a141f07, type: 3}
-  file2: {fileID: 4900000, guid: 07fc63a01de6d124995b3e437f788ac6, type: 3}
+  file1: {fileID: 4900000, guid: 9e995eccd1e0ae34b91f8c5291890b87, type: 3}
+  file2: {fileID: 4900000, guid: 2e0ed75a2e76ec840ae9e3b1ef1c1478, type: 3}
   count: 0
   shouldCreateNewFile: 1
   fileLocation: ComparedFileFolder
@@ -535,6 +535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eae775c8e9fa08d4b83cf5e44f63d2e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rewriteFile: 1
   wordLength: 6
   minLength: 3
   maxLength: 6
@@ -585,8 +586,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59462f6c56f921b48a882700f6d3061b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wordLength: 3
-  wordLengthTextFile: {fileID: 4900000, guid: 60b9df4117a15794f833c1e804782ee0, type: 3}
+  reWriteFile: 1
+  wordLength: 6
+  wordLengthTextFile: {fileID: 4900000, guid: ab5f89b8951aba74091f743285ea071e, type: 3}
   fullDictData: {fileID: 11400000, guid: 060ba8d9e48d28e45b4cd6b6a8c42760, type: 2}
   filteredDictData: {fileID: 11400000, guid: 86760fe7c16eb0545a72e9c367046145, type: 2}
   pickWordDataInfo: {fileID: 11400000, guid: 705e50367ef97c646ab4c1cd1b227194, type: 2}
@@ -744,7 +746,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8701ff45ea0ace44c8d930e0fd5f0b0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  file: {fileID: 4900000, guid: 2f11f0a158bad964e85f6d4b9a141f07, type: 3}
+  file: {fileID: 4900000, guid: 9e995eccd1e0ae34b91f8c5291890b87, type: 3}
   lineList: []
 --- !u!4 &2018499471
 Transform:

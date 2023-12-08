@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,10 +14,17 @@ public class CompareFile : MonoBehaviour
     [Tooltip("Location should be inside the Resources Folder")]
     public string fileLocation = "ComparedFileFolder";
 
-    [SerializeField] private List<string> file1List = new List<string>(), file2List = new List<string>();
+    [SerializeField] private List<string> file1List, file2List;
 
-    [Button]
-    public void CompareFiles()
+
+    private void Start()
+    {
+        CompareFiles();
+    }
+
+
+    //[Button]
+    private void CompareFiles()
     {
         if (file1 == null || file2 == null)
         {
@@ -32,8 +40,8 @@ public class CompareFile : MonoBehaviour
 
     void FillLists()
     {
-        file1List.Clear();
-        file2List.Clear();
+        file1List = new List<string>();
+        file2List = new List<string>();
         
         string[] data1 = file1.text.Split('\n');
         string[] data2 = file2.text.Split('\n');
@@ -50,7 +58,7 @@ public class CompareFile : MonoBehaviour
         {
             if (!string.IsNullOrWhiteSpace(word))
             {
-                file1List.Add(word);
+                file2List.Add(word);
             }
         }
     }

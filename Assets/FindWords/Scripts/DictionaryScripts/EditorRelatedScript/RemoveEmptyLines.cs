@@ -11,10 +11,12 @@ public class RemoveEmptyLines : MonoBehaviour
     [Button]
     void FilterFileAndRemoveEmptyLines()
     {
-        lineList.Clear();
+        lineList = new List<string>();
         
         string[] data = file.text.Split('\n');
 
+        Debug.Log(data.Length);
+        
         foreach (string line in data)
         {
             if (!string.IsNullOrEmpty(line) || !string.IsNullOrWhiteSpace(line))

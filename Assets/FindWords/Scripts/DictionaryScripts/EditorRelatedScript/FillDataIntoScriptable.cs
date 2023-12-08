@@ -12,6 +12,7 @@ namespace YugantLoyaLibrary.FindWords
 {
     public class FillDataIntoScriptable : MonoBehaviour
     {
+        public bool reWriteFile;
         public int wordLength = 3;
         public TextAsset wordLengthTextFile;
         public MainDictionary fullDictData, filteredDictData;
@@ -47,14 +48,14 @@ namespace YugantLoyaLibrary.FindWords
 
                 // Specify the relative path within the "Assets" folder where you want to save the CSV file
                 string relativeFilePath =
-                    $"FindWords/Resources/WordFullDictData/{wordLength}_WordLengthFolder/{currletter.ToString()}_Words.csv";
+                    $"FindWords/Resources/WordFullDictData/{wordLength}_WordLengthFolder/{currletter.ToString()}_Words.txt";
 
                 // Combine the paths to get the full path of the CSV file
                 string filePath = Path.Combine(assetsFolderPath, relativeFilePath);
 
                 // Save the CSV file
 
-                if (!string.IsNullOrEmpty(filePath) && !File.Exists(filePath))
+                if (reWriteFile)
                 {
                     Debug.Log("File Creating !!");
                     File.WriteAllText(filePath, csvContent.ToString());
@@ -104,14 +105,14 @@ namespace YugantLoyaLibrary.FindWords
 
                 // Specify the relative path within the "Assets" folder where you want to save the CSV file
                 string relativeFilePath =
-                    $"FindWords/Resources/WordFilteredDictData/{wordLength}_WordLengthFolder/{currletter.ToString()}_Words.csv";
+                    $"FindWords/Resources/WordFilteredDictData/{wordLength}_WordLengthFolder/{currletter.ToString()}_Words.txt";
 
                 // Combine the paths to get the full path of the CSV file
                 string filePath = Path.Combine(assetsFolderPath, relativeFilePath);
 
                 // Save the CSV file
 
-                if (!string.IsNullOrEmpty(filePath) && !File.Exists(filePath))
+                if (reWriteFile)
                 {
                     Debug.Log("File Creating !!");
                     File.WriteAllText(filePath, csvContent.ToString());
@@ -288,14 +289,14 @@ namespace YugantLoyaLibrary.FindWords
 
             // Specify the relative path within the "Assets" folder where you want to save the CSV file
             string relativeFilePath =
-                $"FindWords/CSV/ShuffledWordFolder/{wordLength}_Shuffled_Words.csv";
+                $"FindWords/CSV/ShuffledWordFolder/{wordLength}_Shuffled_Words.txt";
 
             // Combine the paths to get the full path of the CSV file
             string filePath = Path.Combine(assetsFolderPath, relativeFilePath);
 
             // Save the CSV file
 
-            if (!string.IsNullOrEmpty(filePath) && !File.Exists(filePath))
+            if (reWriteFile)
             {
                 Debug.Log("File Creating !!");
                 File.WriteAllText(filePath, csvContent.ToString());
@@ -367,7 +368,7 @@ namespace YugantLoyaLibrary.FindWords
 
             // Specify the relative path within the "Assets" folder where you want to save the CSV file
             string relativeFilePath =
-                $"FindWords/Resources/PredefinedWords/{wordLength}_Duplicate_Letter.csv";
+                $"FindWords/Resources/PredefinedWords/{wordLength}_Duplicate_Letter.txt";
 
             // Combine the paths to get the full path of the CSV file
             string filePath = Path.Combine(assetsFolderPath, relativeFilePath);
