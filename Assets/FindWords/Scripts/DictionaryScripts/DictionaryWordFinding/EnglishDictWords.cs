@@ -77,12 +77,12 @@ namespace YugantLoyaLibrary.FindWords
             //Debug.Log("Is Avail : " + isAvailable);
             if (isAvailable)
             {
-                //Debug.Log($"Yoo !! {word} Word Found");
+                Debug.Log($"Yoo !! {word} Word Found");
                 return true;
             }
             else
             {
-                //Debug.Log($"Oops !! {word} Word Not Found");
+                Debug.Log($"Oops !! {word} Word Not Found");
                 return false;
             }
         }
@@ -93,12 +93,12 @@ namespace YugantLoyaLibrary.FindWords
 
             if (isAvailable)
             {
-                //Debug.Log($"Yoo !! {word} Word Found");
+                Debug.Log($"Yoo !! {word} Word Found");
                 return true;
             }
             else
             {
-                //Debug.Log($"Oops !! {word} Word Not Found");
+                Debug.Log($"Oops !! {word} Word Not Found");
                 return false;
             }
         }
