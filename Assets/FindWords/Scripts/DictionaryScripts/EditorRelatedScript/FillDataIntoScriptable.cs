@@ -34,13 +34,13 @@ namespace YugantLoyaLibrary.FindWords
             for (int i = 97; i < 123; i++)
             {
                 char currletter = (char)i;
-                StringBuilder csvContent = new StringBuilder();
+                StringBuilder content = new StringBuilder();
                 foreach (var str in lines)
                 {
                     if (!string.IsNullOrWhiteSpace(str) &&
                         str[0].ToString().ToUpper() == currletter.ToString().ToUpper())
                     {
-                        csvContent.AppendLine(str.Trim());
+                        content.AppendLine(str.Trim());
                     }
                 }
 
@@ -53,12 +53,12 @@ namespace YugantLoyaLibrary.FindWords
                 // Combine the paths to get the full path of the CSV file
                 string filePath = Path.Combine(assetsFolderPath, relativeFilePath);
 
-                // Save the CSV file
+                // Save the Txt file
 
-                if (reWriteFile)
+                if (reWriteFile || !File.Exists(filePath))
                 {
                     Debug.Log("File Creating !!");
-                    File.WriteAllText(filePath, csvContent.ToString());
+                    File.WriteAllText(filePath, content.ToString());
                 }
                 else
                 {
@@ -73,7 +73,7 @@ namespace YugantLoyaLibrary.FindWords
 
                 // Refresh the Unity Asset Database to make the file visible in the Editor
 #if UNITY_EDITOR
-            AssetDatabase.Refresh();
+                AssetDatabase.Refresh();
 #endif
                 Debug.Log("CSV file saved to: " + filePath);
             }
@@ -91,13 +91,13 @@ namespace YugantLoyaLibrary.FindWords
             for (int i = 97; i < 123; i++)
             {
                 char currletter = (char)i;
-                StringBuilder csvContent = new StringBuilder();
+                StringBuilder content = new StringBuilder();
                 foreach (var str in lines)
                 {
                     if (!string.IsNullOrWhiteSpace(str) &&
                         str[0].ToString().ToUpper() == currletter.ToString().ToUpper())
                     {
-                        csvContent.AppendLine(str.Trim());
+                        content.AppendLine(str.Trim());
                     }
                 }
 
@@ -112,10 +112,10 @@ namespace YugantLoyaLibrary.FindWords
 
                 // Save the CSV file
 
-                if (reWriteFile)
+                if (reWriteFile || !File.Exists(filePath))
                 {
                     Debug.Log("File Creating !!");
-                    File.WriteAllText(filePath, csvContent.ToString());
+                    File.WriteAllText(filePath, content.ToString());
                 }
                 else
                 {
@@ -130,7 +130,7 @@ namespace YugantLoyaLibrary.FindWords
 
                 // Refresh the Unity Asset Database to make the file visible in the Editor
 #if UNITY_EDITOR
-            AssetDatabase.Refresh();
+                AssetDatabase.Refresh();
 #endif
                 Debug.Log("CSV file saved to: " + filePath);
             }
@@ -189,8 +189,8 @@ namespace YugantLoyaLibrary.FindWords
             fullDictData = dict;
 
 #if UNITY_EDITOR
-        EditorUtility.SetDirty(fullDictData);
-        AssetDatabase.Refresh();
+            EditorUtility.SetDirty(fullDictData);
+            AssetDatabase.Refresh();
 #endif
         }
 
@@ -247,8 +247,8 @@ namespace YugantLoyaLibrary.FindWords
             filteredDictData = dict;
 
 #if UNITY_EDITOR
-        EditorUtility.SetDirty(filteredDictData);
-        AssetDatabase.Refresh();
+            EditorUtility.SetDirty(filteredDictData);
+            AssetDatabase.Refresh();
 #endif
         }
 
@@ -314,7 +314,7 @@ namespace YugantLoyaLibrary.FindWords
 
             // Refresh the Unity Asset Database to make the file visible in the Editor
 #if UNITY_EDITOR
-        AssetDatabase.Refresh();
+            AssetDatabase.Refresh();
 #endif
             Debug.Log("CSV file saved to: " + filePath);
         }
@@ -352,8 +352,8 @@ namespace YugantLoyaLibrary.FindWords
             pickWordDataInfo = wordDataInfo;
 
 #if UNITY_EDITOR
-        EditorUtility.SetDirty(pickWordDataInfo);
-        AssetDatabase.Refresh();
+            EditorUtility.SetDirty(pickWordDataInfo);
+            AssetDatabase.Refresh();
 #endif
         }
 
@@ -397,8 +397,8 @@ namespace YugantLoyaLibrary.FindWords
             Debug.Log("Duplicate Removed Successfully !!");
 
 #if UNITY_EDITOR
-        EditorUtility.SetDirty(wordLengthTextFile);
-        AssetDatabase.Refresh();
+            EditorUtility.SetDirty(wordLengthTextFile);
+            AssetDatabase.Refresh();
 #endif
         }
     }

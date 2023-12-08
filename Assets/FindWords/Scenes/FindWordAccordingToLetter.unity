@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb679a1a50f257d4e80a5c79428b077c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fullWordTextFile: {fileID: 4900000, guid: f30af87a20b757546bd60f0a622160c0, type: 3}
+  fullWordTextFile: {fileID: 4900000, guid: 2a2cb94baa8633945a50e0661312eb6b, type: 3}
   filteredWordTextFile: {fileID: 4900000, guid: 6ddb95fe757d8704587fce845380bdf4,
     type: 3}
   compareWord: 
@@ -380,14 +380,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9572ac821edfa5b41bf5141409b7fffb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compareFileNum: 1
   file1: {fileID: 4900000, guid: 9e995eccd1e0ae34b91f8c5291890b87, type: 3}
   file2: {fileID: 4900000, guid: 2e0ed75a2e76ec840ae9e3b1ef1c1478, type: 3}
   count: 0
   shouldCreateNewFile: 1
-  fileLocation: ComparedFileFolder
+  sameAsLineToLine: 0
+  comparedFileName: ComparedFile_1
+  folderLocation: FindWords/ComparedFileFolder
   file1List: []
   file2List: []
+  mainDataList: []
 --- !u!1 &1058802365
 GameObject:
   m_ObjectHideFlags: 0
@@ -539,7 +541,7 @@ MonoBehaviour:
   wordLength: 6
   minLength: 3
   maxLength: 6
-  oxfordDictTextFile: {fileID: 4900000, guid: f30af87a20b757546bd60f0a622160c0, type: 3}
+  oxfordDictTextFile: {fileID: 4900000, guid: 2a2cb94baa8633945a50e0661312eb6b, type: 3}
   filteredDictTextFile: {fileID: 4900000, guid: 6ddb95fe757d8704587fce845380bdf4,
     type: 3}
 --- !u!4 &1398960110
@@ -746,7 +748,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8701ff45ea0ace44c8d930e0fd5f0b0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  file: {fileID: 4900000, guid: 9e995eccd1e0ae34b91f8c5291890b87, type: 3}
+  reWriteFile: 1
+  fileLocation: FindWords
+  txtFile: {fileID: 4900000, guid: 2e0ed75a2e76ec840ae9e3b1ef1c1478, type: 3}
+  fileLength: 0
   lineList: []
 --- !u!4 &2018499471
 Transform:

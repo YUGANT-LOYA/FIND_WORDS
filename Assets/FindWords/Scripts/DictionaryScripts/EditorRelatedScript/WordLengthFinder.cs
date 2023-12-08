@@ -21,7 +21,7 @@ namespace YugantLoyaLibrary.FindWords
             string data = oxfordDictTextFile.text.Trim();
             string[] lines = data.Split('\n');
 
-            StringBuilder csvContent = new StringBuilder();
+            StringBuilder content = new StringBuilder();
             Debug.Log("Data Length : " + lines.Length);
 
             for (int i = 0; i < lines.Length; i++)
@@ -29,7 +29,7 @@ namespace YugantLoyaLibrary.FindWords
                 if (!string.IsNullOrWhiteSpace(lines[i]) && lines[i].Trim().Length == wordLength)
                 {
                     Debug.Log("Str : " + lines[i]);
-                    csvContent.AppendLine(lines[i]);
+                    content.AppendLine(lines[i]);
                 }
             }
 
@@ -50,11 +50,11 @@ namespace YugantLoyaLibrary.FindWords
                 Directory.CreateDirectory(folderPath);
             }
 
-// Save the CSV file
-            if (rewriteFile)
+// Save the Txt file
+            if (rewriteFile || !File.Exists(filePath))
             {
                 Debug.Log("File Creating !!");
-                File.WriteAllText(filePath, csvContent.ToString());
+                File.WriteAllText(filePath, content.ToString());
             }
             else
             {
@@ -74,7 +74,7 @@ namespace YugantLoyaLibrary.FindWords
             string data = filteredDictTextFile.text.Trim();
             string[] lines = data.Split('\n');
 
-            StringBuilder csvContent = new StringBuilder();
+            StringBuilder content = new StringBuilder();
             Debug.Log("Data Length : " + lines.Length);
 
             for (int i = 0; i < lines.Length; i++)
@@ -82,7 +82,7 @@ namespace YugantLoyaLibrary.FindWords
                 if (!string.IsNullOrWhiteSpace(lines[i]) && lines[i].Trim().Length == wordLength)
                 {
                     Debug.Log("Str : " + lines[i]);
-                    csvContent.AppendLine(lines[i]);
+                    content.AppendLine(lines[i]);
                 }
             }
 
@@ -103,11 +103,11 @@ namespace YugantLoyaLibrary.FindWords
                 Directory.CreateDirectory(folderPath);
             }
 
-// Save the CSV file
-            if (!File.Exists(filePath))
+// Save the Txt file
+            if (!File.Exists(filePath) || rewriteFile)
             {
                 Debug.Log("File Creating !!");
-                File.WriteAllText(filePath, csvContent.ToString());
+                File.WriteAllText(filePath, content.ToString());
             }
             else
             {
@@ -127,14 +127,14 @@ namespace YugantLoyaLibrary.FindWords
             string data = oxfordDictTextFile.text.Trim();
             string[] lines = data.Split('\n');
 
-            StringBuilder csvContent = new StringBuilder();
+            StringBuilder content = new StringBuilder();
 
             for (int i = 0; i < lines.Length; i++)
             {
                 if (!string.IsNullOrWhiteSpace(lines[i]) && lines[i].Length >= minLength &&
                     lines[i].Length <= maxLength)
                 {
-                    csvContent.AppendLine(lines[i]);
+                    content.AppendLine(lines[i]);
                 }
             }
 
@@ -147,12 +147,12 @@ namespace YugantLoyaLibrary.FindWords
             // Combine the paths to get the full path of the CSV file
             string filePath = Path.Combine(assetsFolderPath, relativeFilePath);
 
-            // Save the CSV file
+            // Save the Txt file
 
             if (!string.IsNullOrEmpty(filePath) && !File.Exists(filePath))
             {
                 Debug.Log("File Creating !!");
-                File.WriteAllText(filePath, csvContent.ToString());
+                File.WriteAllText(filePath, content.ToString());
             }
             else
             {
@@ -168,7 +168,7 @@ namespace YugantLoyaLibrary.FindWords
         // Refresh the Unity Asset Database to make the file visible in the Editor
         AssetDatabase.Refresh();
 #endif
-            Debug.Log("CSV file saved to: " + filePath);
+            Debug.Log("Txt file saved to: " + filePath);
         }
     }
 }
