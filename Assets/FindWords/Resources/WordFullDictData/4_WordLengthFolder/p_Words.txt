@@ -159,3 +159,6 @@ peer
 pock
 poco
 punt
+peri
+plim
+pule

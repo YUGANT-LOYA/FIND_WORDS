@@ -41,3 +41,5 @@ sun
 sup
 sur
 sus
+sac
+sub

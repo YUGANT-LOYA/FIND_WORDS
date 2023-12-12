@@ -32,6 +32,7 @@ node
 nods
 noir
 none
+noob
 noon
 nope
 nora
@@ -51,3 +52,8 @@ nuts
 nile
 norm
 nosh
+nape
+niff
+nipe
+noel
+nous

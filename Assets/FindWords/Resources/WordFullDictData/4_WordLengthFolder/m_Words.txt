@@ -100,3 +100,6 @@ myth
 mage
 maxi
 melt
+milt
+mina
+mise

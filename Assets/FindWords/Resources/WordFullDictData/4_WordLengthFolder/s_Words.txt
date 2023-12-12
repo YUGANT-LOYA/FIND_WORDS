@@ -187,3 +187,10 @@ sikh
 skye
 soke
 swop
+seas
+slug
+snug
+sook
+spec
+stub
+swig

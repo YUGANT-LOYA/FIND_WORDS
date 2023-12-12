@@ -145,3 +145,6 @@ craw
 cray
 cred
 crud
+cite
+cote
+cued

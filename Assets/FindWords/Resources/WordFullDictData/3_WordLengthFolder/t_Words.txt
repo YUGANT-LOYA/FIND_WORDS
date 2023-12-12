@@ -34,3 +34,4 @@ tug
 tux
 two
 tye
+tor

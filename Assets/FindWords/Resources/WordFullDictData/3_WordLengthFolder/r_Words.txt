@@ -27,3 +27,5 @@ rug
 rum
 run
 rut
+rex
+rue

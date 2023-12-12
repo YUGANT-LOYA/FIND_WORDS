@@ -2,3 +2,4 @@ ufo
 usa
 use
 uzi
+uri

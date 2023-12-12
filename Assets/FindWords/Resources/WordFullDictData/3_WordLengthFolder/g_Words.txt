@@ -21,3 +21,6 @@ gun
 gut
 guy
 gym
+gab
+gee
+goa
